@@ -1,0 +1,65 @@
+!!----------------------------------------------------------------------
+!!                    ***  domzgr_substitute.h90   ***
+!!----------------------------------------------------------------------
+!! ** purpose :   substitute fsdep. and fse.., the vert. depth and scale
+!!      factors depending on the vertical coord. used, using CPP macro.
+!!----------------------------------------------------------------------
+!! History :  4.2  !  2020-02  (S. Techene, G. Madec)  star coordinate
+!!----------------------------------------------------------------------
+!! NEMO/OCE 4.2 , NEMO Consortium (2020)
+!! $Id$
+!! Software governed by the CeCILL license (see ./LICENSE)
+!!----------------------------------------------------------------------
+#if defined key_qco
+#   define  e3t(i,j,k,t)   (e3t_0(i,j,k)*(1._wp+r3t(i,j,t)*tmask(i,j,k)))
+#   define  e3u(i,j,k,t)   (e3u_0(i,j,k)*(1._wp+r3u(i,j,t)*umask(i,j,k)))
+#   define  e3v(i,j,k,t)   (e3v_0(i,j,k)*(1._wp+r3v(i,j,t)*vmask(i,j,k)))
+#   define  e3f(i,j,k)     (e3f_0(i,j,k)*(1._wp+r3f(i,j)*fe3mask(i,j,k)))
+#   define  e3f_vor(i,j,k) (e3f_0vor(i,j,k)*(1._wp+r3f(i,j)*fe3mask(i,j,k)))
+#   define  e3w(i,j,k,t)   (e3w_0(i,j,k)*(1._wp+r3t(i,j,t)))
+#   define  e3uw(i,j,k,t)  (e3uw_0(i,j,k)*(1._wp+r3u(i,j,t)))
+#   define  e3vw(i,j,k,t)  (e3vw_0(i,j,k)*(1._wp+r3v(i,j,t)))
+#   define  ht(i,j)        (ht_0(i,j)*(1._wp+r3t(i,j,Kmm)))
+#   define  hu(i,j,t)      (hu_0(i,j)*(1._wp+r3u(i,j,t)))
+#   define  hv(i,j,t)      (hv_0(i,j)*(1._wp+r3v(i,j,t)))
+#   define  r1_hu(i,j,t)   (r1_hu_0(i,j)/(1._wp+r3u(i,j,t)))
+#   define  r1_hv(i,j,t)   (r1_hv_0(i,j)/(1._wp+r3v(i,j,t)))
+# if defined key_isf
+#   define  gdept(i,j,k,t)      ((gdept_0(i,j,k)-risfdep(i,j))*(1._wp+r3t(i,j,t))+risfdep(i,j)) 
+#   define  gdepw(i,j,k,t)      ((gdepw_0(i,j,k)-risfdep(i,j))*(1._wp+r3t(i,j,t))+risfdep(i,j))
+#   define  gdept_isf0(i,j,k,t) ((gdept_0(i,j,k)-risfdep(i,j))*(1._wp+r3t(i,j,t))-ssh(i,j,t)) 
+#   define  gdepw_isf0(i,j,k,t) ((gdepw_0(i,j,k)-risfdep(i,j))*(1._wp+r3t(i,j,t))-ssh(i,j,t))
+# else
+#   define  gdept(i,j,k,t)      (gdept_0(i,j,k)*(1._wp+r3t(i,j,t)))
+#   define  gdepw(i,j,k,t)      (gdepw_0(i,j,k)*(1._wp+r3t(i,j,t)))
+#   define  gdept_z0(i,j,k,t)   (gdept_0(i,j,k)*(1._wp+r3t(i,j,t))-ssh(i,j,t))
+#   define  gdepw_z0(i,j,k,t)   (gdepw_0(i,j,k)*(1._wp+r3t(i,j,t))-ssh(i,j,t))
+# endif
+#   define  gde3w(i,j,k)   (gdept(i,j,k,Kmm)-ssh(i,j,Kmm))
+#elif defined key_linssh
+#   define  e3t(i,j,k,t)   e3t_0(i,j,k)
+#   define  e3u(i,j,k,t)   e3u_0(i,j,k)
+#   define  e3v(i,j,k,t)   e3v_0(i,j,k)
+#   define  e3f(i,j,k)     e3f_0(i,j,k)
+#   define  e3f_vor(i,j,k) e3f_0vor(i,j,k)
+#   define  e3w(i,j,k,t)   e3w_0(i,j,k)
+#   define  e3uw(i,j,k,t)  e3uw_0(i,j,k)
+#   define  e3vw(i,j,k,t)  e3vw_0(i,j,k)
+#   define  ht(i,j)        ht_0(i,j)
+#   define  hu(i,j,t)      hu_0(i,j)
+#   define  hv(i,j,t)      hv_0(i,j)
+#   define  r1_hu(i,j,t)   r1_hu_0(i,j)
+#   define  r1_hv(i,j,t)   r1_hv_0(i,j)
+#   define  gdept(i,j,k,t) gdept_0(i,j,k)
+#   define  gdepw(i,j,k,t) gdepw_0(i,j,k)
+# if defined key_isf
+#   define  gdept_isf0(i,j,k,t) gdept_0(i,j,k) 
+#   define  gdepw_isf0(i,j,k,t) gdepw_0(i,j,k)
+# else
+#   define  gdept_z0(i,j,k,t) gdept_0(i,j,k)
+#   define  gdepw_z0(i,j,k,t) gdepw_0(i,j,k)
+# endif
+#   define  gde3w(i,j,k)   gdept_0(i,j,k)
+#endif
+!!----------------------------------------------------------------------
+

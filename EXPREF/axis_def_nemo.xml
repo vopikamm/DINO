@@ -1,0 +1,33 @@
+<!--
+    ============================================================================================================
+    = Axis definition = = DO NOT CHANGE =
+    ============================================================================================================
+-->
+
+<axis_definition>
+  <axis id="deptht" long_name="Vertical T levels" unit="m" positive="down" />
+  <!--   Vertical zoom for a 31-levels ORCA2 grid for eORCA1 300m corresponds to n=35 -->
+  <axis id="deptht300" axis_ref="deptht" >
+    <zoom_axis begin="0" n="19" />
+  </axis>
+  <axis id="depthu"  long_name="Vertical U levels" unit="m" positive="down" />
+  <axis id="depthv"  long_name="Vertical V levels" unit="m" positive="down" />
+  <axis id="depthw"  long_name="Vertical W levels" unit="m" positive="down" />
+  <axis id="depthf"  long_name="Vertical F levels" unit="m" positive="down" />
+  <axis id="nfloat"  long_name="Float number"      unit="-"                 />
+  <axis id="icbcla"  long_name="Iceberg class"      unit="1"               />
+  <axis id="ncatice" long_name="Ice category"       unit="1"               />
+  <axis id="iax_20C" long_name="20 degC isotherm"   unit="degC"            />
+  <axis id="iax_26C" long_name="26 degC isotherm"   unit="degC"            />
+  <axis id="iax_28C" long_name="28 degC isotherm"   unit="degC"            />
+  <axis id="basin"   long_name="Sub-basin mask (1=Global 2=Atlantic 3=Indo-Pacific 4=Indian, 5=Pacific)"  unit="1" />
+  <axis id="nstrait" long_name="Number of straits" unit="1" />
+  <!-- ABL vertical axis definition -->
+  <axis id="ght_abl" long_name="ABL Vertical T levels" unit="m" positive="up"   />
+  <axis id="ghw_abl" long_name="ABL Vertical W levels" unit="m" positive="up"   />
+  <axis id="section"     n_glo="16" />
+  <axis id="section_ice" n_glo="4" />
+  <axis id="gau" />
+  <!-- PISCES Sediment vertical axis definition -->
+  <axis id="profsed" long_name="Vertical S levels" unit="cm" positive="down"/>
+</axis_definition>
