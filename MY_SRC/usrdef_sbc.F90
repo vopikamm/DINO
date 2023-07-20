@@ -252,6 +252,12 @@ CONTAINS
          ! Initialization of parameters
          ! Computation of the day of the year (from Gyre)
          CALL compute_day_of_year( kt, zcos_sais1, zcos_sais2, ln_ann_cyc)
+         !
+         ! Testing annual cycle for one year, print monthly values for pcos
+         IF( MODULO(kt * rdt , 960._wp) == 0._wp .AND. lwp ) THEN
+            WRITE(numout,*) 'zcos_sais1',  zcos_sais1
+            WRITE(numout,*) 'zcos_sais2',  zcos_sais2
+         ENDIF
          ! 
          ! zL = 132                                                                                                                                                                                                                                 ! [degrees] Approximative meridional extend of the basin
          ! Wind stress
@@ -445,13 +451,13 @@ CONTAINS
      REAL(wp) ::   zyydd                 ! number of days in one year
      !!---------------------------------------------------------------------
      !
-     IF( PRESENT(ll_ann_cyc) )   THEN
+      IF( PRESENT(ll_ann_cyc) )   THEN
         ld_compute = ll_ann_cyc
-     ELSE
+      ELSE
         ld_compute = .TRUE.
-     ENDIF
+      ENDIF
      !
-     IF( ld_compute )   THEN
+      IF( ld_compute )   THEN
         zyydd = REAL(nyear_len(1),wp)
         zyear0     =   ndate0 / 10000._wp                                ! initial year
         zmonth0    = ( ndate0 - zyear0 * 10000._wp ) / 100._wp           ! initial month
@@ -471,11 +477,11 @@ CONTAINS
         ! 1/2 period between 21th June and 21th December and between 21th July and 21th January (1 for solar heat flux, 2 for T*)
         pcos_sais1 = COS( (ztime - ztimemax1) / (ztimemin1 - ztimemax1) * rpi )
         pcos_sais2 = COS( (ztime - ztimemax2) / (ztimemax2 - ztimemin2) * rpi )
-     ELSE
+      ELSE
         pcos_sais1 = 0._wp
         pcos_sais2 = 0._wp
-     ENDIF
-     IF( kt == nit000 ) THEN
+      ENDIF
+      IF( kt == nit000 ) THEN
             WRITE(numout,*) 'ztimemin1',  ztimemin1 
             WRITE(numout,*) 'ztimemax1',  ztimemax1
             WRITE(numout,*) 'ztimemin2',  ztimemin2

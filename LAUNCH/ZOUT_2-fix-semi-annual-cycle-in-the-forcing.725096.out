@@ -1,0 +1,3849 @@
+/gpfsscratch/rech/omr/uym68qx/DINO/2-fix-semi-annual-cycle-in-the-forcing
+r2i3n27
+Thu Jul 20 17:47:29 CEST 2023
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ &NAMUSR_DEF
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+ &NAMUSR_DEF
+ RN_E1_DEG       =   1.00000000000000     ,
+ RN_PHI_MIN      =  -70.0000000000000     ,
+ RN_PHI_MAX      =   70.0000000000000     ,
+ RN_LAM_MIN      =  0.000000000000000E+000,
+ RN_LAM_MAX      =   60.0000000000000     ,
+ NN_K    =          36,
+ RN_EMP_PROP     =  0.000000000000000E+000,
+ RN_ZTAU0        =  0.100000000000000     ,
+ NN_BOTCASE      =           1,
+ NN_INITCASE     =           1,
+ NN_FORCINGTYPE  =           5,
+ LN_IPERIO       = T,
+ RN_CHA_MIN      =  -60.0000000000000     ,
+ RN_CHA_MAX      =  -40.0000000000000     ,
+ RN_SLP_CHA      =   1.50000000000000     ,
+ LN_ZCO_NAM      = F,
+ LN_ZPS_NAM      = F,
+ LN_SCO_NAM      = T,
+ NN_ZTYPE        =           1,
+ RN_H    =   4000.00000000000     ,
+ RN_HBORDER      =   2000.00000000000     ,
+ RN_DISTLAM      =   3.00000000000000     ,
+ LN_MID_RIDGE    = T,
+ LN_DRAKE_SILL   = T,
+ LN_ANN_CYC      = T,
+ RN_TRP  =  -40.0000000000000     ,
+ RN_SRP  = -3.858000000000000E-003,
+ LN_QSR  = T,
+ LN_DIU_CYC      = T,
+ RN_DZMIN        =   10.0000000000000     ,
+ RN_KTH  =   35.0000000000000     ,
+ RN_HCO  =   1000.00000000000     ,
+ RN_ACR  =   10.5000000000000     ,
+ NN_MR_EDGE      =           1,
+ RN_MR_DEPTH     =   2000.00000000000     ,
+ RN_MR_WIDTH     =   7.00000000000000     ,
+ RN_MR_LAT_S     =  -40.0000000000000     ,
+ RN_MR_LAT_N     =   55.0000000000000     ,
+ RN_DS_DEPTH     =   3000.00000000000     ,
+ RN_DS_WIDTH     =   2.00000000000000     
+ /
+    
+ usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg
+ ~~~~~~~~~~~ 
+    Namelist namusr_def : BASIN test case
+    Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = 
+   1.00000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = 
+  -70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_phi_max     = 
+   70.0000000000000      degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_min     = 
+  0.000000000000000E+000 degrees
+    Latitude of the south frontier (T point) [degrees]      rn_lam_max     = 
+   60.0000000000000      degrees
+    Number of grid points along i direction                 nn_piglo       = 
+          60
+    Number of grid points along j direction                 nn_pjglo       = 
+         199
+    Number of grid points along k direction                 nn_k           = 
+          36
+    Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = 
+           5
+    Magnitude of wind forcing                               rn_ztau0       = 
+  0.100000000000000     
+    Use annual cycle or not                                 ln_ann_cyc     =  T
+    Proportionality factor applied on EMP                   rn_emp_prop    = 
+  0.000000000000000E+000
+    Bottom definition                                       nn_botcase     = 
+           1
+       (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
+    Maximum / asymptotical depth of the basin               rn_H           = 
+   4000.00000000000      m
+    Depth of the bathymetry at the coast                    rn_hborder     = 
+   2000.00000000000      m
+    Typical length scale of the slope in longitude          rn_distLam     = 
+   3.00000000000000      degrees
+    Initial condition case                                  nn_initcase    = 
+           1
+       (0:rest and constant T and S, 
+        1: rest and stratification)
+       (0:closed, 8:south symmetrical)
+    Include mid-atlantic ridge                              ln_mid_ridge   =  T
+    Include circular drake sill                             ln_drake_sill  =  T
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : Register new Context : nemo
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 19628 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+-> info : CClientBuffer: allocated 2 x 18508 bytes for server 0 with a maximum of 20 buffered events
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+ ztimemin1   8424.00000000000     
+ ztimemax1   4104.00000000000     
+ ztimemin2   504.000000000000     
+ ztimemax2   4824.00000000000     
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 18508 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 18508 bytes
+-> report :  Memory report : Context <nemo> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo> : client side : total memory used for buffer 19628 bytes
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 0 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 1 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 2 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 3 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 4 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 5 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 6 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 7 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 8 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 9 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 10 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 11 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 12 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 13 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 14 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 15 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 16 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 17 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 18 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 19 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 20 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 21 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 22 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 23 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 24 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 25 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 26 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 27 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 28 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 29 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 30 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 31 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 32 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 33 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 34 with a maximum of 4 buffered events
+-> info : CClientBuffer: allocated 2 x 47849 bytes for server 35 with a maximum of 4 buffered events
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) To server with rank 1 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 2 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 3 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 4 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 5 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 6 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+  +) To server with rank 7 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 8 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 9 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 10 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 11 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 12 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 13 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 14 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 15 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 16 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 17 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 18 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 19 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 20 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 21 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 22 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 23 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 24 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 25 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 26 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 27 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 28 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 29 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 30 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 31 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 32 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 47849 bytes 
+-> report :  Memory report : Context <nemo> : server side : total memory used for buffer 47849 bytes
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 33 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 34 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : memory used for buffer of each connection to server
+  +) To server with rank 35 : 47849 bytes 
+-> report :  Memory report : Context <nemo_server> : client side : total memory used for buffer 1722564 bytes
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 0 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 1 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 2 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 3 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 4 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 5 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 6 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 7 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 8 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 9 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 10 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 11 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 12 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 13 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 14 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 15 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 16 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 17 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 18 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 19 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 20 : 19628 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 21 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 22 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 23 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 24 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 25 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 26 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 27 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 28 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 29 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 30 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 31 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 32 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 33 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 34 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : memory used for buffer of each connection to client
+  +) With client of rank 35 : 18508 bytes 
+-> report :  Memory report : Context <nemo_server> : server side : total memory used for buffer 689808 bytes
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.46807 s
+-> report :  Performance report : time spent for waiting free buffer : 5.27884e-05 s
+-> report :  Performance report : Ratio : 4.30289e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.44318 s
+-> report :  Performance report : time spent for waiting free buffer : 5.6073e-05 s
+-> report :  Performance report : Ratio : 4.57063e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.39138 s
+-> report :  Performance report : time spent for waiting free buffer : 4.47436e-05 s
+-> report :  Performance report : Ratio : 3.64716e-05 %
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.47846 s
+-> report :  Performance report : time spent for waiting free buffer : 5.14432e-05 s
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Ratio : 4.19326e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.50986 s
+-> report :  Performance report : time spent for waiting free buffer : 5.15301e-05 s
+-> report :  Performance report : Ratio : 4.20032e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.84016 s
+-> report :  Performance report : time spent for waiting free buffer : 4.33861e-05 s
+-> report :  Performance report : Ratio : 3.53651e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report : Performance report : Time spent for XIOS : 122.681
+-> report : Performance report : Time spent in processing events : 0.247833
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.44945 s
+-> report :  Performance report : time spent for waiting free buffer : 5.52644e-05 s
+-> report :  Performance report : Ratio : 4.50474e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report : Performance report : Ratio : 0.202014%
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.43144 s
+-> report :  Performance report : time spent for waiting free buffer : 4.42285e-05 s
+-> report :  Performance report : Ratio : 3.60516e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.49522 s
+-> report :  Performance report : time spent for waiting free buffer : 4.92386e-05 s
+-> report :  Performance report : Ratio : 4.01355e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.682 s
+-> report :  Performance report : total time spent for XIOS : 7.46751 s
+-> report :  Performance report : time spent for waiting free buffer : 4.67502e-05 s
+-> report :  Performance report : Ratio : 3.81069e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.42653 s
+-> report :  Performance report : time spent for waiting free buffer : 4.37698e-05 s
+-> report :  Performance report : Ratio : 3.56776e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.43278 s
+-> report :  Performance report : time spent for waiting free buffer : 4.16292e-05 s
+-> report :  Performance report : Ratio : 3.39328e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.682 s
+-> report :  Performance report : total time spent for XIOS : 7.76259 s
+-> report :  Performance report : time spent for waiting free buffer : 5.24258e-05 s
+-> report :  Performance report : Ratio : 4.27332e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : total time spent for XIOS : 7.46997 s
+-> report :  Performance report : time spent for waiting free buffer : 5.65945e-05 s
+-> report :  Performance report : Ratio : 4.61313e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.43606 s
+-> report :  Performance report : time spent for waiting free buffer : 4.6838e-05 s
+-> report :  Performance report : Ratio : 3.81786e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.44204 s
+-> report :  Performance report : time spent for waiting free buffer : 5.08307e-05 s
+-> report :  Performance report : Ratio : 4.14332e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.45637 s
+-> report :  Performance report : time spent for waiting free buffer : 4.31778e-05 s
+-> report :  Performance report : Ratio : 3.51952e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2643 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.86344 s
+-> report :  Performance report : time spent for waiting free buffer : 4.65825e-05 s
+-> report :  Performance report : Ratio : 3.79704e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.85042 s
+-> report :  Performance report : time spent for waiting free buffer : 4.42785e-05 s
+-> report :  Performance report : Ratio : 3.60924e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.85733 s
+-> report :  Performance report : time spent for waiting free buffer : 4.20447e-05 s
+-> report :  Performance report : Ratio : 3.42716e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.82041 s
+-> report :  Performance report : time spent for waiting free buffer : 5.05323e-05 s
+-> report :  Performance report : Ratio : 4.11899e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.91113 s
+-> report :  Performance report : time spent for waiting free buffer : 5.22176e-05 s
+-> report :  Performance report : Ratio : 4.25639e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.682 s
+-> report :  Performance report : total time spent for XIOS : 7.94685 s
+-> report :  Performance report : time spent for waiting free buffer : 0.00271928 s
+-> report :  Performance report : Ratio : 0.00221653 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.88575 s
+-> report :  Performance report : time spent for waiting free buffer : 4.39194e-05 s
+-> report :  Performance report : Ratio : 3.57998e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.85172 s
+-> report :  Performance report : time spent for waiting free buffer : 4.67827e-05 s
+-> report :  Performance report : Ratio : 3.81338e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.81099 s
+-> report :  Performance report : time spent for waiting free buffer : 4.93884e-05 s
+-> report :  Performance report : Ratio : 4.02577e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.68 s
+-> report :  Performance report : total time spent for XIOS : 7.87055 s
+-> report :  Performance report : time spent for waiting free buffer : 4.64856e-05 s
+-> report :  Performance report : Ratio : 3.78917e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.79952 s
+-> report :  Performance report : time spent for waiting free buffer : 4.65875e-05 s
+-> report :  Performance report : Ratio : 3.79745e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.82281 s
+-> report :  Performance report : time spent for waiting free buffer : 5.33444e-05 s
+-> report :  Performance report : Ratio : 4.34823e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.81786 s
+-> report :  Performance report : time spent for waiting free buffer : 4.76457e-05 s
+-> report :  Performance report : Ratio : 3.88372e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.81207 s
+-> report :  Performance report : time spent for waiting free buffer : 5.18362e-05 s
+-> report :  Performance report : Ratio : 4.22529e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.79761 s
+-> report :  Performance report : time spent for waiting free buffer : 4.57983e-05 s
+-> report :  Performance report : Ratio : 3.73312e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.83345 s
+-> report :  Performance report : time spent for waiting free buffer : 5.28563e-05 s
+-> report :  Performance report : Ratio : 4.30843e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.90604 s
+-> report :  Performance report : time spent for waiting free buffer : 4.38646e-05 s
+-> report :  Performance report : Ratio : 3.57551e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+0
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.85372 s
+-> report :  Performance report : time spent for waiting free buffer : 4.58062e-05 s
+-> report :  Performance report : Ratio : 3.73375e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+-> report :  Performance report : Whole time from XIOS init and finalize: 122.681 s
+-> report :  Performance report : total time spent for XIOS : 7.87372 s
+-> report :  Performance report : time spent for waiting free buffer : 4.71305e-05 s
+-> report :  Performance report : Ratio : 3.84172e-05 %
+-> report :  Performance report : This ratio must be close to zero. Otherwise it may be usefull to increase buffer size or numbers of server
+-> report :  Memory report : Minimum buffer size required : 2803 bytes
+-> report :  Memory report : increasing it by a factor will increase performance, depending of the volume of data wrote in file at each time step of the file
+
+real	2m5.223s
+user	0m0.015s
+sys	0m0.039s
+Thu Jul 20 17:49:36 CEST 2023

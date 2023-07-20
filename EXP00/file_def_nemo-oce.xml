@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+    <!-- 
+============================================================================================================
+=                                           output files definition                                        =
+=                                            Define your own files                                         =
+=                                         put the variables you want...                                    =
+============================================================================================================
+    -->
+    
+    <file_definition type="one_file" name="@expname@" sync_freq="10d" min_digits="4">
+	<file_group id="5d" output_freq="5d"  output_level="10" enabled=".TRUE." >  <!-- 1m files -->  
+
+	<file id="file6" name_suffix="_grid_T_d" description="ocean T grid variables monthly" >
+	  <field field_ref="ssh"  />
+	  <field field_ref='saltflx'  />
+	  <field field_ref='qns'  />
+	  <field field_ref='qsr'  />
+	  <field field_ref='taum'  />
+	  <field field_ref='mldr10_1' />
+	  <field field_ref='mldr10_1max' />
+	  <!--
+	  <field field_ref="sssgrad"  /> 
+	  <field field_ref="ke_int"  />
+	  <field field_ref="ssrelvor"  />
+	  <field field_ref="ssrelpotvor"  />
+	  <field field_ref="saltc"  />
+	  <field field_ref="salt2c"  />
+	  -->
+	</file>
+
+    </file_group>
+
+   </file_definition>
