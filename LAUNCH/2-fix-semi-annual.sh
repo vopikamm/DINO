@@ -3,7 +3,7 @@
 #SBATCH --hint=nomultithread       # 1 MPI process per physical core (no hyperthreading)
 #SBATCH --time=02:00:00
 #SBATCH --output=2-fix_semi_annual.out
-#SBATCH --ntasks-per-node=37
+#SBATCH --ntasks-per-node=2
 #SBATCH --nodes=1
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=david.kamm@locean.ipsl.fr

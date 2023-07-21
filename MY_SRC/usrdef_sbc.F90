@@ -252,10 +252,11 @@ CONTAINS
          ! Initialization of parameters
          ! Computation of the day of the year (from Gyre)
          CALL compute_day_of_year( kt, zcos_sais1, zcos_sais2, ln_ann_cyc)
+         Call test_compute_day_of_year()
          !
          ! Testing annual cycle for one year, print monthly values for pcos
-         IF( MODULO(kt * rdt , 960._wp) == 0._wp .AND. lwp ) THEN
-            WRITE(numout,*) 'zcos_sais1',  zcos_sais1
+         IF( MODULO(kt * rdt , 86400._wp) == 0._wp .AND. lwp ) THEN
+            WRITE(numout,*) 'zcos_sais1',  zcos_sais1, 'kt',  kt, 'rdt',  rdt
             WRITE(numout,*) 'zcos_sais2',  zcos_sais2
          ENDIF
          ! 
@@ -445,7 +446,6 @@ CONTAINS
      INTEGER  ::   zday0                  ! initial day
      INTEGER  ::   zday_year0             ! initial day since january 1st
      REAL(wp) ::   ztime                  ! time in hour
-     REAL(wp) ::   ztimemax , ztimemin    ! 21th June, and 21th decem. if date0 = 1st january
      REAL(wp) ::   ztimemax1, ztimemin1   ! 21th June, and 21th decem. if date0 = 1st january
      REAL(wp) ::   ztimemax2, ztimemin2   ! 21th June, and 21th decem. if date0 = 1st january
      REAL(wp) ::   zyydd                 ! number of days in one year
@@ -465,7 +465,7 @@ CONTAINS
         zday_year0 = ( zmonth0 - 1._wp ) * 30._wp + zday0                ! initial day betwen 1 and 360
         !
         ! current day (in hours) since january the 1st of the current year
-        ztime = REAL( kt ) * rdt / (rmmss * rhhmm)   &       !  total incrementation (in hours)
+        ztime = REAL( kt ) * rn_dt / (rmmss * rhhmm)   &       !  total incrementation (in hours)
              &      - (nyear  - 1) * rjjhh * zyydd              !  minus years since beginning of experiment (in hours)
 
         ztimemax1 = ((5.*30.)+21.)* 24.                      ! 21th june     at 24h in hours
@@ -480,12 +480,6 @@ CONTAINS
       ELSE
         pcos_sais1 = 0._wp
         pcos_sais2 = 0._wp
-      ENDIF
-      IF( kt == nit000 ) THEN
-            WRITE(numout,*) 'ztimemin1',  ztimemin1 
-            WRITE(numout,*) 'ztimemax1',  ztimemax1
-            WRITE(numout,*) 'ztimemin2',  ztimemin2
-            WRITE(numout,*) 'ztimemax2',  ztimemax2
       ENDIF
    END SUBROUTINE compute_day_of_year
 
@@ -570,5 +564,32 @@ CONTAINS
       !!----------------------------------------------------------------------
 
    END FUNCTION znl_wnd
+
+   SUBROUTINE test_compute_day_of_year()
+		!!---------------------------------------------------------------------
+     	!!                    ***  SUBROUTINE test_compute_day_of_year  ***
+     	!!              
+     	!! ** Purpose :   Testing SUBROUTINE 'compute_day_of_year' from 'usrdef_sbc.F90'.
+     	!!
+     	!!---------------------------------------------------------------------
+		INTEGER 						::   kt       						! ocean time step
+		REAL(wp) 					::   zcos_sais1, zcos_sais2   ! cosine of the day of year (1 is for solar heat flux, 2 is for T* cycle)
+		REAL(wp), DIMENSION(13) ::   zcos1, zcos2   				! array of above
+		INTEGER 					   ::   ksteps, inum 			   ! steps per day
+
+		DO kt = 1, 6
+			ksteps = INT((kt - 1) * 24 * 3600 / rdt)
+			CALL compute_day_of_year( ksteps, zcos_sais1, zcos_sais2, .true.)
+			zcos1(kt) = zcos_sais1
+			zcos2(kt) = zcos_sais2
+		END DO
+
+		CALL iom_open( 'Cos_day_of_year', inum, ldwrt = .TRUE.)
+      CALL iom_rstput( 0, 0, inum, 'solar_heat'	, zcos1 )
+      CALL iom_rstput( 0, 0, inum, 't_star'		, zcos2 )	
+      CALL iom_close( inum )
+
+   END SUBROUTINE test_compute_day_of_year
+
    !!======================================================================
 END MODULE usrdef_sbc
