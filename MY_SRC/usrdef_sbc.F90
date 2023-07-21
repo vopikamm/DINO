@@ -252,13 +252,6 @@ CONTAINS
          ! Initialization of parameters
          ! Computation of the day of the year (from Gyre)
          CALL compute_day_of_year( kt, zcos_sais1, zcos_sais2, ln_ann_cyc)
-         Call test_compute_day_of_year()
-         !
-         ! Testing annual cycle for one year, print monthly values for pcos
-         IF( MODULO(kt * rdt , 86400._wp) == 0._wp .AND. lwp ) THEN
-            WRITE(numout,*) 'zcos_sais1',  zcos_sais1, 'kt',  kt, 'rdt',  rdt
-            WRITE(numout,*) 'zcos_sais2',  zcos_sais2
-         ENDIF
          ! 
          ! zL = 132                                                                                                                                                                                                                                 ! [degrees] Approximative meridional extend of the basin
          ! Wind stress
