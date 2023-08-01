@@ -571,7 +571,7 @@ CONTAINS
 		INTEGER 					   ::   ksteps, inum 			   ! steps per day
 
 		DO kt = 1, 6
-			ksteps = INT((kt - 1) * 24 * 3600 / rdt)
+			ksteps = INT((kt - 1) * 24 * 3600 / rn_dt)
 			CALL compute_day_of_year( ksteps, zcos_sais1, zcos_sais2, .true.)
 			zcos1(kt) = zcos_sais1
 			zcos2(kt) = zcos_sais2
