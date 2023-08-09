@@ -55,8 +55,8 @@
    !                                ! 4: rest, equatorial stratification in T and S, decreasing linearly to T=4 degC at the northern part of the basin
    !nn_perio         =      0        !  periodicity condition (0: closed, 8: symmetrical at the south)
    ln_Iperio        =   .true.      ! i-periodicity
-      rn_cha_min    =   -60.        ! southern edge of the channel [degrees] (approximate)
-      rn_cha_max    =   -40.        ! northern edge of the channel [degrees] (approximate)
+      rn_cha_min    =   -65.        ! southern edge of the channel [degrees] (approximate)
+      rn_cha_max    =   -45.        ! northern edge of the channel [degrees] (approximate)
       rn_slp_cha    =    1.5        ! Slope of the boundaries in the channel
    !
    ln_zco_nam       = .false.       ! z-coordinate   
@@ -64,7 +64,7 @@
    ln_sco_nam       = .true.        ! s-coordinate
    nn_ztype         =      1        ! type of vertical grid (z-coordinate or s pure coordinate) (0: uniform)
    !
-   ln_mid_ridge     = .true.        ! Including a Mid-Atlantic ridge
+   ln_mid_ridge     = .false.        ! Including a Mid-Atlantic ridge
       rn_mr_depth   =  2000.        ! Depth of the Mid-Atlantic ridge
       rn_mr_width   =     7.        ! Width of the Mid-Atlantic ridge
       rn_mr_lat_s   =   -40.        ! southern edge of the Mid-Atlantic ridge [degrees]
@@ -76,7 +76,7 @@
    !
    ln_drake_sill    = .true.        ! Including circular Drake-Sill
       rn_ds_depth   =  3000.        ! Depth of the circular Drake-Sill
-      rn_ds_width   =     2.        ! Width of the circular Drake-Sill 
+      rn_ds_width   =     4.        ! Width of the circular Drake-Sill 
 /
 !-----------------------------------------------------------------------
 &namrun        !   parameters of the run
@@ -84,7 +84,7 @@
    nn_no       =       0      !  job number (no more used...)
    cn_exp      = 'NEVERWORLD' !  experience name
    nn_it000    =       1      !  first time step
-   !nn_itend    =       5760   !  last time step (32 it => 1 day, 11520 => 1 year)
+   !nn_itend    =       64     !  last time step (32 it => 1 day, 11520 => 1 year)
    nn_itend    =       576000 !  last time step (32 it => 1 day, 11520 => 1 year)
    nn_istate   =       1      !  output the initial state (1) or not (0)
    ! nn_stock    =      11520   !  frequency of creation of a restart file (modulo referenced to 1) 50 years

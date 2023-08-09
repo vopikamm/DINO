@@ -26,7 +26,7 @@ MODULE usrdef_zgr
                      &   nn_jeq_min, merc_proj, ln_mid_ridge, ln_drake_sill,  &
                      &   rn_dzmin, rn_hco, rn_kth, rn_acr, rn_slp_cha,        &
                      &   rn_ds_depth, rn_ds_width, rn_mr_depth, rn_mr_width,  &
-                     &   rn_mr_lat_n, rn_mr_lat_s, nn_mr_edge     
+                     &   rn_mr_lat_n, rn_mr_lat_s, nn_mr_edge, rn_phi_min     
    !
    !!rc USE depth_e3       ! depth <=> e3
    USE zgr_lib    ! tools for vertical coordinate
@@ -246,13 +246,13 @@ CONTAINS
       !
       INTEGER  ::   ji, jj, jhl, inum             ! dummy loop indices
       REAL(wp) ::   zmaxlam, zmaxphi, zminlam, zminphi         ! local scalars (horizontal extent)
-      REAL(wp) ::   zx, zy                                     ! local scalars
       REAL(wp) ::   zcha_min, zcha_max, zslp_cha               ! local scalars (channel)
       REAL(wp) ::   zmr_depth, zmr_width, zds_depth, zds_width ! local scalars (MR and DS)
       REAL(wp) ::   zmr_lat_s, zmr_lat_n, zcha_width, zgauss   ! local scalars (MR and DS)
       REAL(wp) ::   z1_H, z1_dLam, z1_dPhi, zxnorm, zynorm     ! local scalars
       REAL(wp) ::   zdistPhi, ztaper, zmidLam, zmidPhi, zrad   ! local scalars
-      REAL(wp) ::   zdistLam                                   ! local scalars (boundary)
+      REAL(wp) ::   zdistLam, zwidth, zratio, zds_taper, zds   ! local scalars (boundary)
+      REAL(wp) ::   zx, zy, zy_cha                            ! local normalised bathymetry
       REAL(wp), DIMENSION(jpi,jpj)     ::   zlamt, zphit       ! local horizontal coordinate arrays
       REAL(wp), DIMENSION(jpi,jpj)     ::   z2d
       !!----------------------------------------------------------------------
@@ -310,12 +310,37 @@ CONTAINS
          CALL zgr_get_boundaries( zmaxlam, zminlam, zmaxphi, zminphi )
          zdistLam = rn_distLam
          zdistPhi =  COS( rad * zmaxphi ) * rn_distLam
+         zwidth   = ( zmaxlam - zminlam )
+         zslp_cha = rn_slp_cha
+         zcha_min = rn_cha_min
+         zcha_max = rn_cha_max
+         zcha_width = ( zcha_max - zcha_min )
          !
-         DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-               zx = cosh_bathy(zdistLam, zminlam, zmaxlam, zlamt( ji,jj))
-               zy = cosh_bathy(zdistphi, zminphi, zmaxphi, zphit( ji, jj))
-               pbathy(ji,jj) = zx * zy * ( pH - rn_hborder ) + rn_hborder
-         END_2D
+         IF( ln_Iperio )   THEN
+            ! Flattening the bathymetry in the channel
+            If( zcha_min <= rn_phi_min ) THEN 
+               ! Southern boundary is already southern boundary of the channel 
+               zcha_min = zcha_max - zwidth     ! dk: TODO cleaner with separate routines left/right bathymetry 
+            ENDIF
+            DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
+                  zy_cha   = exp_bathy( zphit(ji,jj), zcha_min, zcha_max,  &
+                     &            zwidth, zdistLam, zcha_width / 2 )                
+                  zx       = exp_bathy( zlamt(ji,jj), zminlam, zmaxlam, zwidth,     &
+                     &            zdistLam, zcha_width / 2 )                        &
+                     &     * (1._wp - zy_cha) + zy_cha
+                  zy       = exp_bathy( zphit(ji,jj), zminphi, zmaxphi, zwidth,     &
+                     &            zdistPhi, zcha_width / 2 )
+                  pbathy(ji,jj) = zx * zy * ( pH - rn_hborder ) + rn_hborder
+            END_2D
+         ELSE
+            DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )               
+                  zx       = exp_bathy( zlamt(ji,jj), zminlam, zmaxlam, zwidth,     &
+                     &            zdistLam, zcha_width / 2 )                        
+                  zy       = exp_bathy( zphit(ji,jj), zminphi, zmaxphi, zwidth,     &
+                     &            zdistPhi, zcha_width / 2 )
+                  pbathy(ji,jj) = zx * zy * ( pH - rn_hborder ) + rn_hborder
+            END_2D
+         ENDIF
          !
       CASE(2)   ! bowl shape 
          IF(lwp)   THEN
@@ -341,28 +366,12 @@ CONTAINS
       IF( lk_mpp )   CALL mpp_max( 'zgr_bat', pH )
       IF(lwp)   WRITE(numout,*) '      Effective Hmax   = ', pH, ' m      while rn_H   = ', rn_H, ' m'
       !
-      ! Flattening the bathymetry in the channel
-      !
-      zslp_cha = rn_slp_cha
-      zcha_min = rn_cha_min
-      zcha_max = rn_cha_max
-      !
-      IF( ln_Iperio )   THEN
-         DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-            IF (zphit(ji, jj) >= zcha_min .AND. zphit(ji, jj) <= zcha_max) THEN
-               ztaper = cosh_bathy(rn_slp_cha, zcha_min, zcha_max, zphit(ji,jj))
-               pbathy(ji,jj) = pH * ztaper + pbathy(ji,jj) * ( 1._wp - ztaper )
-            ENDIF
-         END_2D
-      ENDIF
-      !
       ! Mid-Atlantic ridge
       !
       zmr_depth = rn_mr_depth
       zmr_width  = rn_mr_width
       zmr_lat_s  = rn_mr_lat_s
       zmr_lat_n  = rn_mr_lat_n
-      zcha_width = ( rn_cha_max - rn_cha_min )
       !
       IF (ln_mid_ridge) THEN
          zmidLam = (zmaxlam + zminlam) / 2
@@ -414,7 +423,9 @@ CONTAINS
          zmidPhi = (rn_cha_max + rn_cha_min) / 2
          zrad    = (rn_cha_max - rn_cha_min) / 2
          DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-            pbathy(ji,jj) = gauss_ring( zds_width, zminlam, zmidphi, zrad, zlamt(ji, ji), zphit(ji, jj), zds_depth, pbathy(ji, jj) )
+            zds_taper  = smooth_step(zlamt(ji, jj), zminlam, zminlam + zds_width)
+            zds        = gauss_ring( zds_width, zminlam, zmidphi, zrad, zlamt(ji, ji), zphit(ji, jj), zds_depth, pbathy(ji, jj) )
+            pbathy(ji, jj) = zds_taper * zds + (1._wp - zds_taper) * pbathy(ji, jj)
          END_2D
       ENDIF
    END SUBROUTINE zgr_bat
@@ -768,6 +779,105 @@ CONTAINS
          &                                + EXP( - ( pLam - pminLam ) / pdistLam ) )
       !
    END FUNCTION cosh_bathy
+
+   FUNCTION exp_bathy( plam,      plam_lft,      plam_rgt,   pwidth,    &
+      &                  pdist_lam, pdist_taper                            ) RESULT( pexp )
+      !!----------------------------------------------------------------------
+      !!                 ***  ROUTINE  ***
+      !!
+      !! ** Purpose :   Compute a bowl-shaped bathymetry tapered to reach the bottom.
+
+      !!
+      !! ** Method  :   see https://www.desmos.com/calculator/onczibqzb4'
+      !!
+      !!                    <---------------------pwid---------------------->
+      !!                   |    ^                   ^                        | 
+      !!                   | hborder                |                        | 
+      !!                   |    v                   |                        | 
+      !!                   |*                       |                       *| 
+      !!                   | *                     pH                      * | 
+      !!                   |  *                     |                     *  | 
+      !!                   |   *                    |                    *   | 
+      !!                   |    \**                 |                 **/    | 
+      !!                   |     \ ***              |              *** /     | 
+      !!                   |      \   *****         |         *****   /      | 
+      !!                   |       \       *******  v    ******      /       |
+      !!                   |<    ztaper_dist     >******            /
+      !!                    < zdist> \                             /        
+      !!     
+      !!----------------------------------------------------------------------
+      REAL(wp), INTENT(in   )    ::   plam         ! Value of longitude/latitude                      [degrees]
+      REAL(wp), INTENT(in   )    ::   plam_lft     ! Location of the left boundary                    [degrees]
+      REAL(wp), INTENT(in   )    ::   plam_rgt     ! Location of the right boundary                   [degrees]
+      REAL(wp), INTENT(in   )    ::   pwidth       ! Width of the basin                               [degrees]
+      REAL(wp), INTENT(in   )    ::   pdist_lam    ! Length scale of the slope                        [degrees]
+      REAL(wp), INTENT(in   )    ::   pdist_taper  ! Distance where the bathymetry meets the bottom   [degrees]
+      REAL(wp)                   ::   pexp         ! Resulting tapered bathymetry
+      !!----------------------------------------------------------------------
+      REAL(wp) ::   zstep                          ! Smooth step function for tampering  
+      REAL(wp) ::   znorm                          ! Normalisation
+      !!----------------------------------------------------------------------
+      !
+      IF(plam < plam_lft) THEN
+         pexp = 0.0
+      ELSE IF(plam >= plam_lft .AND. plam <= plam_lft + pdist_taper) THEN
+         zstep = smooth_step(plam, plam_lft, plam_lft + pdist_taper)
+         znorm    = 1 + EXP(-( pwidth) / pdist_lam) 
+         pexp     = (1 - (EXP( - (plam - plam_lft) / pdist_lam)) / znorm )    &
+            &     * (1 - zstep) + zstep
+      ELSE IF(plam > plam_lft + pdist_taper .AND. plam < plam_rgt - pdist_taper ) THEN
+         pexp = 1.0
+      ELSE IF(plam >= plam_rgt - pdist_taper .AND. plam <= plam_rgt) THEN
+         zstep    = 1 - smooth_step(plam, plam_rgt - pdist_taper, plam_rgt)
+         znorm    = 1 + EXP(-( pwidth) / pdist_lam) 
+         pexp     = (1 - (EXP( (plam - plam_rgt) / pdist_lam)) / znorm )    &
+            &     * (1 - zstep) + zstep
+      ELSE
+         pexp = 0.0
+      ENDIF
+      !
+   END FUNCTION exp_bathy
+
+   FUNCTION smooth_step( plam, plam_lft, plam_rgt) RESULT( pstep )
+      !!----------------------------------------------------------------------
+      !!                 ***  ROUTINE  ***
+      !!
+      !! ** Purpose :   Compute a smooth step function for tapering
+      !! 
+      !!             |                                ***|*****---> 1 
+      !!             |                           *****   | 
+      !!             |                       ****        | 
+      !!             |                     **            | 
+      !!             |                    *              | 
+      !!             |                   *               | 
+      !!             |                 **                | 
+      !!             |              ***                  | 
+      !!             |         *****                     | 
+      !!             |   ******                          |
+      !!  0 <---*****|***                                |
+      !!             v                                   v
+      !!          plam_lft                            plam_rgt
+      !!     
+      !!----------------------------------------------------------------------
+      REAL(wp), INTENT(in   )    ::   plam         ! Value of longitude/latitude                      [degrees]
+      REAL(wp), INTENT(in   )    ::   plam_lft     ! Location of the left boundary                    [degrees]
+      REAL(wp), INTENT(in   )    ::   plam_rgt     ! Location of the right boundary                   [degrees]
+      REAL(wp)                   ::   pstep        ! Smooth step function
+      !!----------------------------------------------------------------------
+      !
+      IF(plam < plam_lft) THEN
+         pstep = 0.0
+      ELSE IF(plam >= plam_lft .AND. plam <= plam_rgt) THEN
+         pstep =     6 * ( (plam - plam_lft) / (plam_rgt - plam_lft) ) ** 5    &
+            &     - 15 * ( (plam - plam_lft) / (plam_rgt - plam_lft) ) ** 4    &
+            &     + 10 * ( (plam - plam_lft) / (plam_rgt - plam_lft) ) ** 3
+      ELSE
+         pstep = 1.0
+      ENDIF
+      !
+   END FUNCTION smooth_step
+
+
 
    FUNCTION gauss_bathy( pdistLam, pmidLam, pLam, pdep_top, pdep_bot) RESULT( pgauss )
       !!----------------------------------------------------------------------
