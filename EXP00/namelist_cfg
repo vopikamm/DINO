@@ -55,8 +55,8 @@
    !                                ! 4: rest, equatorial stratification in T and S, decreasing linearly to T=4 degC at the northern part of the basin
    !nn_perio         =      0        !  periodicity condition (0: closed, 8: symmetrical at the south)
    ln_Iperio        =   .true.      ! i-periodicity
-      rn_cha_min    =   -70.        ! southern edge of the channel [degrees] (approximate)
-      rn_cha_max    =   -50.        ! northern edge of the channel [degrees] (approximate)
+      rn_cha_min    =   -65.        ! southern edge of the channel [degrees] (approximate)
+      rn_cha_max    =   -45.        ! northern edge of the channel [degrees] (approximate)
       rn_slp_cha    =    1.5        ! Slope of the boundaries in the channel
    !
    ln_zco_nam       = .false.       ! z-coordinate   

@@ -26,7 +26,7 @@ MODULE usrdef_zgr
                      &   nn_jeq_min, merc_proj, ln_mid_ridge, ln_drake_sill,  &
                      &   rn_dzmin, rn_hco, rn_kth, rn_acr, rn_slp_cha,        &
                      &   rn_ds_depth, rn_ds_width, rn_mr_depth, rn_mr_width,  &
-                     &   rn_mr_lat_n, rn_mr_lat_s, nn_mr_edge     
+                     &   rn_mr_lat_n, rn_mr_lat_s, nn_mr_edge, rn_phi_min     
    !
    !!rc USE depth_e3       ! depth <=> e3
    USE zgr_lib    ! tools for vertical coordinate
@@ -318,8 +318,12 @@ CONTAINS
          !
          IF( ln_Iperio )   THEN
             ! Flattening the bathymetry in the channel
+            If( zcha_min <= rn_phi_min ) THEN 
+               ! Southern boundary is already southern boundary of the channel 
+               zcha_min = zcha_max - zwidth     ! dk: TODO cleaner with separate routines left/right bathymetry 
+            ENDIF
             DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-                  zy_cha   = exp_bathy( zphit(ji,jj), zcha_max - zwidth, zcha_max,  &
+                  zy_cha   = exp_bathy( zphit(ji,jj), zcha_min, zcha_max,  &
                      &            zwidth, zdistLam, zcha_width / 2 )                
                   zx       = exp_bathy( zlamt(ji,jj), zminlam, zmaxlam, zwidth,     &
                      &            zdistLam, zcha_width / 2 )                        &
