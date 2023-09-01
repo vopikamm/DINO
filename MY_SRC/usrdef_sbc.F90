@@ -64,8 +64,8 @@ CONTAINS
       REAL(wp) ::   z1_2L 
       REAL(wp) ::   zdeltasst, zts_eq, zts_n, zts_s, zdeltaT
       REAL(wp) ::   zdeltaemp, zemp_mean, zF0, zconv, zaemp, zb, zdeltaemp2, zaemp2
-      REAL(wp), DIMENSION(7)  ::  znodes_phi     ! Latitude of nodes    [degrees]
-      REAL(wp), DIMENSION(7)  ::  znodes_tau     ! Values of nodes      [Pa]
+      REAL(wp), DIMENSION(7)  ::  znds_wnd_phi, znds_emp_phi     ! Latitude of nodes    [degrees]
+      REAL(wp), DIMENSION(7)  ::  znds_wnd_val, znds_emp_val     ! Values of nodes      [Pa]
       REAL(wp) ::   zdeltatau, zatau
       REAL(wp) ::   zf1, zf2, zf3, zweight2, zweight3
       REAL(wp) ::   za1, za2, za3
@@ -142,23 +142,24 @@ CONTAINS
             ENDIF
          ENDIF
          ! Initialization of parameters
-         ! zL = 61                        ! [degrees] Approximative meridional extend of the basin
          !
-         !ztau0         =   0.1_wp       ! [Pa]
-         znodes_phi    = (/rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max /)
-         znodes_tau    = (/0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp /)
-         !zatau         =   0.8_wp       ! [no unit]
-         !zdeltatau     =   5.77_wp      ! [degrees]
-         !ztrp          = -40._wp        ! [W/m2/K] retroaction term on heat fluxes 
-         zts_eq        =  25._wp        ! [deg C]
-         zts_n         =   0._wp        ! [deg C]
-         zdeltasst     =  16.22_wp      ! [degrees]
+         ! Computation of the day of the year (from Gyre)
+         CALL compute_day_of_year( kt, zcos_sais1, zcos_sais2, ln_ann_cyc)
          !
-         zconv         =   3.16e-5_wp   ! convertion factor: 1 m/yr => 3.16e-5 mm/s
-         zaemp      =   2._wp           ! [no unit]
-         zdeltaemp  =   8.11_wp         ! [degrees]
-         zF0        =   0.81_wp         ! [m/yr] before conversion
-         zF0 = zF0 * zconv              ! [mm/s] after  conversion
+         ! Zonal wind profile as is Marques et al. (2022)
+         znds_wnd_phi    = (/rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max /)
+         znds_wnd_val    = (/0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp /)
+         !
+         ! Temperature restoring profile
+         zts_eq        =  25._wp       ! [deg C]
+         zts_n         =   1._wp       ! [deg C]
+         zts_s         =   0._wp       ! [deg C] Temperature in the south
+         zdeltasst     =  16.22_wp     ! [degrees]
+         !
+         ! Evaporation - Precipitation
+         znds_emp_phi    = (/rn_phi_min, -50._wp, -20._wp, 0._wp, 20._wp, 50._wp, rn_phi_max /)
+         znds_emp_val    = (/-0.00001_wp, -0.000025_wp, 0.000035_wp, -0.000025_wp, 0.000035_wp, -0.000025_wp, -0.00001_wp /)       
+         !
          IF( kt == nit000 ) THEN
             ALLOCATE( ztstar(jpi,jpj) )   ! Allocation of ztstar
             ALLOCATE( zqsr_dayMean(jpi,jpj) )   ! Allocation of zqsr_dayMean
@@ -183,29 +184,33 @@ CONTAINS
          ENDIF
          !
          DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-            utau(ji,jj)    = znl_wnd(znodes_phi, znodes_tau, gphiu(ji,jj))
-            !utau(ji,jj)    = rn_ztau0 * (        - COS( ( 3 * rpi * gphit(ji,jj) )  / ( 2 * rn_phi_max )    )  + zatau * EXP( -  gphit(ji,jj)**2        / zdeltatau**2 ) )
+            ! Marques et al. (2022)
+            utau(ji,jj)    = znl_cbc(znds_wnd_phi, znds_wnd_val, gphiu(ji,jj))
             taum(ji,jj)    = ABS( utau(ji,jj) )
             IF( utau(ji,jj) > 0 )   taum(ji,jj) = taum(ji,jj) * 1.3_wp   ! Boost in westerlies for TKE
             !
-            ! EMP from Wolfe and Cessi 2014, JPO
-            emp (ji,jj) =   rn_emp_prop * zF0 * (  COS( (     rpi * gphit(ji,jj) )  / (     rn_phi_max )    )  - zaemp * EXP( -  gphit(ji,jj)**2        / zdeltaemp**2 ) )
+            ! EMP inspired from Wolfe and Cessi 2014, JPO and the IPSL climate model
+            emp (ji,jj) =   znl_cbc(znds_emp_phi, znds_emp_val, gphit(ji,jj))
             ! Seasonnal cycle on T* coming from zcos_sais2
-            ztstar(ji,jj)   = (zts_eq - zts_n - zcos_sais2 * zdeltaT ) * COS( ( rpi * gphit(ji,jj) ) * z1_2L )**2 + zts_n + zcos_sais2 * zdeltaT
+            IF (gphit(ji, jj) >= 0._wp) THEN
+               ztstar(ji,jj)   = (zts_eq - (zts_n + zcos_sais2 * zdeltaT) ) * COS( ( rpi * gphit(ji,jj) ) / (rn_phi_max - rn_phi_min ) )**2 + (zts_n + zcos_sais2 * zdeltaT)
+            ELSE
+               ztstar(ji,jj)   = (zts_eq - (zts_s - zcos_sais2 * zdeltaT) ) * COS( ( rpi * gphit(ji,jj) ) / (rn_phi_max - rn_phi_min ) )**2 + (zts_n - zcos_sais2 * zdeltaT)
+            ENDIF
          END_2D
          !
-         !emp(:,:) = rn_emp_prop * emp(:,:)   ! taking the proportionality factor into account
-         !CALL remove_emp_mean()
+         CALL remove_emp_mean()
          !
          ! Q SOLAR (from Gyre)
          IF( ln_qsr )   THEN
             DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
                zqsr_dayMean(ji,jj) = 230._wp * COS( rpi * (gphit(ji,jj) - 23.5 * zcos_sais1 ) / ( 0.9_wp * 180._wp ) ) * tmask(ji,jj,1)
             END_2D
+            CALL compute_diurn_cycle( kt, zqsr_dayMean, ln_diu_cyc )   ! Adding diurnal cycle if needed
          ELSE
             zqsr_dayMean(:,:) = 0._wp
+            qsr(:,:) = 0._wp
          ENDIF
-         CALL compute_diurn_cycle( kt, zqsr_dayMean, ln_diu_cyc )   ! Adding diurnal cycle if needed
          !
          ! QNS
          ! take (SST - T*) into account, heat content of emp, remove qsr
@@ -256,8 +261,8 @@ CONTAINS
          ! zL = 132                                                                                                                                                                                                                                 ! [degrees] Approximative meridional extend of the basin
          ! Wind stress
          !ztau0         =   0.1_wp    ! [Pa]
-         znodes_phi    = (/rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max /)
-         znodes_tau    = (/0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp /)
+         znds_wnd_phi    = (/rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max /)
+         znds_wnd_val    = (/0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp /)
          ! zatau         =   0.8_wp    ! [no unit]
          ! zdeltatau     =   5.77_wp   ! [deg North]
          ! T star and qns
@@ -313,7 +318,7 @@ CONTAINS
          ENDIF
          !
          DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-            utau(ji,jj)    = znl_wnd(znodes_phi, znodes_tau, gphiu(ji,jj))
+            utau(ji,jj)    = znl_cbc(znds_wnd_phi, znds_wnd_val, gphiu(ji,jj))
             !utau(ji,jj) = rn_ztau0 * ( -COS((3 * rpi * gphit(ji,jj))/(2 * rn_phi_max)) + zatau * EXP(-gphit(ji,jj)**2/zdeltatau**2) )
             taum(ji,jj) = ABS( utau(ji,jj) )
             IF( utau(ji,jj) > 0 )   taum(ji,jj) = taum(ji,jj) * 1.3_wp   ! Boost in westerlies for TKE
@@ -341,8 +346,8 @@ CONTAINS
             ENDIF
          END_2D
          !
-         !emp(:,:) = rn_emp_prop * emp(:,:)   ! taking the proportionality factor into account
-         !CALL remove_emp_mean()
+         emp(:,:) = rn_emp_prop * emp(:,:)   ! taking the proportionality factor into account
+         CALL remove_emp_mean()
          !
          ! Q SOLAR (flux from GYRE)
          ! see https://www.desmos.com/calculator/87duqiuxsf
@@ -517,28 +522,29 @@ CONTAINS
      ENDIF
    END SUBROUTINE compute_diurn_cycle
 
-   FUNCTION znl_wnd( pnodes_phi, pnodes_tau, pPhi ) RESULT( putau )
+   FUNCTION znl_cbc( pnodes_phi, pnodes_val, pPhi ) RESULT( pprofile )
       !!----------------------------------------------------------------------
       !!                 ***  ROUTINE  ***
       !!
-      !! ** Purpose :   Fit a cubic zonal windforcing to a given set of lat/windstress pairs at the profile nodes.
+      !! ** Purpose :   Fit a cubic zonal profile to a given set of lat/value pairs at the profile nodes.
       !!
       !! ** Method  :   see TODO'
       !!
       !!     
       !!----------------------------------------------------------------------
-      REAL(wp), DIMENSION(7), INTENT(in    ) ::   pnodes_phi     ! Latitude of nodes    [degrees]
-      REAL(wp), DIMENSION(7), INTENT(in    ) ::   pnodes_tau     ! Values of nodes      [Pa]
-      REAL(wp),               INTENT(in    ) ::   pPhi         ! Latitude at u-point[degrees]
+      REAL(wp), DIMENSION(:), INTENT(in    ) ::   pnodes_phi   ! Latitude of nodes     [degrees]
+      REAL(wp), DIMENSION(:), INTENT(in    ) ::   pnodes_val   ! Values of nodes       [unit]
+      REAL(wp),               INTENT(in    ) ::   pPhi         ! Latitude at u-point   [degrees]
       !
       INTEGER                                ::   jn           ! dummy index
       INTEGER                                ::   ks, kn, kmin ! southern/northern node
-      REAL(wp), DIMENSION(7)                 ::   zdphi        ! difference to node
+      REAL(wp), DIMENSION(:), ALLOCATABLE    ::   zdphi        ! difference to node
       REAL(wp)                               ::   zs           ! saw-function
       REAL(wp)                               ::   zscurve      ! cubic s-curve between nodes
-      REAL(wp)                               ::   putau        ! Zonal wind stress  [Pa]
+      REAL(wp)                               ::   pprofile     ! Zonal wind stress  [Pa]
       !
-      DO jn=1,7
+      ALLOCATE(zdphi(SIZE(pnodes_phi)))
+      DO jn=1, SIZE(pnodes_phi)
          zdphi(jn) = pnodes_phi(jn) - pPhi
       END DO
       !
@@ -553,10 +559,10 @@ CONTAINS
       ENDIF
       !
       zs = MIN( 1._wp, MAX( 0._wp, ( pPhi - pnodes_phi(ks) ) / ( pnodes_phi(kn) - pnodes_phi(ks) ) ) )
-      putau = pnodes_tau(ks) + ( pnodes_tau(kn) - pnodes_tau(ks) ) * ( 3 - 2 * zs ) * zs ** 2
+      pprofile = pnodes_val(ks) + ( pnodes_val(kn) - pnodes_val(ks) ) * ( 3 - 2 * zs ) * zs ** 2
       !!----------------------------------------------------------------------
 
-   END FUNCTION znl_wnd
+   END FUNCTION znl_cbc
 
    SUBROUTINE test_compute_day_of_year()
 		!!---------------------------------------------------------------------
