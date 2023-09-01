@@ -158,7 +158,7 @@ CONTAINS
          !
          ! Evaporation - Precipitation
          znds_emp_phi    = (/rn_phi_min, -50._wp, -20._wp, 0._wp, 20._wp, 50._wp, rn_phi_max /)
-         znds_emp_val    = (/-0.00001_wp, -0.000025_wp, 0.000035_wp, -0.000025_wp, 0.000035_wp, -0.000025_wp, -0.00001_wp /)       
+         znds_emp_val    = (/-0.00001_wp, -0.00002_wp, 0.000035_wp, -0.000025_wp, 0.000035_wp, -0.00002_wp, -0.00001_wp /)       
          !
          IF( kt == nit000 ) THEN
             ALLOCATE( ztstar(jpi,jpj) )   ! Allocation of ztstar
@@ -418,6 +418,7 @@ CONTAINS
       zSurf(2:jpi - 1,2:jpj - 1) = e1t(2:jpi - 1,2:jpj - 1) * e2t(2:jpi - 1,2:jpj - 1)   ! surface of the cells
       zemp_mean = glob_sum( 'usrdef_sbc', emp(:,:) * zSurf(:,:) ) / glob_sum( 'usrdef_sbc', zSurf(:,:) )
      !
+      emp(:,:) = emp(:,:) - zemp_mean                     ! freshwater flux (=0 in domain average)
    END SUBROUTINE remove_emp_mean
 
    
