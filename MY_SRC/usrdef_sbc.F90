@@ -62,10 +62,10 @@ CONTAINS
       !
       INTEGER  ::   ji, jj
       REAL(wp) ::   z1_2L 
-      REAL(wp) ::   zdeltasst, zts_eq, zts_n, zts_s, zdeltaT
+      REAL(wp) ::   zts_eq, zdts_n, zdts_s, zdeltaT
       REAL(wp) ::   zdeltaemp, zemp_mean, zF0, zconv, zaemp, zb, zdeltaemp2, zaemp2
-      REAL(wp), DIMENSION(7)  ::  znds_wnd_phi, znds_emp_phi     ! Latitude of nodes    [degrees]
-      REAL(wp), DIMENSION(7)  ::  znds_wnd_val, znds_emp_val     ! Values of nodes      [Pa]
+      REAL(wp), DIMENSION(:), ALLOCATABLE  ::  znds_wnd_phi, znds_emp_phi, znds_tmp_phi          ! Latitude of nodes    [degrees]
+      REAL(wp), DIMENSION(:), ALLOCATABLE  ::  znds_wnd_val, znds_emp_val, znds_tmp_val          ! Values of nodes      [Pa]
       REAL(wp) ::   zdeltatau, zatau
       REAL(wp) ::   zf1, zf2, zf3, zweight2, zweight3
       REAL(wp) ::   za1, za2, za3
@@ -151,10 +151,13 @@ CONTAINS
          znds_wnd_val    = (/0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp /)
          !
          ! Temperature restoring profile
-         zts_eq        =  25._wp       ! [deg C]
-         zts_n         =   1._wp       ! [deg C]
-         zts_s         =   0._wp       ! [deg C] Temperature in the south
-         zdeltasst     =  16.22_wp     ! [degrees]
+         ! Chosen with the southern boundary always colder than the northern boundary
+         ! Seasonnal cycle on T* coming from zcos_sais2 with extrema in July/January
+         zts_eq         =  27._wp       ! [deg C] Temperature at the equator
+         zdts_n         =  10._wp       ! [deg C] seasonal temperature difference in the north
+         zdts_s         =   1._wp       ! [deg C] seasonal temperature difference in the south
+         znds_tmp_phi    = (/rn_phi_min, 10. * zcos_sais2, rn_phi_max /)
+         znds_tmp_val    = (/-0.5 * zdts_s * (1 + zcos_sais2) , zts_eq, 0.5 * zdts_n * (1 + zcos_sais2)/)
          !
          ! Evaporation - Precipitation
          znds_emp_phi    = (/rn_phi_min, -50._wp, -20._wp, 0._wp, 20._wp, 50._wp, rn_phi_max /)
@@ -189,14 +192,12 @@ CONTAINS
             taum(ji,jj)    = ABS( utau(ji,jj) )
             IF( utau(ji,jj) > 0 )   taum(ji,jj) = taum(ji,jj) * 1.3_wp   ! Boost in westerlies for TKE
             !
-            ! EMP inspired from Wolfe and Cessi 2014, JPO and the IPSL climate model
-            emp (ji,jj) =   znl_cbc(znds_emp_phi, znds_emp_val, gphit(ji,jj))
-            ! Seasonnal cycle on T* coming from zcos_sais2
-            IF (gphit(ji, jj) >= 0._wp) THEN
-               ztstar(ji,jj)   = (zts_eq - (zts_n + zcos_sais2 * zdeltaT) ) * COS( ( rpi * gphit(ji,jj) ) / (rn_phi_max - rn_phi_min ) )**2 + (zts_n + zcos_sais2 * zdeltaT)
-            ELSE
-               ztstar(ji,jj)   = (zts_eq - (zts_s - zcos_sais2 * zdeltaT) ) * COS( ( rpi * gphit(ji,jj) ) / (rn_phi_max - rn_phi_min ) )**2 + (zts_n - zcos_sais2 * zdeltaT)
-            ENDIF
+            ! EMP inspired from Wolfe and Cessi 2014, JPO and IPSL climate model output
+            emp(ji,jj)     = znl_cbc(znds_emp_phi, znds_emp_val, gphit(ji,jj))
+            !
+            ! T* inspired from Wolfe and Cessi 2014, JPO and IPSL climate model output
+            ztstar(ji,jj)  = znl_cbc(znds_tmp_phi, znds_tmp_val, gphit(ji,jj))
+            !
          END_2D
          !
          CALL remove_emp_mean()
@@ -268,9 +269,8 @@ CONTAINS
          ! T star and qns
          !ztrp          = -40._wp     ! [W/m2/K] retroaction term on heat fluxes 
          zts_eq        =  25._wp     ! [deg C] Temperature at the equator
-         zts_n         =   1._wp     ! [deg C] Temperature in the north
-         zts_s         =   0._wp     ! [deg C] Temperature in the south
-         zdeltasst     =  16.22_wp   ! [deg North]
+         zdts_n         =   1._wp     ! [deg C] Temperature in the north
+         zdts_s         =   0._wp     ! [deg C] Temperature in the south
          z1_2L         =   1._wp / (2._wp * rn_phi_max)
          zdeltaT       = 2           ! [deg C] half difference of temperature during winter and summer in the north (magnitude of the cos) !!rc TODO set in namelist
          ! zdeltaT_s     = 2           ! [deg C] half difference of temperature during winter and summer in the north (magnitude of the cos) !!rc TODO set in namelist !!dk necessary?
@@ -339,11 +339,6 @@ CONTAINS
             ! T*
             ! See https://www.desmos.com/calculator/zij8tgy5yr
             ! Seasonnal cycle on T* coming from zcos_sais2
-            IF (gphit(ji, jj) >= 0._wp) THEN
-               ztstar(ji,jj)   = (zts_eq - (zts_n + zcos_sais2 * zdeltaT) ) * COS( ( rpi * gphit(ji,jj) ) * z1_2L )**2 + (zts_n + zcos_sais2 * zdeltaT)
-            ELSE
-               ztstar(ji,jj)   = (zts_eq - (zts_s - zcos_sais2 * zdeltaT) ) * COS( ( rpi * gphit(ji,jj) ) * z1_2L )**2 + (zts_n - zcos_sais2 * zdeltaT)
-            ENDIF
          END_2D
          !
          emp(:,:) = rn_emp_prop * emp(:,:)   ! taking the proportionality factor into account

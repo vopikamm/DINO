@@ -40,11 +40,11 @@
 	<file_group id="1m" output_freq="1mo"  output_level="10" enabled=".TRUE." >  <!-- 1m files -->  
 	<file id="file6" name_suffix="_grid_T_mo" description="ocean T grid variables monthly" >
 	  <field field_ref="ssh"  />
-	  <field field_ref='saltflx'  />
+	  <field field_ref="sst" />
+	  <field field_ref="sss" /> 
 	  <field field_ref='empmr'  />
 	  <field field_ref='qns'  />
 	  <field field_ref='qsr'  />
-	  <field field_ref='taum'  />
 	  <field field_ref='mldr10_1' />
 	  <field field_ref='mldr10_1max' />
 	  <!--

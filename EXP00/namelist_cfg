@@ -31,13 +31,13 @@
                                     ! 4: close to Wolfe and Cessis (2014), JPO
                                     ! 5: inspired by Wolfe and Cessi (2014), JPO and Gyre
       rn_ztau0         =    0.1        ! Magnitude of the wind forcing [Pa] 
-      ln_diu_cyc    = .true.        ! Use diurnal cycle or not for qsr  (if nn_forcingtype is compatible)
+      ln_diu_cyc    = .false.        ! Use diurnal cycle or not for qsr  (if nn_forcingtype is compatible)
       ln_ann_cyc    = .true.        ! Use annual cycle or not (if nn_forcingtype is compatible)
       rn_emp_prop   =      1.       ! Proportionality factor to apply on EMP
       rn_trp        =    -40.       ! Retroaction term (must be negative) on T*   (set to 0. if no restoring temperature). Reference value -40.
       rn_srp        =      0.       ! Retroaction term (must be negative) on salt (set to 0. if no restoring salinity   ). Reference value -3.858E-3
       !rn_srp        =     -3.858E-3 ! Retroaction term (must be negative) on salt (set to 0. if no restoring salinity   ). Reference value -3.858E-3
-      ln_qsr        = .true.        ! Solar heat flux or not
+      ln_qsr        = .false.        ! Solar heat flux or not
 
    nn_botcase       =      1        ! bottom definition (0:flat, 1:bowl cosh, 2: bowl 1-x**4)
       rn_H          =   4000.       ! Maximum depth of the basin (approximative, is recomputed after the bathymetry calculation)
