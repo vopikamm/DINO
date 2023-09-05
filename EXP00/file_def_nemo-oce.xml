@@ -41,6 +41,7 @@
 	<file id="file6" name_suffix="_grid_T_mo" description="ocean T grid variables monthly" >
 	  <field field_ref="ssh"  />
 	  <field field_ref='saltflx'  />
+	  <field field_ref='empmr'  />
 	  <field field_ref='qns'  />
 	  <field field_ref='qsr'  />
 	  <field field_ref='taum'  />

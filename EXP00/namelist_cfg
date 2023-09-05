@@ -25,7 +25,7 @@
    rn_lam_min       =      0.    ! Longitude of the west frontier (T point) [degrees] (approximative)
    rn_lam_max       =     60.    ! Longitude of the east frontier (T point) [degrees] (approximative)
    nn_k             =     36     ! Number of grid points along k direction
-   nn_forcingtype   =      5     ! Forcing
+   nn_forcingtype   =      4     ! Forcing
                                     ! 2: constant zonal wind stress
                                     ! 3: no forcing
                                     ! 4: close to Wolfe and Cessis (2014), JPO
@@ -33,9 +33,10 @@
       rn_ztau0         =    0.1        ! Magnitude of the wind forcing [Pa] 
       ln_diu_cyc    = .true.        ! Use diurnal cycle or not for qsr  (if nn_forcingtype is compatible)
       ln_ann_cyc    = .true.        ! Use annual cycle or not (if nn_forcingtype is compatible)
-      rn_emp_prop   =      0.       ! Proportionality factor to apply on EMP
+      rn_emp_prop   =      1.       ! Proportionality factor to apply on EMP
       rn_trp        =    -40.       ! Retroaction term (must be negative) on T*   (set to 0. if no restoring temperature). Reference value -40.
-      rn_srp        =     -3.858E-3 ! Retroaction term (must be negative) on salt (set to 0. if no restoring salinity   ). Reference value -3.858E-3
+      rn_srp        =      0.       ! Retroaction term (must be negative) on salt (set to 0. if no restoring salinity   ). Reference value -3.858E-3
+      !rn_srp        =     -3.858E-3 ! Retroaction term (must be negative) on salt (set to 0. if no restoring salinity   ). Reference value -3.858E-3
       ln_qsr        = .true.        ! Solar heat flux or not
 
    nn_botcase       =      1        ! bottom definition (0:flat, 1:bowl cosh, 2: bowl 1-x**4)
@@ -90,7 +91,7 @@
    ! nn_stock    =      11520   !  frequency of creation of a restart file (modulo referenced to 1) 50 years
    ! nn_write    =      11520   !  frequency of write in the output file   (modulo referenced to nn_it000)
    nn_leapy    =   30         !  Months of 30 days (year of 360 days)
-   ln_rstart = .false.        !  start from rest (F) or from a restart file (T)
+   ln_rstart = .true.        !  start from rest (F) or from a restart file (T)
       !nn_euler    =    1      !  = 0 : start with forward time step if ln_rstart=T
       nn_rstctl   =    2 !  restart control ==> activated only if ln_rstart=T
       !!                          !    = 0 nn_date0 read in namelist ; nn_it000 : read in namelist
