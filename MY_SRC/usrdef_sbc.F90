@@ -193,7 +193,7 @@ CONTAINS
             IF( utau(ji,jj) > 0 )   taum(ji,jj) = taum(ji,jj) * 1.3_wp   ! Boost in westerlies for TKE
             !
             ! EMP inspired from Wolfe and Cessi 2014, JPO and IPSL climate model output
-            emp(ji,jj)     = znl_cbc(znds_emp_phi, znds_emp_val, gphit(ji,jj))
+            emp(ji,jj)     = rn_emp_prop * znl_cbc(znds_emp_phi, znds_emp_val, gphit(ji,jj))
             !
             ! T* inspired from Wolfe and Cessi 2014, JPO and IPSL climate model output
             ztstar(ji,jj)  = znl_cbc(znds_tmp_phi, znds_tmp_val, gphit(ji,jj))
