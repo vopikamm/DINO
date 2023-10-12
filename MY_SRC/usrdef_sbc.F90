@@ -64,8 +64,8 @@ CONTAINS
       REAL(wp) ::   z1_2L 
       REAL(wp) ::   zts_eq, zdts_n, zdts_s, zdeltaT
       REAL(wp) ::   zdeltaemp, zemp_mean, zF0, zconv, zaemp, zb, zdeltaemp2, zaemp2
-      REAL(wp), DIMENSION(:), ALLOCATABLE  ::  znds_wnd_phi, znds_emp_phi, znds_tmp_phi          ! Latitude of nodes    [degrees]
-      REAL(wp), DIMENSION(:), ALLOCATABLE  ::  znds_wnd_val, znds_emp_val, znds_tmp_val          ! Values of nodes      [Pa]
+      REAL(wp), DIMENSION(:), ALLOCATABLE  ::  znds_wnd_phi, znds_emp_phi, znds_tmp_phi, znds_slt_phi    ! Latitude of nodes    [degrees]
+      REAL(wp), DIMENSION(:), ALLOCATABLE  ::  znds_wnd_val, znds_emp_val, znds_tmp_val, znds_slt_val    ! Values of nodes      [Pa]
       REAL(wp) ::   zdeltatau, zatau
       REAL(wp) ::   zf1, zf2, zf3, zweight2, zweight3
       REAL(wp) ::   za1, za2, za3
@@ -154,14 +154,18 @@ CONTAINS
          ! Chosen with the southern boundary always colder than the northern boundary
          ! Seasonnal cycle on T* coming from zcos_sais2 with extrema in July/January
          zts_eq         =  27._wp       ! [deg C] Temperature at the equator
-         zdts_n         =  10._wp       ! [deg C] seasonal temperature difference in the north
+         zdts_n         =  8._wp       ! [deg C] seasonal temperature difference in the north
          zdts_s         =   1._wp       ! [deg C] seasonal temperature difference in the south
          znds_tmp_phi    = (/rn_phi_min, 10. * zcos_sais2, rn_phi_max /)
          znds_tmp_val    = (/-0.5 * zdts_s * (1 + zcos_sais2) , zts_eq, 0.5 * zdts_n * (1 + zcos_sais2)/)
          !
          ! Evaporation - Precipitation
          znds_emp_phi    = (/rn_phi_min, -50._wp, -20._wp, 0._wp, 20._wp, 50._wp, rn_phi_max /)
-         znds_emp_val    = (/-0.00001_wp, -0.00002_wp, 0.000035_wp, -0.000025_wp, 0.000035_wp, -0.00002_wp, -0.00001_wp /)       
+         znds_emp_val    = (/-0.00001_wp, -0.00002_wp, 0.000035_wp, -0.000025_wp, 0.000035_wp, -0.00002_wp, -0.00001_wp /)
+         !
+         ! Salt restoring profile
+         znds_slt_phi    = (/rn_phi_min, -40._wp, 0._wp, 40._wp, rn_phi_max /)
+         znds_slt_val    = (/35.401_wp, 34.505_wp, 36.09_wp, 34.931_wp, 35.401_wp /)         
          !
          IF( kt == nit000 ) THEN
             ALLOCATE( ztstar(jpi,jpj) )   ! Allocation of ztstar
@@ -169,7 +173,8 @@ CONTAINS
             IF( rn_srp /= 0._wp )   THEN
                ALLOCATE( zsstar(jpi,jpj) )   ! Allocation of zsstar
                DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-                  zsstar(ji,jj) = 37.12_wp * EXP( - gphit(ji,jj)**2 / 260._wp**2 ) - 1.1_wp * EXP( - gphit(ji,jj)**2 / 7.5_wp**2 )
+                  !zsstar(ji,jj) = 37.12_wp * EXP( - gphit(ji,jj)**2 / 260._wp**2 ) - 1.1_wp * EXP( - gphit(ji,jj)**2 / 7.5_wp**2 )
+                  zsstar(ji,jj)  = znl_cbc(znds_slt_phi, znds_slt_val, gphit(ji,jj))
                END_2D
             ENDIF
          ENDIF
