@@ -208,9 +208,10 @@ CONTAINS
          CALL remove_emp_mean()
          !
          ! Q SOLAR (from Gyre)
+         ! see https://www.desmos.com/calculator/87duqiuxsf
          IF( ln_qsr )   THEN
             DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-               zqsr_dayMean(ji,jj) = 230._wp * COS( rpi * (gphit(ji,jj) - 23.5 * zcos_sais1 ) / ( 0.9_wp * 180._wp ) ) * tmask(ji,jj,1)
+               zqsr_dayMean(ji,jj) = MAX(230._wp * COS( rpi * (gphit(ji,jj) - 23.5 * zcos_sais1 ) / ( 180._wp ) ) * tmask(ji,jj,1), 0)
             END_2D
             CALL compute_diurn_cycle( kt, zqsr_dayMean, ln_diu_cyc )   ! Adding diurnal cycle if needed
          ELSE
