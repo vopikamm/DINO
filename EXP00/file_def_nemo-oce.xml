@@ -41,7 +41,7 @@
 	  <field field_ref="ssh"  />
 	  <field field_ref="sst" />
 	  <field field_ref="sss" /> 
-	  <field field_ref='empmr'  />
+	  <field field_ref="saltflx" /> 
 	  <field field_ref='qns'  />
 	  <field field_ref='qsr'  />
 	  <field field_ref='mldr10_1' />
