@@ -41,35 +41,41 @@ MODULE usrdef_nam
    LOGICAL , PUBLIC ::   ln_diu_cyc     =  .TRUE.   ! Use diurnal cycle for qsr or not
    LOGICAL , PUBLIC ::   ln_ann_cyc     =  .TRUE.   ! Use an annual cycle or not
    REAL(wp), PUBLIC ::   rn_emp_prop    =     1.    ! Proportionality factor to apply on the EMP
-   REAL(wp), PUBLIC ::   rn_trp         =   -40.    ! Retroaction term on T*, must be negative [W/m2/K]
-   REAL(wp), PUBLIC ::   rn_srp         =     0.0   ! Retroaction term on S*, must be negative []
+   REAL(wp), PUBLIC ::   rn_trp         =   -40.    ! Retroaction term on T*, must be negative  [W/m2/K]
+   REAL(wp), PUBLIC ::   rn_srp         =     0.0   ! Restoring term on S*, must be negative    [kg/m2/s]
+   REAL(wp), PUBLIC ::   rn_sstar_s     =     35.   ! Salinity restoring value at the southern boundary
+   REAL(wp), PUBLIC ::   rn_sstar_n     =     35.1  ! Salinity restoring value at the northern boundary 
+   REAL(wp), PUBLIC ::   rn_sstar_eq   =     37.25 ! Salinity restoring maximum without exponential
+   REAL(wp), PUBLIC ::   rn_tstar_s     =    -0.5   ! Retroaction value on T at the southern boundary
+   REAL(wp), PUBLIC ::   rn_tstar_n     =     5.0   ! Retroaction value on T at the northern boundary
+   REAL(wp), PUBLIC ::   rn_tstar_eq    =     27.   ! Retroaction value on T at the equator
    LOGICAL , PUBLIC ::   ln_qsr         =  .TRUE.   ! Solar heat or not
    INTEGER , PUBLIC ::   nn_botcase     =     0     ! bottom definition (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)
    REAL(wp), PUBLIC ::   rn_H           =  4000.    ! Maximum depth of the basin or asymptotical depth of the basin (depending on the basin shape)
    REAL(wp), PUBLIC ::   rn_hborder     =  2000.    ! Depth of the borders of the basin
    REAL(wp), PUBLIC ::   rn_distLam     =     3.    ! Typical length scale of the slope in longitude
-   REAL(wp), PUBLIC ::   rn_dzmin       =     10.    ! minimum value of e3 at the surface   [m]
-   REAL(wp), PUBLIC ::   rn_kth         =     35.    ! position of the inflexion point
-   REAL(wp), PUBLIC ::   rn_hco         =   1000.    ! layer thickness with z-coordinate [m]
-   REAL(wp), PUBLIC ::   rn_acr         =    10.5    ! slope of the tanh
+   REAL(wp), PUBLIC ::   rn_dzmin       =     10.   ! minimum value of e3 at the surface   [m]
+   REAL(wp), PUBLIC ::   rn_kth         =     35.   ! position of the inflexion point
+   REAL(wp), PUBLIC ::   rn_hco         =   1000.   ! layer thickness with z-coordinate [m]
+   REAL(wp), PUBLIC ::   rn_acr         =    10.5   ! slope of the tanh
    INTEGER , PUBLIC ::   nn_initcase    =     0     ! initial condition case (0=rest+uniform, 1=rest+stratification)
    LOGICAL , PUBLIC ::   ln_Iperio      = .TRUE.    ! periodicity in i
    REAL(wp), PUBLIC ::   rn_cha_min     =   -60.    ! chanel width [degrees]
    REAL(wp), PUBLIC ::   rn_cha_max     =   -50.    ! midpoint latitude of the chanel [degrees] (approximate)
-   REAL(wp), PUBLIC ::   rn_slp_cha     =    1.5     ! Slope of the boundaries in the channel
+   REAL(wp), PUBLIC ::   rn_slp_cha     =    1.5    ! Slope of the boundaries in the channel
    LOGICAL , PUBLIC ::   ln_zco_nam     = .FALSE.   ! z               vertical coordinate
    LOGICAL , PUBLIC ::   ln_zps_nam     = .FALSE.   ! z-partial steps vertical coordinate
    LOGICAL , PUBLIC ::   ln_sco_nam     = .TRUE.    ! s               vertical coordinate
    INTEGER , PUBLIC ::   nn_ztype       =     0     ! type of vertical grid spacing (0: uniform) (z-coordinate or s pure coordinate)
    LOGICAL , PUBLIC ::   ln_mid_ridge   = .FALSE.   ! Including a Mid-Atlantic Ridge
-   REAL(wp), PUBLIC ::   rn_mr_depth    =  2000.     ! Depth of the Mid-Atlantic ridge
-   REAL(wp), PUBLIC ::   rn_mr_width    =     8.     ! Width of the Mid-Atlantic ridge
-   REAL(wp), PUBLIC ::   rn_mr_lat_s    =   -50.     ! southern edge of the Mid-Atlantic ridge [degrees]
-   REAL(wp), PUBLIC ::   rn_mr_lat_n    =    55.     ! northern edge of the Mid-Atlantic ridge [degrees]
-   INTEGER , PUBLIC ::   nn_mr_edge     =      1      ! shape of the southern/northern edge
+   REAL(wp), PUBLIC ::   rn_mr_depth    =  2000.    ! Depth of the Mid-Atlantic ridge
+   REAL(wp), PUBLIC ::   rn_mr_width    =     8.    ! Width of the Mid-Atlantic ridge
+   REAL(wp), PUBLIC ::   rn_mr_lat_s    =   -50.    ! southern edge of the Mid-Atlantic ridge [degrees]
+   REAL(wp), PUBLIC ::   rn_mr_lat_n    =    55.    ! northern edge of the Mid-Atlantic ridge [degrees]
+   INTEGER , PUBLIC ::   nn_mr_edge     =      1    ! shape of the southern/northern edge
    LOGICAL , PUBLIC ::   ln_drake_sill  = .FALSE.   ! Including circular Drake-Sill
-   REAL(wp), PUBLIC ::   rn_ds_depth   =  3000.        ! Depth of the circular Drake-Sill
-   REAL(wp), PUBLIC ::   rn_ds_width   =     2.        ! Width of the circular Drake-Sill 
+   REAL(wp), PUBLIC ::   rn_ds_depth   =  3000.     ! Depth of the circular Drake-Sill
+   REAL(wp), PUBLIC ::   rn_ds_width   =     2.     ! Width of the circular Drake-Sill 
    !!----------------------------------------------------------------------
    !! NEMO/OCE 4.0 , NEMO Consortium (2018)
    !! $Id: usrdef_nam.F90 10074 2018-08-28 16:15:49Z nicolasmartin $ 
@@ -100,16 +106,19 @@ CONTAINS
       REAL(wp)::   zh                    ! Local scalars
       REAL(wp)::   zarg_min, zarg_max, zjeq_min, zjeq_max, ijeq_max, rn_iglo
       !!
-      NAMELIST/namusr_def/ rn_e1_deg, rn_phi_min, rn_phi_max, rn_lam_min   &
-         &                 , rn_lam_max, nn_k, rn_emp_prop, rn_ztau0       &
-         &                 , nn_botcase, nn_initcase, nn_forcingtype       &
-         &                 , ln_Iperio, rn_cha_min, rn_cha_max, rn_slp_cha &
-         &                 , ln_zco_nam, ln_zps_nam, ln_sco_nam            &
-         &                 , nn_ztype, rn_H, rn_hborder, rn_distLam        &
-         &                 , ln_mid_ridge, ln_drake_sill, ln_ann_cyc       &
-         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc            &
-         &                 , rn_dzmin, rn_kth, rn_hco, rn_acr,  nn_mr_edge &
-         &                 , rn_mr_depth, rn_mr_width, rn_mr_lat_s         &
+      NAMELIST/namusr_def/ rn_e1_deg, rn_phi_min, rn_phi_max, rn_lam_min         &
+         &                 , rn_lam_max, nn_k, rn_emp_prop, rn_ztau0             &
+         &                 , nn_botcase, nn_initcase, nn_forcingtype             &
+         &                 , ln_Iperio, rn_cha_min, rn_cha_max, rn_slp_cha       &
+         &                 , ln_zco_nam, ln_zps_nam, ln_sco_nam                  &
+         &                 , nn_ztype, rn_H, rn_hborder, rn_distLam              &
+         &                 , ln_mid_ridge, ln_drake_sill, ln_ann_cyc             &
+         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc                  &
+         &                 , rn_sstar_s, rn_sstar_n, rn_sstar_eq                 &
+         &                 , rn_tstar_s, rn_tstar_n, rn_tstar_eq                 &
+         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc                  &
+         &                 , rn_dzmin, rn_kth, rn_hco, rn_acr,  nn_mr_edge       &
+         &                 , rn_mr_depth, rn_mr_width, rn_mr_lat_s               &
          &                 , rn_mr_lat_n, rn_ds_depth, rn_ds_width
       !!----------------------------------------------------------------------
       !

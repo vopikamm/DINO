@@ -18,7 +18,9 @@ MODULE usrdef_sbc
    USE phycst                                                      ! physical constants
    USE sbcdcy, ONLY: sbc_dcy, nday_qsr                             ! surface boundary condition: diurnal cycle
    !
-   USE usrdef_nam, ONLY : nn_forcingtype, rn_ztau0, rn_emp_prop, ln_ann_cyc, ln_diu_cyc, rn_trp, rn_srp, ln_qsr, rn_phi_max, rn_phi_min
+   USE usrdef_nam, ONLY : nn_forcingtype, rn_ztau0, rn_emp_prop, ln_ann_cyc, ln_diu_cyc,  &
+               &          rn_trp, rn_srp, ln_qsr, rn_phi_max, rn_phi_min, rn_sstar_s,     &
+               &          rn_sstar_n, rn_sstar_eq, rn_tstar_s, rn_tstar_n, rn_tstar_eq
    !
    USE in_out_manager  ! I/O manager
    USE iom             ! 
@@ -62,7 +64,7 @@ CONTAINS
       !
       INTEGER  ::   ji, jj
       REAL(wp) ::   z1_2L 
-      REAL(wp) ::   zts_eq, zdts_n, zdts_s, zdeltaT
+      REAL(wp) ::   zts_eq, ztstar_n, ztstar_s, zdeltaT
       REAL(wp) ::   zdeltaemp, zemp_mean, zF0, zconv, zaemp, zb, zdeltaemp2, zaemp2
       REAL(wp), DIMENSION(:), ALLOCATABLE  ::  znds_wnd_phi, znds_emp_phi, znds_tmp_phi, znds_slt_phi    ! Latitude of nodes    [degrees]
       REAL(wp), DIMENSION(:), ALLOCATABLE  ::  znds_wnd_val, znds_emp_val, znds_tmp_val, znds_slt_val    ! Values of nodes      [Pa]
@@ -153,19 +155,18 @@ CONTAINS
          ! Temperature restoring profile
          ! Chosen with the southern boundary always colder than the northern boundary
          ! Seasonnal cycle on T* coming from zcos_sais2 with extrema in July/January
-         zts_eq         =  27._wp       ! [deg C] Temperature at the equator
-         zdts_n         =  8._wp       ! [deg C] seasonal temperature difference in the north
-         zdts_s         =   1._wp       ! [deg C] seasonal temperature difference in the south
-         znds_tmp_phi    = (/rn_phi_min, 10. * zcos_sais2, rn_phi_max /)
-         znds_tmp_val    = (/-0.5 * zdts_s * (1 + zcos_sais2) , zts_eq, 0.5 * zdts_n * (1 + zcos_sais2)/)
+         ! zts_eq         =  27._wp       ! [deg C] Temperature at the equator
+         ! zdts_n         =  8._wp        ! [deg C] seasonal temperature difference in the north
+         ! zdts_s         =   1._wp       ! [deg C] seasonal temperature difference in the south
+         ! znds_tmp_phi    = (/rn_phi_min, 10. * zcos_sais2, rn_phi_max /)
+         ! znds_tmp_val    = (/-0.5 * zdts_s * (1 + zcos_sais2) , zts_eq, 0.5 * zdts_n * (1 + zcos_sais2)/)
          !
          ! Evaporation - Precipitation
          znds_emp_phi    = (/rn_phi_min, -50._wp, -20._wp, 0._wp, 20._wp, 50._wp, rn_phi_max /)
          znds_emp_val    = (/-0.00001_wp, -0.00002_wp, 0.000035_wp, -0.000025_wp, 0.000035_wp, -0.00002_wp, -0.00001_wp /)
          !
-         ! Salt restoring profile
-         znds_slt_phi    = (/rn_phi_min, -40._wp, 0._wp, 40._wp, rn_phi_max /)
-         znds_slt_val    = (/35.401_wp, 34.505_wp, 36.09_wp, 34.931_wp, 35.401_wp /)         
+         ! znds_slt_phi    = (/rn_phi_min, -40._wp, 0._wp, 40._wp, rn_phi_max /)
+         ! znds_slt_val    = (/35.401_wp, 34.505_wp, 36.09_wp, 34.931_wp, 35.401_wp /)         
          !
          IF( kt == nit000 ) THEN
             ALLOCATE( ztstar(jpi,jpj) )   ! Allocation of ztstar
@@ -173,14 +174,28 @@ CONTAINS
             IF( rn_srp /= 0._wp )   THEN
                ALLOCATE( zsstar(jpi,jpj) )   ! Allocation of zsstar
                DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
+                  ! Munday et al.
+                  IF (gphit(ji, jj) <= 0) THEN
+                     zsstar(ji,jj) = rn_sstar_s                                                                               &
+                        & + (rn_sstar_eq - rn_sstar_s) * (1 + COS( 2 * rpi * gphit(ji,jj) / ( rn_phi_max - rn_phi_min) )) / 2 &
+                        & - 1.25_wp * EXP( - gphit(ji,jj) ** 2 / 7.5_wp ** 2 )
+                  ELSE
+                     zsstar(ji,jj) = rn_sstar_n                                                                               &
+                        & + (rn_sstar_eq - rn_sstar_n) * (1 + COS( 2 * rpi * gphit(ji,jj) / ( rn_phi_max - rn_phi_min) )) / 2 &
+                        & - 1.25_wp * EXP( - gphit(ji,jj) ** 2 / 7.5_wp ** 2 )
+                  ENDIF
+                  ! Caneill
                   !zsstar(ji,jj) = 37.12_wp * EXP( - gphit(ji,jj)**2 / 260._wp**2 ) - 1.1_wp * EXP( - gphit(ji,jj)**2 / 7.5_wp**2 )
-                  zsstar(ji,jj)  = znl_cbc(znds_slt_phi, znds_slt_val, gphit(ji,jj))
+                  ! S-curve interpolation
+                  !zsstar(ji,jj)  = znl_cbc(znds_slt_phi, znds_slt_val, gphit(ji,jj))
                END_2D
             ENDIF
          ENDIF
-         ! necessary to compute at each time step because seasonnal variation of Ztstar and solar heat flux
+         !
          vtau(:,:) = 0._wp   ! no meridional wind stress
          wndm(:,:) = 0._wp   ! no use of 10 m wind speed
+         !
+         ! Time dependant forcing:
          !
          ! SALT FLUX
          IF( rn_srp /= 0._wp )   THEN
@@ -190,6 +205,11 @@ CONTAINS
          ELSE
             sfx (:,:) = 0._wp   ! no salt flux
          ENDIF
+         !
+         ! Seasonnal cycle on T* coming from zcos_sais2
+         !
+         ztstar_s    = rn_tstar_s - 0.5_wp * zcos_sais2
+         ztstar_n    = rn_tstar_n + 3.0_wp * zcos_sais2
          !
          DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
             ! Marques et al. (2022)
@@ -201,8 +221,16 @@ CONTAINS
             emp(ji,jj)     = rn_emp_prop * znl_cbc(znds_emp_phi, znds_emp_val, gphit(ji,jj))
             !
             ! T* inspired from Wolfe and Cessi 2014, JPO and IPSL climate model output
-            ztstar(ji,jj)  = znl_cbc(znds_tmp_phi, znds_tmp_val, gphit(ji,jj))
+            ! ztstar(ji,jj)  = znl_cbc(znds_tmp_phi, znds_tmp_val, gphit(ji,jj))
             !
+            ! T* inspired from Munday et al. (2012)
+            IF (gphit(ji, jj) <= 0) THEN
+               ztstar(ji,jj) = ztstar_s                                                                                    &
+                  & + (rn_tstar_eq - ztstar_s) * SIN( rpi * ( gphit(ji,jj) + rn_phi_max ) /  ( rn_phi_max - rn_phi_min) )
+            ELSE
+               ztstar(ji,jj) = ztstar_n                                                                                    &
+                  & + (rn_tstar_eq - ztstar_n) * SIN( rpi * ( gphit(ji,jj) + rn_phi_max ) /  ( rn_phi_max - rn_phi_min) )
+            ENDIF
          END_2D
          !
          CALL remove_emp_mean()
@@ -211,7 +239,7 @@ CONTAINS
          ! see https://www.desmos.com/calculator/87duqiuxsf
          IF( ln_qsr )   THEN
             DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-               zqsr_dayMean(ji,jj) = MAX(230._wp * COS( rpi * (gphit(ji,jj) - 23.5 * zcos_sais1 ) / ( 180._wp ) ) * tmask(ji,jj,1), 0)
+               zqsr_dayMean(ji,jj) = MAX(230._wp * COS( rpi * (gphit(ji,jj) - 23.5 * zcos_sais1 ) / ( 180._wp ) ) * tmask(ji,jj,1), 0._wp)
             END_2D
             CALL compute_diurn_cycle( kt, zqsr_dayMean, ln_diu_cyc )   ! Adding diurnal cycle if needed
          ELSE
@@ -275,8 +303,8 @@ CONTAINS
          ! T star and qns
          !ztrp          = -40._wp     ! [W/m2/K] retroaction term on heat fluxes 
          zts_eq        =  25._wp     ! [deg C] Temperature at the equator
-         zdts_n         =   1._wp     ! [deg C] Temperature in the north
-         zdts_s         =   0._wp     ! [deg C] Temperature in the south
+         !zdts_n         =   1._wp     ! [deg C] Temperature in the north
+         !zdts_s         =   0._wp     ! [deg C] Temperature in the south
          z1_2L         =   1._wp / (2._wp * rn_phi_max)
          zdeltaT       = 2           ! [deg C] half difference of temperature during winter and summer in the north (magnitude of the cos) !!rc TODO set in namelist
          ! zdeltaT_s     = 2           ! [deg C] half difference of temperature during winter and summer in the north (magnitude of the cos) !!rc TODO set in namelist !!dk necessary?
