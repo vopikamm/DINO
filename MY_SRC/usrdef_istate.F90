@@ -53,9 +53,8 @@ CONTAINS
       !REAL(wp), DIMENSION(jpi,jpj)         , INTENT(  out) ::   pssh    ! sea-surface height
       !
       INTEGER  ::   jk, jj, ji   ! dummy loop
-      REAL(wp) ::   zTtop, zTbot, zphiMAX, z1_phiMAX   ! local scalar
-      REAL(wp) ::   z1_700, z1_150, z1_1500, z7_1500, z1_100, z1_460, z1_5000, z1_650
-      REAL(wp), DIMENSION(2) ::   zmpparr
+      REAL(wp) ::   zTtop, zTbot, zSbot, zphiMAX, z1_phiMAX   ! local scalar
+      REAL(wp), DIMENSION(3) ::   zmpparr
       !!----------------------------------------------------------------------
       !
       IF(lwp) WRITE(numout,*)
@@ -126,51 +125,51 @@ CONTAINS
                END DO
             END DO
          END DO
-      CASE(4)   ! strati, with surface T going from about 23 degrees at the equator to 4 degrees at 60N !!rc TODO
+      CASE(4)   ! stratification from case (1) but with a linear decrease towards bottom values from equator to poles
          pu  (:,:,:) = 0._wp        ! ocean at rest
          pv  (:,:,:) = 0._wp
          !pssh(:,:)   = 0._wp
          !
-         ! vars for the profiles
-         z1_700  = 1._wp /  700._wp
-         z1_150  = 1._wp /  150._wp
-         z1_1500 = 1._wp / 1500._wp
-         z7_1500 = 7._wp / 1500._wp
-         z1_100  = 1._wp /  100._wp
-         z1_460  = 1._wp /  460._wp
-         z1_5000 = 1._wp / 5000._wp
-         z1_650  = 1._wp /  650._wp
-         !
          ! horizontally uniform T & S profiles
-         pts(:,:,:,jp_tem) =  (  (  16._wp - 12._wp * TANH( (pdept(:,:,:) - 400._wp) * z1_700 ) )            &
-            &                  * (   1._wp -          TANH( (500._wp - pdept(:,:,:)) * z1_150 ) ) * 0.5_wp   &
-            &                  + (  15._wp    * ( 1._wp - TANH( (  pdept(:,:,:) -    50._wp) * z1_1500) )    &
-            &                      - 1.4_wp   * (         TANH( (  pdept(:,:,:) -   100._wp) *  z1_100) )    &
-            &                      + z7_1500  * (             ( ( -pdept(:,:,:) +  1500._wp)          ) )    &
-            &                    ) * (-TANH( (pdept(:,:,:) - 500._wp) * z1_150) + 1._wp) * 0.5_wp            &
-            &                 ) * ptmask(:,:,:)
-         !                   
-         pts(:,:,:,jp_sal) =  (  (  36.25_wp - 1.13_wp * TANH( (pdept(:,:,:) - 305._wp) * z1_460 ) )  &
-            &         * (-TANH((500._wp - pdept(:,:,:)) / 150._wp) + 1._wp) * 0.5_wp                   &
-            &         + ( 35.55_wp + 1.25_wp * (5000._wp - pdept(:,:,:)) * z1_5000                  &
-            &         - 1.62_wp * TANH( (pdept(:,:,:) - 60._wp  ) * z1_650 )                     &
-            &         + 0.2_wp  * TANH( (pdept(:,:,:) - 35._wp  ) * z1_100 )                     &
-            &         + 0.2_wp  * TANH( (pdept(:,:,:) - 1000._wp) * z1_5000) )                   &
-            &         * (-TANH( (pdept(:,:,:) - 500._wp) * z1_150) + 1._wp) * 0.5_wp  ) * ptmask(:,:,:)
+         pts(:,:,:,jp_tem) =  (  (  16. - 12. * TANH( (pdept(:,:,:) - 400) / 700 ) )   &
+              &           * (-TANH( (500. - pdept(:,:,:)) / 150. ) + 1.) / 2.             &
+              &           + ( 15. * ( 1. - TANH( (pdept(:,:,:)-50.) / 1500.) )            &
+              &           - 1.4 * TANH((pdept(:,:,:)-100.) / 100.)                        &
+              &           + 7.  * (1500. - pdept(:,:,:) ) / 1500.)                        &
+              &           * (-TANH( (pdept(:,:,:) - 500.) / 150.) + 1.) / 2.  ) * ptmask(:,:,:)
+         !
+         pts(:,:,:,jp_sal) =  (  (  36.25 - 1.13 * TANH( (pdept(:,:,:) - 305) / 460 ) )  &
+              &         * (-TANH((500. - pdept(:,:,:)) / 150.) + 1.) / 2                  &
+              &         + ( 35.55 + 1.25 * (5000. - pdept(:,:,:)) / 5000.                 &
+              &         - 1.62 * TANH( (pdept(:,:,:) - 60.  ) / 650. )                    &
+              &         + 0.2  * TANH( (pdept(:,:,:) - 35.  ) / 100. )                    &
+              &         + 0.2  * TANH( (pdept(:,:,:) - 1000.) / 5000.) )                  &
+              &         * (-TANH( (pdept(:,:,:) - 500.) / 150.) + 1.) / 2  ) * ptmask(:,:,:)
+         !
          ! Create horizontal gradient of T (going linearly from equatorial profile to uniform T=4 degC profile)
          zphiMAX = MAXVAL( gphit(:,:) )
-         zTbot = MINVAL( pts(2:jpi - 1 , 2:jpj - 1 , 1:jpkm1 , jp_tem) )   ! Must be a positive temperature
-         !zTbot = MINVAL( pts(2:-1,:,:, jp_tem) )   ! Must be a positive temperature
+         
+         zTbot = MINVAL( pts(3:jpi - 2 , 3:jpj - 2 , 1:jpkm1 , jp_tem) )   ! Must be a positive temperature
+         zSbot = MINVAL( pts(3:jpi - 2 , 3:jpj - 2 , 1:jpkm1 , jp_sal) )   !
+         !
+         WRITE(numout,*) 'Sbot before = ', zSbot
+         !
          IF( lk_mpp )   THEN
             zmpparr(1) = zphiMAX
             zmpparr(2) = - zTbot
+            zmpparr(3) = - zSbot
             CALL mpp_max( 'usr_def_istate', zmpparr )
             zphiMAX = zmpparr(1)
             zTbot = - zmpparr(2)
+            zSbot = - zmpparr(3)
          ENDIF
+         !
+         WRITE(numout,*) 'Sbot after = ', zSbot
+         !
          z1_phiMAX = 1._wp / zphiMAX
          DO jk = 1, jpkm1
-            pts(:,:,jk,jp_tem) = ( ( pts(:,:,jk,jp_tem) - zTbot ) * ( zphiMAX - gphit(:,:) ) * z1_phiMAX + zTbot ) * ptmask(:,:,jk)
+            pts(:,:,jk,jp_tem) = ( ( pts(:,:,jk,jp_tem) - zTbot ) * ( zphiMAX - ABS(gphit(:,:)) ) * z1_phiMAX + zTbot ) * ptmask(:,:,jk)
+            pts(:,:,jk,jp_sal) = ( ( pts(:,:,jk,jp_sal) - zSbot ) * ( zphiMAX - ABS(gphit(:,:)) ) * z1_phiMAX + zSbot ) * ptmask(:,:,jk)
          END DO
       CASE(5)    ! Test of geostrophic adjustment
          ! sea level:

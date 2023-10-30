@@ -53,7 +53,7 @@
       rn_hco        =   1000.             ! layer thickness with z-coordinate [m]
       rn_acr        =    10.5             ! slope of the tanh
 
-   nn_initcase      =      1              ! initial condition case
+   nn_initcase      =      4              ! initial condition case
    !                                      ! 0: rest, T=cst, S=cst
    !                                      ! 1: rest, equatorial stratification in T and S
    !                                      ! 2: rest, linear     stratification in T, S uniform
@@ -90,7 +90,7 @@
    nn_no       =       0      !  job number (no more used...)
    cn_exp      = 'DINO' !  experience name
    nn_it000    =       1      !  first time step
-   !nn_itend    =       5     !  last time step (32 it => 1 day, 11520 => 1 year)
+   !nn_itend    =       2     !  last time step (32 it => 1 day, 11520 => 1 year)
    nn_itend    =       576000   !  last time step (32 it => 1 day, 11520 => 1 year)
    nn_istate   =       1      !  output the initial state (1) or not (0)
    ! nn_stock    =      11520   !  frequency of creation of a restart file (modulo referenced to 1) 50 years
@@ -220,7 +220,14 @@
 !----------------------------------------------------------------------- !!rc TODO linear drag
    ln_non_lin = .true.     !  non-linear  drag: Cd = Cd0 |U|
 /
-
+!-----------------------------------------------------------------------
+&nambbc        !   bottom temperature boundary condition                (default: OFF)
+!-----------------------------------------------------------------------
+   ln_trabbc   = .true.   !  Apply a geothermal heating at the ocean bottom
+      nn_geoflx     = 1       !  geothermal heat flux: = 1 constant flux
+      !                       !                        = 2 read variable flux [mW/m2]
+      rn_geoflx_cst = 86.4e-3 !  Constant value of geothermal heat flux       [mW/m2]
+/
 !!======================================================================
 !!                        Tracer (T & S) namelists                    !!
 !!                                                                    !!
