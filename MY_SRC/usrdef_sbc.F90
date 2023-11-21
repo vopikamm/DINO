@@ -13,16 +13,18 @@ MODULE usrdef_sbc
    !!   usr_def_sbc    : user defined surface bounday conditions
    !!----------------------------------------------------------------------
    USE oce, ONLY : ts                                             ! ocean dynamics and tracers
-   USE dom_oce, ONLY:                                              ! ocean space and time domain
-   USE sbc_oce, ONLY: utau, vtau, taum, wndm, emp, sfx, qns, qsr   ! Surface boundary condition: ocean fields
-   USE phycst                                                      ! physical constants
-   USE sbcdcy, ONLY: sbc_dcy, nday_qsr                             ! surface boundary condition: diurnal cycle
+   USE dom_oce, ONLY:                                             ! ocean space and time domain
+   USE sbc_oce, ONLY: utau, vtau, taum, wndm, emp, sfx, qns, qsr  ! Surface boundary condition: ocean fields
+   USE phycst                                                     ! physical constants
+   USE sbcdcy, ONLY: sbc_dcy, nday_qsr                            ! surface boundary condition: diurnal cycle
    !
    USE usrdef_nam, ONLY : nn_forcingtype, rn_ztau0, rn_emp_prop, ln_ann_cyc, ln_diu_cyc,  &
                &          rn_trp, rn_srp, ln_qsr, rn_phi_max, rn_phi_min, rn_sstar_s,     &
-               &          rn_sstar_n, rn_sstar_eq, rn_tstar_s, rn_tstar_n, rn_tstar_eq
+               &          rn_sstar_n, rn_sstar_eq, rn_tstar_s, rn_tstar_n, rn_tstar_eq,   &
+               &          ln_emp_field
    !
    USE in_out_manager  ! I/O manager
+   USE fldread         ! read input fields
    USE iom             ! 
    USE lib_mpp         ! distribued memory computing library
    USE lbclnk          ! ocean lateral boundary conditions (or mpp link)
@@ -35,6 +37,9 @@ MODULE usrdef_sbc
    PUBLIC   usrdef_sbc_ice_tau  ! routine called by icestp.F90 for ice dynamics
    PUBLIC   usrdef_sbc_ice_flx  ! routine called by icestp.F90 for ice thermo
 
+   INTEGER , PARAMETER ::   jp_emp  = 1            ! index of evaporation-precipation file
+   INTEGER , PARAMETER ::   jpfld   = 1            ! maximum number of files to read
+   TYPE(FLD), ALLOCATABLE, DIMENSION(:) ::   sf    ! structure of input fields (file informations, fields read)
    REAL(wp), DIMENSION(:,:), ALLOCATABLE ::   ztstar, zqsr_dayMean, zsstar   !: ztstar used in the heat forcing, zqsr_dayMean is the dayly averaged solar heat flux, zsstar for sfx
 
    !! * Substitutions
@@ -162,8 +167,8 @@ CONTAINS
          ! znds_tmp_val    = (/-0.5 * zdts_s * (1 + zcos_sais2) , zts_eq, 0.5 * zdts_n * (1 + zcos_sais2)/)
          !
          ! Evaporation - Precipitation
-         znds_emp_phi    = (/rn_phi_min, -50._wp, -20._wp, 0._wp, 20._wp, 50._wp, rn_phi_max /)
-         znds_emp_val    = (/-0.00001_wp, -0.00002_wp, 0.000035_wp, -0.000025_wp, 0.000035_wp, -0.00002_wp, -0.00001_wp /)
+         ! znds_emp_phi    = (/rn_phi_min, -50._wp, -20._wp, 0._wp, 20._wp, 50._wp, rn_phi_max /)
+         ! znds_emp_val    = (/-0.00001_wp, -0.00002_wp, 0.000035_wp, -0.000025_wp, 0.000035_wp, -0.00002_wp, -0.00001_wp /)
          !
          ! znds_slt_phi    = (/rn_phi_min, -40._wp, 0._wp, 40._wp, rn_phi_max /)
          ! znds_slt_val    = (/35.401_wp, 34.505_wp, 36.09_wp, 34.931_wp, 35.401_wp /)         
@@ -218,13 +223,13 @@ CONTAINS
             IF( utau(ji,jj) > 0 )   taum(ji,jj) = taum(ji,jj) * 1.3_wp   ! Boost in westerlies for TKE
             !
             ! EMP inspired from Wolfe and Cessi 2014, JPO and IPSL climate model output
-            emp(ji,jj)     = rn_emp_prop * znl_cbc(znds_emp_phi, znds_emp_val, gphit(ji,jj))
+            ! emp(ji,jj)     = rn_emp_prop * znl_cbc(znds_emp_phi, znds_emp_val, gphit(ji,jj))
             !
             ! T* inspired from Wolfe and Cessi 2014, JPO and IPSL climate model output
             ! ztstar(ji,jj)  = znl_cbc(znds_tmp_phi, znds_tmp_val, gphit(ji,jj))
             !
             ! T* inspired from Munday et al. (2012)
-            IF (gphit(ji, jj) <= 0) THEN
+            IF ( gphit(ji, jj) <= 0 ) THEN
                ztstar(ji,jj) = ztstar_s                                                                                    &
                   & + (rn_tstar_eq - ztstar_s) * SIN( rpi * ( gphit(ji,jj) + rn_phi_max ) /  ( rn_phi_max - rn_phi_min) )
             ELSE
@@ -233,7 +238,13 @@ CONTAINS
             ENDIF
          END_2D
          !
-         CALL remove_emp_mean()
+         IF( ln_emp_field ) THEN
+            Call emp_flx( kt )
+         ELSE
+            emp(:,:) = 0._wp
+         ENDIF
+         !
+         ! CALL remove_emp_mean()
          !
          ! Q SOLAR (from Gyre)
          ! see https://www.desmos.com/calculator/87duqiuxsf
@@ -375,7 +386,7 @@ CONTAINS
             ! Seasonnal cycle on T* coming from zcos_sais2
          END_2D
          !
-         emp(:,:) = rn_emp_prop * emp(:,:)   ! taking the proportionality factor into account
+         ! emp(:,:) = rn_emp_prop * emp(:,:)   ! taking the proportionality factor into account
          CALL remove_emp_mean()
          !
          ! Q SOLAR (flux from GYRE)
@@ -593,6 +604,68 @@ CONTAINS
       !!----------------------------------------------------------------------
 
    END FUNCTION znl_cbc
+
+   SUBROUTINE emp_flx( kt )
+      !!---------------------------------------------------------------------
+      !!                    ***  ROUTINE sbc_flx  ***
+      !!
+      !! ** Purpose :   provide at each time step the Evaporation - Precipitation
+      !!
+      !! ** Method  : - READ net upward freshwater (evapo - precip) emp   (kg/m2/s)
+      !!                   salt flux                              sfx   (pss*dh*rho/dt => g/m2/s)
+      !!
+      !!      CAUTION :  - never mask the surface stress fields
+      !!
+      !! ** Action  :   update at each time-step
+      !!              - emp         upward mass flux (evap. - precip.)
+      !!----------------------------------------------------------------------
+      INTEGER, INTENT(in) ::   kt   ! ocean time step
+      !!
+      INTEGER  ::   ji, jj, jf            ! dummy indices
+      INTEGER  ::   ierror                ! return error code
+      INTEGER  ::   ios                   ! Local integer output status for namelist read
+      !
+      CHARACTER(len=100) ::  cn_dir                ! Root directory for location of flx files
+      TYPE(FLD_N), DIMENSION(jpfld) ::   slf_i     ! array of namelist information structures
+      TYPE(FLD_N) ::                     sn_emp    ! informations about the fields to be read
+      NAMELIST/namsbc_flx/ cn_dir, sn_emp
+      !!---------------------------------------------------------------------
+      !
+      IF( kt == nit000 ) THEN                ! First call kt=nit000
+         ! set file information
+!         READ  ( numnam_ref, namsbc_flx, IOSTAT = ios, ERR = 901)
+!901      IF( ios /= 0 )   CALL ctl_nam ( ios , 'namsbc_flx in reference namelist' )
+
+         READ  ( numnam_cfg, namsbc_flx, IOSTAT = ios, ERR = 902 )
+902      IF( ios >  0 )   CALL ctl_nam ( ios , 'namsbc_flx in configuration namelist' )
+         IF(lwm) WRITE ( numond, namsbc_flx )
+         !                                         
+         slf_i(jp_emp ) = sn_emp                   ! store namelist information in an array
+         !
+         ALLOCATE( sf(jpfld), STAT=ierror )        ! set sf structure
+         IF( ierror > 0 ) THEN
+            CALL ctl_stop( 'sbc_flx: unable to allocate sf structure' )   ;   RETURN
+         ENDIF
+         DO ji= 1, jpfld
+            ALLOCATE( sf(ji)%fnow(jpi,jpj,1) )
+            IF( slf_i(ji)%ln_tint ) ALLOCATE( sf(ji)%fdta(jpi,jpj,1,2) )
+         END DO
+         !                                         ! fill sf with slf_i and control print
+         CALL fld_fill( sf, slf_i, cn_dir, 'emp_flx', 'flux formulation for ocean surface boundary condition', 'namsbc_flx' )
+         !
+      ENDIF
+
+      CALL fld_read( kt, nn_fsbc, sf )                            ! input fields provided at the current time-step
+
+      IF( MOD( kt-1, nn_fsbc ) == 0 ) THEN                        ! update ocean fluxes at each SBC frequency
+      !
+         DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )                  ! set the ocean fluxes from read fields
+            emp (ji,jj) =   sf(jp_emp )%fnow(ji,jj,1) * tmask(ji,jj,1)
+         END_2D
+         !
+      ENDIF
+      !
+   END SUBROUTINE emp_flx
 
    SUBROUTINE test_compute_day_of_year()
 		!!---------------------------------------------------------------------

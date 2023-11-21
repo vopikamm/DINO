@@ -40,6 +40,7 @@ MODULE usrdef_nam
    REAL(wp), PUBLIC ::   rn_ztau0       =    0.1    ! Magnitude of the wind-forcing [Pa]
    LOGICAL , PUBLIC ::   ln_diu_cyc     =  .TRUE.   ! Use diurnal cycle for qsr or not
    LOGICAL , PUBLIC ::   ln_ann_cyc     =  .TRUE.   ! Use an annual cycle or not
+   LOGICAL , PUBLIC ::   ln_emp_field   =  .FALSE.  ! EmP is read from file and replaces saltflx from S-restoring
    REAL(wp), PUBLIC ::   rn_emp_prop    =     1.    ! Proportionality factor to apply on the EMP
    REAL(wp), PUBLIC ::   rn_trp         =   -40.    ! Retroaction term on T*, must be negative  [W/m2/K]
    REAL(wp), PUBLIC ::   rn_srp         =     0.0   ! Restoring term on S*, must be negative    [kg/m2/s]
@@ -113,10 +114,9 @@ CONTAINS
          &                 , ln_zco_nam, ln_zps_nam, ln_sco_nam                  &
          &                 , nn_ztype, rn_H, rn_hborder, rn_distLam              &
          &                 , ln_mid_ridge, ln_drake_sill, ln_ann_cyc             &
-         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc                  &
+         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc, ln_emp_field    &
          &                 , rn_sstar_s, rn_sstar_n, rn_sstar_eq                 &
          &                 , rn_tstar_s, rn_tstar_n, rn_tstar_eq                 &
-         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc                  &
          &                 , rn_dzmin, rn_kth, rn_hco, rn_acr,  nn_mr_edge       &
          &                 , rn_mr_depth, rn_mr_width, rn_mr_lat_s               &
          &                 , rn_mr_lat_n, rn_ds_depth, rn_ds_width

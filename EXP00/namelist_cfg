@@ -38,11 +38,13 @@
          rn_tstar_s     =    -0.5         ! Retroaction value on T at the southern boundary
          rn_tstar_n     =     5.0         ! Retroaction value on T at the northern boundary
          rn_tstar_eq    =     27.         ! Retroaction value on T at the equator
-      rn_srp            =     -3.858E-3   ! Restoring term (must be negative) on salinity.
+      !rn_srp            =     -3.858E-3   ! Restoring term (must be negative) on salinity.
+      rn_srp            =      0.         ! Restoring term (must be negative) on salinity.
          rn_sstar_s     =     35.         ! Salinity restoring value at the southern boundary
          rn_sstar_n     =     35.1        ! Salinity restoring value at the northern boundary 
-         rn_sstar_eq   =     37.25        ! Salinity restoring maximum without exponential
+         rn_sstar_eq    =     37.25       ! Salinity restoring maximum without exponential
       ln_qsr            = .true.          ! Solar heat flux or not
+      ln_emp_field      = .true.          ! EmP is read from file and replaces saltflx from S-restoring
 
    nn_botcase       =      1              ! bottom definition (0:flat, 1:bowl cosh, 2: bowl 1-x**4)
       rn_H          =   4000.             ! Maximum depth of the basin (approximative, is recomputed after the bathymetry calculation)
@@ -81,7 +83,7 @@
                                           ! 1: gaussian edges
    !
    ln_drake_sill    = .true.              ! Including circular Drake-Sill
-      rn_ds_depth   =  3000.              ! Depth of the circular Drake-Sill
+      rn_ds_depth   =  2500.              ! Depth of the circular Drake-Sill
       rn_ds_width   =     4.              ! Width of the circular Drake-Sill 
 /
 !-----------------------------------------------------------------------
@@ -90,13 +92,13 @@
    nn_no       =       0      !  job number (no more used...)
    cn_exp      = 'DINO' !  experience name
    nn_it000    =       1      !  first time step
-   !nn_itend    =       2     !  last time step (32 it => 1 day, 11520 => 1 year)
-   nn_itend    =       576000   !  last time step (32 it => 1 day, 11520 => 1 year)
+   nn_itend    =       32     !  last time step (32 it => 1 day, 11520 => 1 year)
+   !nn_itend    =       576000   !  last time step (32 it => 1 day, 11520 => 1 year)
    nn_istate   =       1      !  output the initial state (1) or not (0)
    ! nn_stock    =      11520   !  frequency of creation of a restart file (modulo referenced to 1) 50 years
    ! nn_write    =      11520   !  frequency of write in the output file   (modulo referenced to nn_it000)
    nn_leapy    =   30         !  Months of 30 days (year of 360 days)
-   ln_rstart = .false.        !  start from rest (F) or from a restart file (T)
+   ln_rstart = .true.        !  start from rest (F) or from a restart file (T)
       !nn_euler    =    1      !  = 0 : start with forward time step if ln_rstart=T
       nn_rstctl   =    2 !  restart control ==> activated only if ln_rstart=T
       !!                          !    = 0 nn_date0 read in namelist ; nn_it000 : read in namelist
@@ -113,7 +115,7 @@
    ln_linssh   = .false.    !  =T  linear free surface  ==>>  model level are fixed in time
    !
    rn_Dt      = 2700. !  time step for the dynamics (2700. = 45 min, 1 degree)
-   !rn_Dt      = 720.  !  time step for the dynamics (900. = 15 min, 1/4 degree)
+   ! rn_Dt      = 720.  !  time step for the dynamics (900. = 15 min, 1/4 degree)
    !
    ln_meshmask = .true.   !  =T create a mesh file
 /
@@ -179,8 +181,17 @@
 &namsbc        !   Surface Boundary Condition manager                   (default: NO selection)
 !-----------------------------------------------------------------------
    nn_fsbc     = 1         !  frequency of SBC module call
-  ln_usr      = .true.    !  user defined formulation                  (T => check usrdef_sbc)
+   ln_usr      = .true.    !  user defined formulation                  (T => check usrdef_sbc)
    ln_traqsr   = .true.    !  Light penetration in the ocean            (T => fill namtra_qsr)
+/
+!-----------------------------------------------------------------------
+&namsbc_flx    !   surface boundary condition : flux formulation        (ln_flx =T)
+!-----------------------------------------------------------------------
+   cn_dir      = './'      !  root directory for the fluxes data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   sn_emp      = 'emp_climatology'       ,        24         , 'emp'     , .false.     , .true. , 'yearly'  , ''               , ''       , ''
 /
 !-----------------------------------------------------------------------
 &namtra_qsr    !   penetrative solar radiation                          (ln_traqsr =T)
@@ -435,7 +446,12 @@
 !!   nam_dia25h   25h Mean Output                                       (default: OFF)
 !!   namnc4       netcdf4 chunking and compression settings             ("key_netcdf4")
 !!======================================================================
-
+!-----------------------------------------------------------------------
+&namtrd        !   trend diagnostics                                    (default: OFF)
+!-----------------------------------------------------------------------
+   ln_dyn_trd  = .false.   ! (T) 3D momentum trend output
+   ln_tra_trd  = .false.   ! (T) 3D tracer trend output
+/
 !!======================================================================
 !!               ***  Observation & Assimilation  ***                 !!
 !!                                                                    !!
