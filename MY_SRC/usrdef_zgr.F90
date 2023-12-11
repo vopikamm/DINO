@@ -23,7 +23,7 @@ MODULE usrdef_zgr
    USE usrdef_nam, ONLY: nn_botcase, rn_distlam, rn_H, rn_hborder,            &
                      &   ln_sco_nam, ln_zco_nam, ln_zps_nam, nn_ztype,        &
                      &   ln_Iperio, rn_cha_min, rn_cha_max, rn_e1_deg,        &
-                     &   nn_jeq_min, merc_proj, ln_mid_ridge, ln_drake_sill,  &
+                     &   nn_jeq_s, merc_proj, ln_mid_ridge, ln_drake_sill,  &
                      &   rn_dzmin, rn_hco, rn_kth, rn_acr, rn_slp_cha,        &
                      &   rn_ds_depth, rn_ds_width, rn_mr_depth, rn_mr_width,  &
                      &   rn_mr_lat_n, rn_mr_lat_s, nn_mr_edge, rn_phi_min     
@@ -207,8 +207,8 @@ CONTAINS
       zbathy(:,:) = 1._wp                         ! Use zbathy as land-sea mask to compute k_top and k_bot
       !
       IF (ln_Iperio) THEN
-         nn_cha_min  = nn_jeq_min - merc_proj(rn_cha_min, rn_e1_deg) + 1
-         nn_cha_max  = nn_jeq_min - merc_proj(rn_cha_max, rn_e1_deg) + 1
+         nn_cha_min  = nn_jeq_s - merc_proj(rn_cha_min, rn_e1_deg) + 1
+         nn_cha_max  = nn_jeq_s - merc_proj(rn_cha_max, rn_e1_deg) + 1
          DO jj = 1, jpj
             IF (mjg(jj) <= nn_cha_min) THEN
                zbathy(  mi0(     1+nn_hls):mi1(     1+nn_hls),jj) = 0._wp   ! first column of inner global domain at 0

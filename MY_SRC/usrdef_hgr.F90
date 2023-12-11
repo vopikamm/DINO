@@ -16,7 +16,7 @@ MODULE usrdef_hgr
    USE par_oce ! , ONLY:                ! ocean space and time domain
    USE phycst          ! physical constants
    !
-   USE usrdef_nam, ONLY: rn_e1_deg, rn_lam_min, rn_phi_min, nn_jeq_min
+   USE usrdef_nam, ONLY: rn_e1_deg, rn_lam_min, rn_phi_min, nn_jeq_s
    !                                                  and reference latitude
    USE in_out_manager  ! I/O manager
    USE lib_mpp         ! MPP library
@@ -133,10 +133,10 @@ CONTAINS
       !
       !
       DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-            zti = REAL( mig0(ji) - 1, wp )             ;     ztj = REAL( mjg0(jj) - nn_jeq_min, wp )
-            zui = REAL( mig0(ji) - 1, wp ) + 0.5       ;     zuj = REAL( mjg0(jj) - nn_jeq_min, wp )
-            zvi = REAL( mig0(ji) - 1, wp )             ;     zvj = REAL( mjg0(jj) - nn_jeq_min, wp ) + 0.5
-            zfi = REAL( mig0(ji) - 1, wp ) + 0.5       ;     zfj = REAL( mjg0(jj) - nn_jeq_min, wp ) + 0.5
+            zti = REAL( mig0(ji) - 1, wp )             ;     ztj = REAL( mjg0(jj) - nn_jeq_s, wp )
+            zui = REAL( mig0(ji) - 1, wp ) + 0.5       ;     zuj = REAL( mjg0(jj) - nn_jeq_s, wp )
+            zvi = REAL( mig0(ji) - 1, wp )             ;     zvj = REAL( mjg0(jj) - nn_jeq_s, wp ) + 0.5
+            zfi = REAL( mig0(ji) - 1, wp ) + 0.5       ;     zfj = REAL( mjg0(jj) - nn_jeq_s, wp ) + 0.5
          ! Longitude
             plamt(ji,jj) = zlam0 + rn_e1_deg * zti
             plamu(ji,jj) = zlam0 + rn_e1_deg * zui

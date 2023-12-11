@@ -19,7 +19,7 @@
 !-----------------------------------------------------------------------
 &namusr_def    !   User defined :   BASIN configuration
 !-----------------------------------------------------------------------
-   rn_e1_deg            =      1.         ! Resolution in degrees of longitude (Mercator grid)
+   rn_e1_deg            =      1.        ! Resolution in degrees of longitude (Mercator grid)
    rn_phi_min           =    -70.         ! Latitude of the south frontier (T point) [degrees] (approximative)
    rn_phi_max           =     70.         ! Latitude of the north frontier (T point) [degrees] (approximative)
    rn_lam_min           =      0.         ! Longitude of the west frontier (T point) [degrees] (approximative)
@@ -92,13 +92,13 @@
    nn_no       =       0      !  job number (no more used...)
    cn_exp      = 'DINO' !  experience name
    nn_it000    =       1      !  first time step
-   nn_itend    =       32     !  last time step (32 it => 1 day, 11520 => 1 year)
-   !nn_itend    =       576000   !  last time step (32 it => 1 day, 11520 => 1 year)
-   nn_istate   =       1      !  output the initial state (1) or not (0)
+   !nn_itend    =       32     !  last time step (32 it => 1 day, 11520 => 1 year)
+   nn_itend    =       576000   !  last time step (32 it => 1 day, 11520 => 1 year)
+   nn_istate   =       0      !  output the initial state (1) or not (0)
    ! nn_stock    =      11520   !  frequency of creation of a restart file (modulo referenced to 1) 50 years
    ! nn_write    =      11520   !  frequency of write in the output file   (modulo referenced to nn_it000)
    nn_leapy    =   30         !  Months of 30 days (year of 360 days)
-   ln_rstart = .true.        !  start from rest (F) or from a restart file (T)
+   ln_rstart = .false.        !  start from rest (F) or from a restart file (T)
       !nn_euler    =    1      !  = 0 : start with forward time step if ln_rstart=T
       nn_rstctl   =    2 !  restart control ==> activated only if ln_rstart=T
       !!                          !    = 0 nn_date0 read in namelist ; nn_it000 : read in namelist
@@ -115,7 +115,7 @@
    ln_linssh   = .false.    !  =T  linear free surface  ==>>  model level are fixed in time
    !
    rn_Dt      = 2700. !  time step for the dynamics (2700. = 45 min, 1 degree)
-   ! rn_Dt      = 720.  !  time step for the dynamics (900. = 15 min, 1/4 degree)
+   !rn_Dt      = 720.  !  time step for the dynamics (900. = 15 min, 1/4 degree)
    !
    ln_meshmask = .true.   !  =T create a mesh file
 /

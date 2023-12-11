@@ -28,11 +28,11 @@ MODULE usrdef_nam
 
    !                              !!* namusr_def namelist *!!
    REAL(wp), PUBLIC ::   rn_e1_deg      =     1     ! Resolution in degrees of longitude (Mercator grid)
-   REAL(wp), PUBLIC ::   rn_phi_min     =   -66.    ! Latitude of the south frontier (T point) [degrees] (approximative)
-   REAL(wp), PUBLIC ::   rn_phi_max     =    66.    ! Latitude of the north frontier (T point) [degrees] (approximative)
+   REAL(wp), PUBLIC ::   rn_phi_min     =   -70.    ! Latitude of the south frontier (T point) [degrees] (approximative)
+   REAL(wp), PUBLIC ::   rn_phi_max     =    70.    ! Latitude of the north frontier (T point) [degrees] (approximative)
    REAL(wp), PUBLIC ::   rn_lam_min     =     0.    ! Longitude of the west frontier (T point) [degrees] (approximative)
    REAL(wp), PUBLIC ::   rn_lam_max     =    50.    ! Longitude of the east frontier (T point) [degrees] (approximative)
-   INTEGER , PUBLIC ::   nn_jeq_min     =    42     ! Number of grid points from southern boundary to equator
+   INTEGER , PUBLIC ::   nn_jeq_s       =    100    ! Number of grid points from southern boundary to equator
    INTEGER , PUBLIC ::   nn_iglo        =    42     ! Number of grid points along i direction
    INTEGER , PUBLIC ::   nn_jglo        =    62     ! Number of grid points along j direction
    INTEGER , PUBLIC ::   nn_k           =    42     ! Number of grid points along k direction
@@ -104,8 +104,9 @@ CONTAINS
       CHARACTER(len=1), INTENT(out) ::   cdNFtype             ! Folding type: T or F
       !
       INTEGER ::   ios, ii               ! Local integer
-      REAL(wp)::   zh                    ! Local scalars
-      REAL(wp)::   zarg_min, zarg_max, zjeq_min, zjeq_max, ijeq_max, rn_iglo
+      REAL(wp)::   zh, ziglo             ! Local scalars
+      ! REAL(wp)::   zarg_min, zarg_max, zjeq_min, zjeq_max, ijeq_max, rn_iglo
+      INTEGER ::   nn_jeq_n
       !!
       NAMELIST/namusr_def/ rn_e1_deg, rn_phi_min, rn_phi_max, rn_lam_min         &
          &                 , rn_lam_max, nn_k, rn_emp_prop, rn_ztau0             &
@@ -134,34 +135,46 @@ CONTAINS
       cd_cfg = 'BASIN'             ! name & resolution (not used)
       kk_cfg = rn_e1_deg
       !
-      zarg_min = rpi / 4. - rpi / 180. * rn_phi_max / 2.
-      zarg_max = rpi / 4. - rpi / 180. * rn_phi_min / 2.
+      ! Number of gridpoints in j-direction
+      ! zarg_min = rpi / 4. - rpi / 180. * rn_phi_max / 2.
+      ! zarg_max = rpi / 4. - rpi / 180. * rn_phi_min / 2.
 
-      zjeq_min = ABS( 180./rpi * LOG( COS( zarg_min ) / SIN( zarg_min ) ) / rn_e1_deg )
-      zjeq_max = ABS( 180./rpi * LOG( COS( zarg_max ) / SIN( zarg_max ) ) / rn_e1_deg )
+      ! zjeq_min = ABS( 180./rpi * LOG( COS( zarg_min ) / SIN( zarg_min ) ) / rn_e1_deg )
+      ! zjeq_max = ABS( 180./rpi * LOG( COS( zarg_max ) / SIN( zarg_max ) ) / rn_e1_deg )
 
-      IF(  rn_phi_min > 0 )  zjeq_min = -zjeq_min
-      IF(  rn_phi_max > 0 )  zjeq_max = -zjeq_max
+      ! IF(  rn_phi_min > 0 )  zjeq_min = -zjeq_min
+      ! IF(  rn_phi_max > 0 )  zjeq_max = -zjeq_max
 
-      zjeq_min =  zjeq_min + 1._wp
-      zjeq_max =  zjeq_max + 1._wp ! We add the +1 because the j indexes start from 1: if the equator is on the first row, its index must be 1
+      ! zjeq_min =  zjeq_min + 1._wp
+      ! zjeq_max =  zjeq_max + 1._wp ! We add the +1 because the j indexes start from 1: if the equator is on the first row, its index must be 1
       
-      nn_jeq_min  = FLOOR( zjeq_min )
-      ijeq_max    = FLOOR( zjeq_max )
+      ! nn_jeq_min  = FLOOR( zjeq_min )
+      ! ijeq_max    = FLOOR( zjeq_max )
 
-      IF( ABS( REAL( nn_jeq_min, wp ) - zjeq_min ) > 0.5 )   nn_jeq_min = nn_jeq_min + 1
-      IF( ABS( REAL( ijeq_max, wp ) - zjeq_max ) > 0.5 )   ijeq_max = ijeq_max + 1
-      !
-      IF(lwp) WRITE(numout,*) '          Index of the equator      (real)       on the MERCATOR grid:', zjeq_min
-      IF(lwp) WRITE(numout,*) '          Index of the equator (nearest integer) on the MERCATOR grid:', nn_jeq_min
+      ! IF( ABS( REAL( nn_jeq_min, wp ) - zjeq_min ) > 0.5 )   nn_jeq_min = nn_jeq_min + 1
+      ! IF( ABS( REAL( ijeq_max, wp ) - zjeq_max ) > 0.5 )   ijeq_max = ijeq_max + 1
+      ! !
+      ! IF(lwp) WRITE(numout,*) '          Index of the equator      (real)       on the MERCATOR grid:', zjeq_min
+      ! IF(lwp) WRITE(numout,*) '          Index of the equator (nearest integer) on the MERCATOR grid:', nn_jeq_min
+      ! IF(lwp) WRITE(numout,*) '          Index of the equator (from northern boundary) on the MERCATOR grid:', ijeq_max
 
-      ! Global Domain size
-      rn_iglo = (rn_lam_max - rn_lam_min) / rn_e1_deg
-      nn_iglo = FLOOR(rn_iglo)
-      IF( ABS( REAL( nn_iglo, wp ) - rn_iglo ) > 0.5 )   nn_iglo = nn_iglo + 1
+      nn_jeq_n = merc_proj(rn_phi_max, rn_e1_deg)
+      nn_jeq_s = merc_proj(rn_phi_min, rn_e1_deg)
 
-      nn_jglo = (nn_jeq_min - ijeq_max) + 1
+      IF(lwp) WRITE(numout,*) '          Index of the equator (north from merc_proj) on the MERCATOR grid:', nn_jeq_n
+      IF(lwp) WRITE(numout,*) '          Index of the equator (south from merc_proj) on the MERCATOR grid:', nn_jeq_s
 
+      nn_jglo = (nn_jeq_s - nn_jeq_n) + 1
+
+      ! Number of gridpoints in i-direction
+      ziglo = (rn_lam_max - rn_lam_min) / rn_e1_deg
+      nn_iglo = FLOOR(ziglo)
+      IF( ABS( REAL( nn_iglo, wp ) - ziglo ) > 0.5 )   nn_iglo = nn_iglo + 1
+
+      ! To conserve volume across resolutions in i-direction
+      nn_iglo = nn_iglo + 2
+
+      ! Global domain size
       kpi = nn_iglo
       kpj = nn_jglo
       kpk = nn_k
@@ -217,7 +230,7 @@ CONTAINS
       !!----------------------------------------------------------------------
       REAL(wp), INTENT(in   )             ::   pphi     ! approximate latitude   [degrees]
       REAL(wp), INTENT(in   )             ::   pres     ! resolution of the grid [meters]
-      REAL(wp)                            ::   kphi     ! number of gridpoints between equator and (approximately) pphi
+      INTEGER                             ::   kphi     ! number of gridpoints between equator and (approximately) pphi
       !!----------------------------------------------------------------------
       INTEGER  ::   jk
       REAL(wp) ::   zarg, zjeq, zsur     ! Computed parameters
