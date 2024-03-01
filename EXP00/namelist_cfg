@@ -342,6 +342,10 @@
 !!   namdta_dyn    offline TOP: dynamics read in files                  (OFF_SRC only)
 !!======================================================================
 !
+&namZB !   parameters of backscatter parameterization
+!-----------------------------------------------------------------------
+   ln_zanna_bolton      = .true.               ! turn on backscatter
+/
 !-----------------------------------------------------------------------
 &namdyn_adv    !   formulation of the momentum advection                (default: NO selection)
 !-----------------------------------------------------------------------
