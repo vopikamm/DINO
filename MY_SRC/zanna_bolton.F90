@@ -14,6 +14,7 @@ MODULE zanna_bolton
    USE lib_mpp         ! MPP library
    USE lbclnk          ! ocean lateral boundary conditions (or mpp link)
    USE in_out_manager ! I/O manager
+   USE iom             ! I/O module for ehanced bottom friction file
    USE phycst          ! rpi
 
    IMPLICIT NONE
@@ -45,8 +46,6 @@ MODULE zanna_bolton
 CONTAINS
 
    SUBROUTINE ZB_2020_init ( )
-      
-      !INTEGER :: ji, jj, jk
       
       NAMELIST/namZB/ ln_zanna_bolton, rn_gamma
       
@@ -92,8 +91,6 @@ CONTAINS
       T_yy  = 0._wp
       zbu   = 0._wp
       zbv   = 0._wp
-
-      !CALL KEB_rst_read() TODO ??
    END SUBROUTINE ZB_2020_init
 
    SUBROUTINE ZB_apply( kt, Kbb, puu, pvv, Krhs )
@@ -104,8 +101,20 @@ CONTAINS
       INTEGER                             , INTENT( in )  ::  kt               ! ocean time-step index
       INTEGER                             , INTENT( in )  ::  Kbb, Krhs   ! ocean time level indices
       REAL(wp), DIMENSION(jpi,jpj,jpk,jpt), INTENT(inout) ::  puu, pvv 
+      !
+      REAL(wp), DIMENSION(jpi,jpj,jpk) ::   zurhs, zvrhs
       ! compute ZB from before velocities
-      CALL ZB_2020(kt, Kbb, rn_gamma, puu(:,:,:,Kbb), pvv(:,:,:,Kbb), puu(:,:,:,Krhs), pvv(:,:,:,Krhs)) ! TODO namelist for gamma
+      CALL ZB_2020(kt, Kbb, rn_gamma, puu(:,:,:,Kbb), pvv(:,:,:,Kbb), zurhs, zvrhs) ! TODO namelist for gamma
+      !
+      !output tendencies
+      CALL iom_put('zb_u', zurhs)
+      CALL iom_put('zb_v', zvrhs)
+      CALL iom_put('zb_surf_u', zurhs(:,:,1))
+      CALL iom_put('zb_surf_v', zvrhs(:,:,1))
+      !
+      !apply tendency to the RHS
+      puu(:,:,:,Krhs) = puu(:,:,:,Krhs) + zurhs
+      pvv(:,:,:,Krhs) = pvv(:,:,:,Krhs) + zvrhs
    END SUBROUTINE ZB_apply
 
    SUBROUTINE ZB_2020(kt, Kbb, gamma, puu, pvv, zbu, zbv)
@@ -118,8 +127,8 @@ CONTAINS
       !
       INTEGER, INTENT(in) ::   kt   ! time step index
       INTEGER, INTENT(in) ::   Kbb  ! ocean time level indices
-      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    ::  puu, pvv ! before velocity  [m/s]
-      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  zbu, zbv ! u-, v-component of S 
+      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    ::  puu, pvv         ! before velocity  [m/s]
+      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  zbu, zbv     ! u-, v-component of S 
       
       INTEGER  ::   ji, jj, jk           ! dummy loop indices
 
@@ -132,13 +141,13 @@ CONTAINS
       !
       ! Horizontal Divergence of the stress tensor
       DO_3D_OVR( 0, 0, 0, 0 , 1, jpk)
-         zbu(ji,jj,jk) = zbu(ji,jj,jk) + (( T_xx(ji+1,jj,jk)   * e3t(ji+1,jj,jk,Kbb)   * e2t(ji+1,jj)   ** 2                   &
+         zbu(ji,jj,jk) = (( T_xx(ji+1,jj,jk)   * e3t(ji+1,jj,jk,Kbb)   * e2t(ji+1,jj)   ** 2                   &
             &             - T_xx(ji,jj,jk) * e3t(ji,jj,jk,Kbb) * e2t(ji,jj) ** 2) / e2u(ji,jj)  &
             &           + ( T_xy(ji,jj,jk)   * e3f(ji,jj,jk)   * e1f(ji,jj)   ** 2                   &
             &             - T_xy(ji,jj-1,jk) * e3f(ji,jj-1,jk) * e1f(ji,jj-1) ** 2) / e1u(ji,jj)) &
             &           *   r1_e1u(ji,jj) * r1_e2u(ji,jj) / e3u(ji,jj,jk,Kbb) * gamma
          !
-         zbv(ji,jj,jk) = zbv(ji,jj,jk) + (( T_xy(ji,jj,jk)   * e3f(ji,jj,jk)   * e2f(ji,jj)   ** 2                   &
+         zbv(ji,jj,jk) = (( T_xy(ji,jj,jk)   * e3f(ji,jj,jk)   * e2f(ji,jj)   ** 2                   &
             &             - T_xy(ji-1,jj,jk) * e3f(ji-1,jj,jk) * e2f(ji-1,jj) ** 2) / e2v(ji,jj)  &
             &           + ( T_yy(ji,jj+1,jk)   * e3t(ji,jj+1,jk,Kbb)   * e1t(ji,jj+1)   ** 2                   &
             &             - T_yy(ji,jj,jk) * e3t(ji,jj,jk,Kbb) * e1t(ji,jj) ** 2) / e1v(ji,jj)) &
