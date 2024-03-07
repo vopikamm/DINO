@@ -1,7 +1,8 @@
-MODULE step
+MODULE stpmlf
    !!======================================================================
-   !!                       ***  MODULE step  ***
+   !!                       ***  MODULE stpMLF  ***
    !! Time-stepping   : manager of the ocean, tracer and ice time stepping
+   !!                   using Modified Leap Frog for OCE
    !!======================================================================
    !! History :  OPA  !  1991-03  (G. Madec)  Original code
    !!             -   !  1991-11  (G. Madec)
@@ -31,46 +32,51 @@ MODULE step
    !!             -   !  2015-11  (J. Chanut) free surface simplification (remove filtered free surface)
    !!            4.0  !  2017-05  (G. Madec)  introduction of the vertical physics manager (zdfphy)
    !!            4.1  !  2019-08  (A. Coward, D. Storkey) rewrite in preparation for new timestepping scheme
+   !!            4.x  !  2020-08  (S. Techene, G. Madec)  quasi eulerian coordinate time stepping
    !!----------------------------------------------------------------------
-
 #if defined key_qco   ||   defined key_linssh
    !!----------------------------------------------------------------------
-   !!   'key_qco'      EMPTY MODULE      Quasi-Eulerian vertical coordinate
-   !!                                OR
-   !!   'key_linssh    EMPTY MODULE       Fixed in time vertical coordinate
+   !!   'key_qco'                        Quasi-Eulerian vertical coordinate
+   !!                          OR
+   !!   'key_linssh                       Fixed in time vertical coordinate
    !!----------------------------------------------------------------------
-#else
+   !!
    !!----------------------------------------------------------------------
-   !!   stp             : OCE system time-stepping
+   !!   stp_MLF       : NEMO modified Leap Frog time-stepping with qco or linssh
    !!----------------------------------------------------------------------
-   USE step_oce         ! time stepping definition modules
+   USE step_oce       ! time stepping definition modules
+   !
+   USE domqco         ! quasi-eulerian coordinate
+   USE traatf_qco     ! time filtering                 (tra_atf_qco routine)
+   USE dynatf_qco     ! time filtering                 (dyn_atf_qco routine)
 
    IMPLICIT NONE
    PRIVATE
 
-   PUBLIC   stp   ! called by nemogcm.F90
+   PUBLIC   stp_MLF   ! called by nemogcm.F90
 
    !                                          !**  time level indices  **!
    INTEGER, PUBLIC ::   Nbb, Nnn, Naa, Nrhs   !: used by nemo_init
 
    !! * Substitutions
 #  include "do_loop_substitute.h90"
+#  include "domzgr_substitute.h90"
    !!----------------------------------------------------------------------
    !! NEMO/OCE 4.0 , NEMO Consortium (2018)
-   !! $Id: step.F90 15398 2021-10-19 08:49:42Z timgraham $
+   !! $Id: step.F90 12377 2020-02-12 14:39:06Z acc $
    !! Software governed by the CeCILL license (see ./LICENSE)
    !!----------------------------------------------------------------------
 CONTAINS
 
 #if defined key_agrif
-   RECURSIVE SUBROUTINE stp( )
+   RECURSIVE SUBROUTINE stp_MLF( )
       INTEGER             ::   kstp   ! ocean time-step index
 #else
-   SUBROUTINE stp( kstp )
+   SUBROUTINE stp_MLF( kstp )
       INTEGER, INTENT(in) ::   kstp   ! ocean time-step index
 #endif
       !!----------------------------------------------------------------------
-      !!                     ***  ROUTINE stp  ***
+      !!                     ***  ROUTINE stp_MLF  ***
       !!
       !! ** Purpose : - Time stepping of OCE  (momentum and active tracer eqs.)
       !!              - Time stepping of SI3 (dynamic and thermodynamic eqs.)
@@ -86,6 +92,7 @@ CONTAINS
       !!              -8- Outputs and diagnostics
       !!----------------------------------------------------------------------
       INTEGER ::   ji, jj, jk, jtile   ! dummy loop indice
+      REAL(wp), ALLOCATABLE, DIMENSION(:,:,:) ::   zgdept
       !! ---------------------------------------------------------------------
 #if defined key_agrif
       IF( nstop > 0 ) RETURN   ! avoid to go further if an error was detected during previous time step (child grid)
@@ -101,7 +108,7 @@ CONTAINS
 # endif
 #endif
       !
-      IF( ln_timing )   CALL timing_start('stp')
+      IF( ln_timing )   CALL timing_start('stp_MLF')
       !
       !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
       ! model timestep
@@ -173,13 +180,9 @@ CONTAINS
                          CALL bn2    ( ts(:,:,:,:,Nnn), rab_n, rn2, Nnn  ) ! now    Brunt-Vaisala frequency
 
       !  VERTICAL PHYSICS
-      ! lbc_lnk needed for zdf_sh2 when using nn_hls = 2, moved here to allow tiling in zdf_phy
-      IF( nn_hls == 2 .AND. l_zdfsh2 ) CALL lbc_lnk( 'stp', avm_k, 'W', 1.0_wp )
-
       IF( ln_tile ) CALL dom_tile_start         ! [tiling] ZDF tiling loop
       DO jtile = 1, nijtile
          IF( ln_tile ) CALL dom_tile( ntsi, ntsj, ntei, ntej, ktile = jtile )
-
                          CALL zdf_phy( kstp, Nbb, Nnn, Nrhs )   ! vertical physics update (top/bot drag, avt, avs, avm + MLD)
       END DO
       IF( ln_tile ) CALL dom_tile_stop
@@ -210,17 +213,26 @@ CONTAINS
       !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
       !  Ocean dynamics : hdiv, ssh, e3, u, v, w
       !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-                         CALL ssh_nxt       ( kstp, Nbb, Nnn, ssh, Naa )   ! after ssh (includes call to div_hor)
-      IF( .NOT.ln_linssh )   &
-                       & CALL dom_vvl_sf_nxt( kstp, Nbb, Nnn,      Naa )   ! after vertical scale factors
-                         CALL wzv           ( kstp, Nbb, Nnn, Naa, ww  )   ! now cross-level velocity
-      IF( ln_zad_Aimp )  CALL wAimp         ( kstp,      Nnn           )   ! Adaptive-implicit vertical advection partitioning
-                         CALL eos    ( ts(:,:,:,:,Nnn), rhd, rhop, gdept(:,:,:,Nnn) )  ! now in situ density for hpg computation
-
+      
+                         CALL ssh_nxt    ( kstp, Nbb, Nnn, ssh,  Naa )   ! after ssh (includes call to div_hor)
+      IF( .NOT.lk_linssh ) THEN
+                         CALL dom_qco_r3c( ssh(:,:,Naa), r3t(:,:,Naa), r3u(:,:,Naa), r3v(:,:,Naa)           )   ! "after" ssh/h_0 ratio at t,u,v pts
+         IF( ln_dynspg_exp )   &
+            &            CALL dom_qco_r3c( ssh(:,:,Nnn), r3t(:,:,Nnn), r3u(:,:,Nnn), r3v(:,:,Nnn), r3f(:,:) )   ! spg_exp : needed only for "now" ssh/h_0 ratio at f point
+      ENDIF
+                         CALL wzv        ( kstp, Nbb, Nnn, Naa, ww  )    ! Nnn cross-level velocity
+      IF( ln_zad_Aimp )  CALL wAimp      ( kstp,      Nnn           )    ! Adaptive-implicit vertical advection partitioning
+                         ALLOCATE( zgdept(jpi,jpj,jpk) )
+                         DO jk = 1, jpk
+                            zgdept(:,:,jk) = gdept(:,:,jk,Nnn)
+                         END DO
+                         CALL eos        ( ts(:,:,:,:,Nnn), rhd, rhop, zgdept ) ! now in situ density for hpg computation
+                         DEALLOCATE( zgdept )
 
                          uu(:,:,:,Nrhs) = 0._wp            ! set dynamics trends to zero
                          vv(:,:,:,Nrhs) = 0._wp
+
+      IF( ln_dyndmp .AND. ln_c1d )  CALL dyn_dmp( kstp, Nbb, Nnn, uu(:,:,:,Nrhs), vv(:,:,:,Nrhs), Nrhs )   ! internal damping trends- momentum
 
       IF( ln_tile ) CALL dom_tile_start         ! [tiling] DYN tiling loop (1)
       DO jtile = 1, nijtile
@@ -252,24 +264,16 @@ CONTAINS
 
                             CALL dyn_spg( kstp, Nbb, Nnn, Nrhs, uu, vv, ssh, uu_b, vv_b, Naa )  ! surface pressure gradient
 
-                                                      ! With split-explicit free surface, since now transports have been updated and ssh(:,:,Nrhs) as well
-      IF( ln_dynspg_ts ) THEN                         ! vertical scale factors and vertical velocity need to be updated
-         IF( ln_tile ) CALL dom_tile_start      ! [tiling] DYN tiling loop (2- div_hor only)
-         DO jtile = 1, nijtile
-            IF( ln_tile ) CALL dom_tile( ntsi, ntsj, ntei, ntej, ktile = jtile )
-
-                             CALL div_hor       ( kstp, Nbb, Nnn )               ! Horizontal divergence  (2nd call in time-split case)
-         END DO
-         IF( ln_tile ) CALL dom_tile_stop
-
-         IF(.NOT. ln_linssh) CALL dom_vvl_sf_nxt( kstp, Nbb, Nnn, Naa, kcall=2 )  ! after vertical scale factors (update depth average component)
-      ENDIF
-
-      IF( ln_tile ) CALL dom_tile_start         ! [tiling] DYN tiling loop (3- dyn_zdf only)
+      IF( ln_tile ) CALL dom_tile_start         ! [tiling] DYN tiling loop (2)
       DO jtile = 1, nijtile
          IF( ln_tile ) CALL dom_tile( ntsi, ntsj, ntei, ntej, ktile = jtile )
 
-                               CALL dyn_zdf    ( kstp, Nbb, Nnn, Nrhs, uu, vv, Naa  )  ! vertical diffusion
+         IF( ln_dynspg_ts ) THEN      ! With split-explicit free surface, since now transports have been updated and ssh(:,:,Nrhs)
+                                      ! as well as vertical scale factors and vertical velocity need to be updated
+                            CALL div_hor    ( kstp, Nbb, Nnn )                  ! Horizontal divergence  (2nd call in time-split case)
+            IF(.NOT.lk_linssh) CALL dom_qco_r3c( ssh(:,:,Naa), r3t(:,:,Naa), r3u(:,:,Naa), r3v(:,:,Naa), r3f(:,:) )   ! update ssh/h_0 ratio at t,u,v,f pts
+         ENDIF
+                            CALL dyn_zdf    ( kstp, Nbb, Nnn, Nrhs, uu, vv, Naa  )  ! vertical diffusion
       END DO
       IF( ln_tile ) CALL dom_tile_stop
 
@@ -298,6 +302,11 @@ CONTAINS
       IF( lk_diadetide ) CALL dia_detide( kstp )                ! Weights computation for daily detiding of model diagnostics
       IF( lk_diamlr  )   CALL dia_mlr                           ! Update time used in multiple-linear-regression analysis
 
+      !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      ! Now ssh filtering
+      !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                         CALL ssh_atf    ( kstp, Nbb, Nnn, Naa, ssh )            ! time filtering of "now" sea surface height
+      IF(.NOT.lk_linssh) CALL dom_qco_r3c( ssh(:,:,Nnn), r3t_f, r3u_f, r3v_f )   ! "now" ssh/h_0 ratio from filtrered ssh
 #if defined key_top
       !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
       ! Passive Tracer Model
@@ -327,7 +336,7 @@ CONTAINS
       IF( ln_tile ) CALL dom_tile_stop
 
 #if defined key_agrif
-      IF(.NOT. Agrif_Root() )   THEN
+      IF(.NOT. Agrif_Root() ) THEN
                             CALL Agrif_Sponge_tra        ! tracers sponge
       ENDIF
 #endif
@@ -366,10 +375,15 @@ CONTAINS
 !!    (ii) requires that all restart outputs of updated variables by agrif (e.g. passive tracers/tke/barotropic arrays) are done at the same
 !!    place.
 !!
-!!jc2: dynnxt must be the latest call. e3t(:,:,:,Nbb) are indeed updated in that routine
-                         CALL tra_atf       ( kstp, Nbb, Nnn, Naa, ts )                      ! time filtering of "now" tracer arrays
-                         CALL dyn_atf       ( kstp, Nbb, Nnn, Naa, uu, vv, e3t, e3u, e3v  )  ! time filtering of "now" velocities and scale factors
-                         CALL ssh_atf       ( kstp, Nbb, Nnn, Naa, ssh )                     ! time filtering of "now" sea surface height
+      IF( ln_dynspg_ts ) CALL mlf_baro_corr (            Nnn, Naa, uu, vv     )   ! barotrope adjustment
+                         CALL finalize_lbc  ( kstp, Nbb     , Naa, uu, vv, ts )   ! boundary conditions
+                         CALL tra_atf_qco   ( kstp, Nbb, Nnn, Naa        , ts )   ! time filtering of "now" tracer arrays
+                         CALL dyn_atf_qco   ( kstp, Nbb, Nnn, Naa, uu, vv     )   ! time filtering of "now" velocities
+      IF(.NOT.lk_linssh) THEN
+                         r3t(:,:,Nnn) = r3t_f(:,:)                                ! update now ssh/h_0 with time filtered values
+                         r3u(:,:,Nnn) = r3u_f(:,:)
+                         r3v(:,:,Nnn) = r3v_f(:,:)
+      ENDIF
       !
       ! Swap time levels
       Nrhs = Nbb
@@ -377,7 +391,6 @@ CONTAINS
       Nnn = Naa
       Naa = Nrhs
       !
-      IF(.NOT.ln_linssh) CALL dom_vvl_sf_update( kstp, Nbb, Nnn, Naa )  ! recompute vertical scale factors
       !
       IF( ln_diahsb  )   CALL dia_hsb       ( kstp, Nbb, Nnn )  ! - ML - global conservation diagnostics
 
@@ -394,7 +407,7 @@ CONTAINS
       ! AGRIF recursive integration
       !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                          Kbb_a = Nbb; Kmm_a = Nnn; Krhs_a = Nrhs      ! agrif_oce module copies of time level indices
-                         CALL Agrif_Integrate_ChildGrids( stp )       ! allows to finish all the Child Grids before updating
+                         CALL Agrif_Integrate_ChildGrids( stp_MLF )       ! allows to finish all the Child Grids before updating
 
 #endif
       !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -444,10 +457,121 @@ CONTAINS
          l_1st_euler = .FALSE.
       ENDIF
       !
-      IF( ln_timing )   CALL timing_stop('stp')
+      IF( ln_timing )   CALL timing_stop('stp_MLF')
       !
-   END SUBROUTINE stp
-   !
+   END SUBROUTINE stp_MLF
+
+
+   SUBROUTINE mlf_baro_corr( Kmm, Kaa, puu, pvv )
+      !!----------------------------------------------------------------------
+      !!                  ***  ROUTINE mlf_baro_corr  ***
+      !!
+      !! ** Purpose :   Finalize after horizontal velocity.
+      !!
+      !! ** Method  : * Ensure after velocities transport matches time splitting
+      !!             estimate (ln_dynspg_ts=T)
+      !!
+      !! ** Action :   puu(Kmm),pvv(Kmm)   updated now horizontal velocity (ln_bt_fw=F)
+      !!               puu(Kaa),pvv(Kaa)   after horizontal velocity
+      !!----------------------------------------------------------------------
+      USE dynspg_ts, ONLY : un_adv, vn_adv   ! updated Kmm barotropic transport 
+      !!
+      INTEGER                             , INTENT(in   ) ::   Kmm, Kaa   ! before and after time level indices
+      REAL(wp), DIMENSION(jpi,jpj,jpk,jpt), INTENT(inout) ::   puu, pvv   ! velocities
+      !
+      INTEGER  ::   ji,jj, jk   ! dummy loop indices
+      REAL(wp), DIMENSION(jpi,jpj) ::   zue, zve
+      !!----------------------------------------------------------------------
+
+      ! Ensure below that barotropic velocities match time splitting estimate
+      ! Compute actual transport and replace it with ts estimate at "after" time step
+      DO_2D( 0, 0, 0, 0 )
+         zue(ji,jj) = e3u(ji,jj,1,Kaa) * puu(ji,jj,1,Kaa) * umask(ji,jj,1)
+         zve(ji,jj) = e3v(ji,jj,1,Kaa) * pvv(ji,jj,1,Kaa) * vmask(ji,jj,1)
+      END_2D
+      DO jk = 2, jpkm1
+         DO_2D( 0, 0, 0, 0 )
+            zue(ji,jj) = zue(ji,jj) + e3u(ji,jj,jk,Kaa) * puu(ji,jj,jk,Kaa) * umask(ji,jj,jk)
+            zve(ji,jj) = zve(ji,jj) + e3v(ji,jj,jk,Kaa) * pvv(ji,jj,jk,Kaa) * vmask(ji,jj,jk)
+         END_2D
+      END DO
+      DO jk = 1, jpkm1
+         DO_2D( 0, 0, 0, 0 )
+            puu(ji,jj,jk,Kaa) = ( puu(ji,jj,jk,Kaa) - zue(ji,jj) * r1_hu(ji,jj,Kaa) + uu_b(ji,jj,Kaa) ) * umask(ji,jj,jk)
+            pvv(ji,jj,jk,Kaa) = ( pvv(ji,jj,jk,Kaa) - zve(ji,jj) * r1_hv(ji,jj,Kaa) + vv_b(ji,jj,Kaa) ) * vmask(ji,jj,jk)
+         END_2D
+      END DO
+      !
+      IF( .NOT.ln_bt_fw ) THEN
+         ! Remove advective velocity from "now velocities"
+         ! prior to asselin filtering
+         ! In the forward case, this is done below after asselin filtering
+         ! so that asselin contribution is removed at the same time
+         DO jk = 1, jpkm1
+            puu(:,:,jk,Kmm) = ( puu(:,:,jk,Kmm) - un_adv(:,:)*r1_hu(:,:,Kmm) + uu_b(:,:,Kmm) )*umask(:,:,jk)
+            pvv(:,:,jk,Kmm) = ( pvv(:,:,jk,Kmm) - vn_adv(:,:)*r1_hv(:,:,Kmm) + vv_b(:,:,Kmm) )*vmask(:,:,jk)
+         END DO
+      ENDIF
+      !
+   END SUBROUTINE mlf_baro_corr
+
+
+   SUBROUTINE finalize_lbc( kt, Kbb, Kaa, puu, pvv, pts )
+      !!----------------------------------------------------------------------
+      !!                  ***  ROUTINE finalize_lbc  ***
+      !!
+      !! ** Purpose :   Apply the boundary condition on the after velocity
+      !!
+      !! ** Method  : * Apply lateral boundary conditions on after velocity
+      !!             at the local domain boundaries through lbc_lnk call,
+      !!             at the one-way open boundaries (ln_bdy=T),
+      !!             at the AGRIF zoom   boundaries (lk_agrif=T)
+      !!
+      !! ** Action :   puu(Kaa),pvv(Kaa)   after horizontal velocity and tracers
+      !!----------------------------------------------------------------------
+#if defined key_agrif
+      USE agrif_oce_interp
 #endif
+      USE bdydyn         ! ocean open boundary conditions (define bdy_dyn)
+      !!
+      INTEGER                                  , INTENT(in   ) ::   kt         ! ocean time-step index
+      INTEGER                                  , INTENT(in   ) ::   Kbb, Kaa   ! before and after time level indices
+      REAL(wp), DIMENSION(jpi,jpj,jpk,jpt)     , INTENT(inout) ::   puu, pvv   ! velocities to be time filtered
+      REAL(wp), DIMENSION(jpi,jpj,jpk,jpts,jpt), INTENT(inout) ::   pts        ! active tracers
+      !!----------------------------------------------------------------------
+      !
+      ! Update after tracer and velocity on domain lateral boundaries
+      !
+# if defined key_agrif
+            CALL Agrif_tra                     !* AGRIF zoom boundaries
+            CALL Agrif_dyn( kt )
+# endif
+      !                                        ! local domain boundaries  (T-point, unchanged sign)
+      CALL lbc_lnk( 'finalize_lbc', puu(:,:,:,       Kaa), 'U', -1., pvv(:,:,:       ,Kaa), 'V', -1.   &
+                       &          , pts(:,:,:,jp_tem,Kaa), 'T',  1., pts(:,:,:,jp_sal,Kaa), 'T',  1. )
+      !
+      ! lbc_lnk needed for zdf_sh2 when using nn_hls = 2, moved here to allow tiling in zdf_phy
+      IF( nn_hls == 2 .AND. l_zdfsh2 ) CALL lbc_lnk( 'stp', avm_k, 'W', 1.0_wp )
+
+      ! dom_qco_r3c defines over [nn_hls, nn_hls-1, nn_hls, nn_hls-1]
+      IF( nn_hls == 2 .AND. .NOT. lk_linssh ) THEN
+         CALL lbc_lnk( 'finalize_lbc', r3u(:,:,Kaa), 'U', 1._wp, r3v(:,:,Kaa), 'V', 1._wp, &
+            &                          r3u_f(:,:),   'U', 1._wp, r3v_f(:,:),   'V', 1._wp )
+      ENDIF
+      !                                        !* BDY open boundaries
+      IF( ln_bdy )   THEN
+                               CALL bdy_tra( kt, Kbb, pts,      Kaa )
+         IF( ln_dynspg_exp )   CALL bdy_dyn( kt, Kbb, puu, pvv, Kaa )
+         IF( ln_dynspg_ts  )   CALL bdy_dyn( kt, Kbb, puu, pvv, Kaa, dyn3d_only=.true. )
+      ENDIF
+      !
+   END SUBROUTINE finalize_lbc
+
+#else
+   !!----------------------------------------------------------------------
+   !!   default option             EMPTY MODULE           qco not activated
+   !!----------------------------------------------------------------------
+#endif
+   
    !!======================================================================
-END MODULE step
+END MODULE stpmlf

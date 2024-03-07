@@ -319,7 +319,9 @@
 !
 &namZB !   parameters of backscatter parameterization
 !-----------------------------------------------------------------------
-   ln_zanna_bolton      = .true.               ! turn on backscatter
+   ln_zanna_bolton      = .true.               ! turn on ZB
+   rn_gamma             = 0.5                  ! ZB-coefficient
+   nn_filter            = 4                    ! number of applied filters to the stress tensor
 /
 !-----------------------------------------------------------------------
 &namdyn_adv    !   formulation of the momentum advection                (default: NO selection)

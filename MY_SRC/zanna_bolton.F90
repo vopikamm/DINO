@@ -24,8 +24,9 @@ MODULE zanna_bolton
    PUBLIC   ZB_apply        ! routine called in step.F90 module
 
    !!------------- parameters -------------!!
-   LOGICAL  :: ln_zanna_bolton    ! key for ZB
-   REAL(wp) :: rn_gamma           ! ZB-coefficient
+   LOGICAL , PUBLIC     :: ln_zanna_bolton    ! key for ZB
+   REAL(wp)             :: rn_gamma           ! ZB-coefficient
+   INTEGER              :: nn_filter          ! number of applied filters
 
    !!------------- fields -----------------!!
    REAL(wp), ALLOCATABLE, DIMENSION (:,:,:) :: T_xx   ! component of stress tensor
@@ -47,10 +48,10 @@ CONTAINS
 
    SUBROUTINE ZB_2020_init ( )
       
-      NAMELIST/namZB/ ln_zanna_bolton, rn_gamma
+      NAMELIST/namZB/ ln_zanna_bolton, rn_gamma, nn_filter
       
-      !REWIND( numnam_cfg )          !  TODO??
-      !READ  ( numnam_cfg, namZB )   !  TODO??
+      !REWIND( numnam_cfg )       
+      READ  ( numnam_cfg, namZB )
 
       IF(lwp) THEN
          WRITE(numout,*)
@@ -113,6 +114,7 @@ CONTAINS
       CALL iom_put('zb_surf_v', zvrhs(:,:,1))
       !
       !apply tendency to the RHS
+      WRITE(numout,*) 'We do apply the RHS, even though it is zero'
       puu(:,:,:,Krhs) = puu(:,:,:,Krhs) + zurhs
       pvv(:,:,:,Krhs) = pvv(:,:,:,Krhs) + zvrhs
    END SUBROUTINE ZB_apply
@@ -130,14 +132,23 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    ::  puu, pvv         ! before velocity  [m/s]
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  zbu, zbv     ! u-, v-component of S 
       
-      INTEGER  ::   ji, jj, jk           ! dummy loop indices
+      INTEGER  ::   ji, jj, jk, n           ! dummy loop indices
 
       REAL(wp), DIMENSION(jpi,jpj,jpk) ::   T_xx, Tyy, T_xy
       REAL(wp)                         ::   gamma     
       !
       ! Compute the stress tensor
-      !
       CALL stress_tensor(kt, puu, pvv, T_xx, T_yy, T_xy)
+      !
+      ! Filtering of the stress tensor
+      DO n = 1, nn_filter
+         CALL shapiro_filter( T_xx, tmask )
+         CALL shapiro_filter( T_yy, tmask )
+         CALL shapiro_filter( T_xy, fmask )
+         CALL lbc_lnk( 'ZB_2020', T_xx, 'T', 1.0_wp )
+         CALL lbc_lnk( 'ZB_2020', T_yy, 'T', 1.0_wp )
+         CALL lbc_lnk( 'ZB_2020', T_xy, 'F', 1.0_wp )
+      END DO
       !
       ! Horizontal Divergence of the stress tensor
       DO_3D_OVR( 0, 0, 0, 0 , 1, jpk)
@@ -219,10 +230,10 @@ CONTAINS
          T_yy(ji,jj,jk) = - e1e2t(ji,jj) * (   zhyd_com + zdev_com ) * tmask(ji,jj,jk)
          T_xy(ji,jj,jk) = - e1e2f(ji,jj) * ( vort_f(ji,jj,jk) * sh_xx_f(ji,jj,jk)) * fmask(ji,jj,jk)
       END_3D
-      !
+      ! TODO: B.C not on F for T_xy? Doing double for T_xx??
       CALL lbc_lnk( 'stress_tensor', T_xx, 'T', 1.0_wp )    ! B.C.: no-normal flow
-      CALL lbc_lnk( 'stress_tensor', T_xx, 'T', 1.0_wp )    ! B.C.: free-slip, i.e. du/dy=0 on the boundary
-      CALL lbc_lnk( 'stress_tensor', T_xy, 'T', 1.0_wp )    ! B.C.: free-slip, i.e. du/dy=0 on the boundary
+      CALL lbc_lnk( 'stress_tensor', T_yy, 'T', 1.0_wp )    ! B.C.: free-slip, i.e. du/dy=0 on the boundary
+      CALL lbc_lnk( 'stress_tensor', T_xy, 'F', 1.0_wp )    ! B.C.: free-slip, i.e. du/dy=0 on the boundary
       !
    END SUBROUTINE stress_tensor
 
@@ -260,5 +271,37 @@ CONTAINS
       END_3D
    END SUBROUTINE t_on_f
 
+   SUBROUTINE shapiro_filter(pfield, mask)
+      !!----------------------------------------------------------------------
+      !!                  ***  ROUTINE shapiro_filter ***
+      !!                   
+      !! ** Purpose :   Horizontal Shapiro filter. Removes waves at grid-scale.
+      !!
+      !! ** Requirements : Array has exchanged halos and is masked
+      !!----------------------------------------------------------------------
+      !
+      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout)       ::  pfield ! field
+      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)          ::  mask ! mask
+      !
+      REAL(wp), DIMENSION(jpi,jpj,jpk)                      ::  zfield ! field
+      !
+      INTEGER  ::   ji, jj, jk           ! dummy loop indices
+      REAL(wp) ::   z1_16
+      !
+      z1_16  =  1.0_wp / 16._wp
+
+      !zfield=0._wp
+
+      DO_3D_OVR( 0, 0, 0, 0, 1, jpkm1 )
+         zfield(ji,jj,jk) =  (      pfield(ji-1,jj-1,jk) + pfield(ji+1,jj-1,jk)      &
+            &                +      pfield(ji-1,jj+1,jk) + pfield(ji+1,jj+1,jk)      &
+            &                + 2.*( pfield(ji  ,jj-1,jk) + pfield(ji-1,jj  ,jk)      &
+            &                +      pfield(ji+1,jj  ,jk) + pfield(ji  ,jj+1,jk) )    &
+            &                + 4.*  pfield(ji  ,jj  ,jk) ) * z1_16 * mask(ji,jj,jk)
+      END_3D
+      !
+      pfield = zfield
+   END SUBROUTINE shapiro_filter
+   !
    !!======================================================================
 END MODULE zanna_bolton
