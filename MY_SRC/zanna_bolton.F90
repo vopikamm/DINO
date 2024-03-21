@@ -26,6 +26,7 @@ MODULE zanna_bolton
    !!------------- parameters -------------!!
    LOGICAL , PUBLIC     :: ln_zanna_bolton    ! key for ZB
    REAL(wp)             :: rn_gamma           ! ZB-coefficient
+   LOGICAL              :: ln_filter          ! key for Shapiro filter
    INTEGER              :: nn_filter          ! number of applied filters
 
    !!------------- fields -----------------!!
@@ -48,7 +49,7 @@ CONTAINS
 
    SUBROUTINE ZB_2020_init ( )
       
-      NAMELIST/namZB/ ln_zanna_bolton, rn_gamma, nn_filter
+      NAMELIST/namZB/ ln_zanna_bolton, rn_gamma, ln_filter, nn_filter
       
       !REWIND( numnam_cfg )       
       READ  ( numnam_cfg, namZB )
@@ -114,7 +115,6 @@ CONTAINS
       CALL iom_put('zb_surf_v', zvrhs(:,:,1))
       !
       !apply tendency to the RHS
-      WRITE(numout,*) 'We do apply the RHS, even though it is zero'
       puu(:,:,:,Krhs) = puu(:,:,:,Krhs) + zurhs
       pvv(:,:,:,Krhs) = pvv(:,:,:,Krhs) + zvrhs
    END SUBROUTINE ZB_apply
@@ -141,14 +141,16 @@ CONTAINS
       CALL stress_tensor(kt, puu, pvv, T_xx, T_yy, T_xy)
       !
       ! Filtering of the stress tensor
-      DO n = 1, nn_filter
-         CALL shapiro_filter( T_xx, tmask )
-         CALL shapiro_filter( T_yy, tmask )
-         CALL shapiro_filter( T_xy, fmask )
-         CALL lbc_lnk( 'ZB_2020', T_xx, 'T', 1.0_wp )
-         CALL lbc_lnk( 'ZB_2020', T_yy, 'T', 1.0_wp )
-         CALL lbc_lnk( 'ZB_2020', T_xy, 'F', 1.0_wp )
-      END DO
+      IF(ln_filter) THEN
+         DO n = 1, nn_filter
+            CALL shapiro_filter( T_xx, tmask )
+            CALL shapiro_filter( T_yy, tmask )
+            CALL shapiro_filter( T_xy, fmask )
+            CALL lbc_lnk( 'ZB_2020', T_xx, 'T', 1.0_wp )
+            CALL lbc_lnk( 'ZB_2020', T_yy, 'T', 1.0_wp )
+            CALL lbc_lnk( 'ZB_2020', T_xy, 'F', 1.0_wp )
+         END DO
+      ENDIF
       !
       ! Horizontal Divergence of the stress tensor
       DO_3D_OVR( 0, 0, 0, 0 , 1, jpk)
