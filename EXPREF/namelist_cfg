@@ -317,6 +317,13 @@
 !!   namdta_dyn    offline TOP: dynamics read in files                  (OFF_SRC only)
 !!======================================================================
 !
+&namZB !   parameters of backscatter parameterization
+!-----------------------------------------------------------------------
+   ln_zanna_bolton      = .true.               ! turn on ZB
+   rn_gamma             = 0.5                  ! ZB-coefficient
+   ln_filter            = .true.               ! key for Shapiro filter
+   nn_filter            = 4                    ! number of applied filters to the stress tensor
+/
 !-----------------------------------------------------------------------
 &namdyn_adv    !   formulation of the momentum advection                (default: NO selection)
 !-----------------------------------------------------------------------

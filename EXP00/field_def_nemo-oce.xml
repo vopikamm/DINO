@@ -105,6 +105,11 @@ that are available in the tidal-forcing implementation (see
       Physical ocean model variables
       ============================================================================================================
   -->
+      <!-- Zanna & Bolton parameterization -->
+      <field_group id="Zanna_Bolton">
+         <field id="zb_u"     long_name="ZB tendency in i-direction"          unit="m/s2"   grid_ref="grid_U_3D"/>
+         <field id="zb_v"     long_name="ZB tendency in j-direction"          unit="m/s2"   grid_ref="grid_V_3D"/>
+      </field_group>
 
   <!-- T grid -->
 

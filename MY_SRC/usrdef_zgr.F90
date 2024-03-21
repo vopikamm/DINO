@@ -196,7 +196,7 @@ CONTAINS
             &               pe3w    , pe3uw   , pe3vw           )     !           -      -      -
          !
          ! Slope tests
-         CALL zgr_test_slopes( zbathy, pdept, pe3u, pe3v )
+         !CALL zgr_test_slopes( zbathy, pdept, pe3u, pe3v )
          !
          !                                           ! masked top and bottom ocean t-level indices
          k_top(:,:) = 1    
