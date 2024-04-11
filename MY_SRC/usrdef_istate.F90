@@ -148,9 +148,10 @@ CONTAINS
          !
          ! Create horizontal gradient of T (going linearly from equatorial profile to uniform T=4 degC profile)
          zphiMAX = MAXVAL( gphit(:,:) )
-         
-         zTbot = MINVAL( pts(3:jpi - 2 , 3:jpj - 2 , 1:jpkm1 , jp_tem) )   ! Must be a positive temperature
-         zSbot = MINVAL( pts(3:jpi - 2 , 3:jpj - 2 , 1:jpkm1 , jp_sal) )   !
+         !
+         ! Minimal value ignoring the mask --> might have small contribution from mask??
+         zTbot = MINVAL( pts(:,:,:,jp_tem)  + 100 * ( 1._wp - ptmask(:,:,:)))   ! Must be a positive temperature
+         zSbot = MINVAL( pts(:,:,:,jp_sal)  + 100 * ( 1._wp - ptmask(:,:,:)))
          !
          WRITE(numout,*) 'Sbot before = ', zSbot
          !

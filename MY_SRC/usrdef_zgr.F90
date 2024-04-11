@@ -72,10 +72,10 @@ CONTAINS
       INTEGER , DIMENSION(:,:)  , INTENT(out) ::   k_top, k_bot                ! first & last ocean level
       !
       INTEGER  ::   ji, jj                                     ! dummy loop index
-      REAL(wp) ::   zdzmin, zkth, zh_co, zacr                  ! Local scalars for the coordinate stretching
+      REAL(wp) ::   zdzmin, zkth, zhco, zacr                  ! Local scalars for the coordinate stretching
       REAL(wp) ::   zHmax
 
-      REAL(wp), DIMENSION(jpi,jpj)           ::   zbathy, z2d   ! bathymetry, 2D variable
+      REAL(wp), DIMENSION(jpi,jpj)           ::   zbathy, z2dm, zflat    ! bathymetry, 2D variable, flat bottom bathymetry
       REAL(wp) ::   zmidPhi            ! latitude of the central channel
       INTEGER  ::   nn_cha_min         ! index of the southern edge of the channel
       INTEGER  ::   nn_cha_max         ! index of the northern edge of the channel
@@ -91,9 +91,12 @@ CONTAINS
       ld_sco      = ln_sco_nam
       ld_isfcav   = .FALSE.   ! no ice-shelves
       !
-      zHmax = rn_H   ! Maximum depth of the basin
-
-      !nn_cha_loc = NINT( ABS( rn_phi_min - rn_cha_loc )/ rn_e1_deg )
+      ! z-coordinate parameters from namelist
+      zHmax       =   rn_H              ! Maximum depth of the basin (approximative, is recomputed after the bathymetry calculation)
+      zdzmin      =   rn_dzmin          ! minimum value of e3 at the surface   [m]
+      zkth        =   rn_kth            ! position of the inflexion point
+      zhco        =   rn_hco            ! layer thickness with z-coordinate [m]
+      zacr        =   rn_acr            ! slope of the tanh
 
       CALL zgr_bat( zHmax, zbathy )   ! User creation of bathymetry
       !
@@ -103,14 +106,15 @@ CONTAINS
       !   === z-coordinate   ===   !
       IF( ld_zco ) THEN
          !
-         CALL zgr_z1D( zHmax, nn_ztype, pdept_1d, pdepw_1d )   ! Reference z-coordinate system
-         !
-         !                                                       ! z-coordinate (3D arrays) from the 1D z-coord.
-         CALL zgr_zco( pdept_1d, pdepw_1d,                   &   ! <==>  1D reference vertical coordinate
-            &          pe3t_1d , pe3w_1d ,                   &   ! ==>>  1D t & w-points vertical scale factors  
-            &          pdept   , pdepw   ,                   &   !       3D t & w-points depth
-            &          pe3t    , pe3u    , pe3v    , pe3f,   &   !       vertical scale factors
-            &          pe3w    , pe3uw   , pe3vw           )     !           -      -      -
+         ! Same as for s-coordinates at bathy = Hmax
+         zflat(:,:) = zHmax
+         CALL zgr_sco_mi96( pdept_1d, pdepw_1d,                   &   ! ==>>  1D reference vertical coordinate
+            &               zflat  , zHmax   ,                    &   ! <<==  bathymetry
+            &               zdzmin  , zkth    , zhco , zacr,      &   ! <<==  parameters for the tanh stretching
+            &               pe3t_1d , pe3w_1d ,                   &   ! ==>>  1D t & w-points vertical scale factors  
+            &               pdept   , pdepw   ,                   &   !       3D t & w-points depth
+            &               pe3t    , pe3u    , pe3v    , pe3f,   &   !       vertical scale factors
+            &               pe3w    , pe3uw   , pe3vw           )     !           -      -      -
          !
          CALL zgr_msk_top_bot( pdept_1d, zbathy, k_top, k_bot )                 ! masked top and bottom ocean t-level indices
          !
@@ -184,12 +188,12 @@ CONTAINS
          !
          zdzmin  = rn_dzmin
          zkth    = rn_kth
-         zh_co   = rn_hco
+         zhco   = rn_hco
          zacr    = rn_acr
          !
          CALL zgr_sco_mi96( pdept_1d, pdepw_1d,                   &   ! ==>>  1D reference vertical coordinate
             &               zbathy  , zHmax   ,                   &   ! <<==  bathymetry
-            &               zdzmin  , zkth    , zh_co , zacr,     &   ! <<==  parameters for the tanh stretching
+            &               zdzmin  , zkth    , zhco , zacr,     &   ! <<==  parameters for the tanh stretching
             &               pe3t_1d , pe3w_1d ,                   &   ! ==>>  1D t & w-points vertical scale factors  
             &               pdept   , pdepw   ,                   &   !       3D t & w-points depth
             &               pe3t    , pe3u    , pe3v    , pe3f,   &   !       vertical scale factors

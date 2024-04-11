@@ -71,6 +71,7 @@ CONTAINS
 #if defined key_agrif
    RECURSIVE SUBROUTINE stp_MLF( )
       INTEGER             ::   kstp   ! ocean time-step index
+
 #else
    SUBROUTINE stp_MLF( kstp )
       INTEGER, INTENT(in) ::   kstp   ! ocean time-step index
@@ -192,11 +193,11 @@ CONTAINS
       IF( ln_zps .OR. l_ldfslp ) CALL eos( ts(:,:,:,:,Nbb), rhd, gdept_0(:,:,:) )               ! before in situ density
 
       IF( ln_zps .AND. .NOT. ln_isfcav)                                    &
-            &            CALL zps_hde    ( kstp, Nnn, jpts, ts(:,:,:,:,Nbb), gtsu, gtsv,  &  ! Partial steps: before horizontal gradient
+            &            CALL zps_hde    ( kstp, jpts, ts(:,:,:,:,Nbb), gtsu, gtsv,  &  ! Partial steps: before horizontal gradient
             &                                          rhd, gru , grv    )       ! of t, s, rd at the last ocean level
 
       IF( ln_zps .AND.       ln_isfcav)                                                &
-            &            CALL zps_hde_isf( kstp, Nnn, jpts, ts(:,:,:,:,Nbb), gtsu, gtsv, gtui, gtvi,  &  ! Partial steps for top cell (ISF)
+            &            CALL zps_hde_isf( kstp, jpts, ts(:,:,:,:,Nbb), gtsu, gtsv, gtui, gtvi,  &  ! Partial steps for top cell (ISF)
             &                                          rhd, gru , grv , grui, grvi   )       ! of t, s, rd at the first ocean level
 
       IF( l_ldfslp ) THEN                             ! slope of lateral mixing
@@ -209,6 +210,10 @@ CONTAINS
       !                                                                        ! eddy diffusivity coeff.
       IF( l_ldftra_time .OR. l_ldfeiv_time )   CALL ldf_tra( kstp, Nbb, Nnn )  !       and/or eiv coeff.
       IF( l_ldfdyn_time                    )   CALL ldf_dyn( kstp, Nbb )       ! eddy viscosity coeff.
+
+      !  BBL coefficients
+      !
+      IF( ln_trabbl )   CALL bbl( kstp, nit000, Nbb, Nnn )   ! BBL diffusion coefficients and transports
 
       !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
       !  Ocean dynamics : hdiv, ssh, e3, u, v, w
@@ -253,12 +258,12 @@ CONTAINS
       DO jtile = 1, nijtile
          IF( ln_tile ) CALL dom_tile( ntsi, ntsj, ntei, ntej, ktile = jtile )
 #endif
-                                 CALL dyn_adv( kstp, Nbb, Nnn      , uu, vv, Nrhs )  ! advection (VF or FF)	==> RHS
-                                 CALL dyn_vor( kstp,      Nnn      , uu, vv, Nrhs )  ! vorticity           	==> RHS
-                                 CALL dyn_ldf( kstp, Nbb, Nnn      , uu, vv, Nrhs )  ! lateral mixing
+                            CALL dyn_adv( kstp, Nbb, Nnn      , uu, vv, Nrhs )  ! advection (VF or FF)	==> RHS
+                            CALL dyn_vor( kstp,      Nnn      , uu, vv, Nrhs )  ! vorticity           	==> RHS
+                            CALL dyn_ldf( kstp, Nbb, Nnn      , uu, vv, Nrhs )  ! lateral mixing
          IF( ln_zanna_bolton )   CALL ZB_apply( kstp,Nbb      , uu, vv, Nrhs )  ! Zanna & Bolton 2020 parameterization                   
-         IF( ln_zdfosm  )        CALL dyn_osm( kstp,      Nnn      , uu, vv, Nrhs )  ! OSMOSIS non-local velocity fluxes ==> RHS
-                                 CALL dyn_hpg( kstp,      Nnn      , uu, vv, Nrhs )  ! horizontal gradient of Hydrostatic pressure
+         IF( ln_zdfosm  )   CALL dyn_osm( kstp,      Nnn      , uu, vv, Nrhs )  ! OSMOSIS non-local velocity fluxes ==> RHS
+                            CALL dyn_hpg( kstp,      Nnn      , uu, vv, Nrhs )  ! horizontal gradient of Hydrostatic pressure
       END DO
       IF( ln_tile ) CALL dom_tile_stop
 
@@ -461,7 +466,6 @@ CONTAINS
       !
    END SUBROUTINE stp_MLF
 
-
    SUBROUTINE mlf_baro_corr( Kmm, Kaa, puu, pvv )
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE mlf_baro_corr  ***
@@ -477,7 +481,7 @@ CONTAINS
       USE dynspg_ts, ONLY : un_adv, vn_adv   ! updated Kmm barotropic transport 
       !!
       INTEGER                             , INTENT(in   ) ::   Kmm, Kaa   ! before and after time level indices
-      REAL(wp), DIMENSION(jpi,jpj,jpk,jpt), INTENT(inout) ::   puu, pvv   ! velocities
+      REAL(dp), DIMENSION(jpi,jpj,jpk,jpt), INTENT(inout) ::   puu, pvv   ! velocities
       !
       INTEGER  ::   ji,jj, jk   ! dummy loop indices
       REAL(wp), DIMENSION(jpi,jpj) ::   zue, zve
@@ -536,8 +540,8 @@ CONTAINS
       !!
       INTEGER                                  , INTENT(in   ) ::   kt         ! ocean time-step index
       INTEGER                                  , INTENT(in   ) ::   Kbb, Kaa   ! before and after time level indices
-      REAL(wp), DIMENSION(jpi,jpj,jpk,jpt)     , INTENT(inout) ::   puu, pvv   ! velocities to be time filtered
-      REAL(wp), DIMENSION(jpi,jpj,jpk,jpts,jpt), INTENT(inout) ::   pts        ! active tracers
+      REAL(dp), DIMENSION(jpi,jpj,jpk,jpt)     , INTENT(inout) ::   puu, pvv   ! velocities to be time filtered
+      REAL(dp), DIMENSION(jpi,jpj,jpk,jpts,jpt), INTENT(inout) ::   pts        ! active tracers
       !!----------------------------------------------------------------------
       !
       ! Update after tracer and velocity on domain lateral boundaries
@@ -547,8 +551,8 @@ CONTAINS
             CALL Agrif_dyn( kt )
 # endif
       !                                        ! local domain boundaries  (T-point, unchanged sign)
-      CALL lbc_lnk( 'finalize_lbc', puu(:,:,:,       Kaa), 'U', -1., pvv(:,:,:       ,Kaa), 'V', -1.   &
-                       &          , pts(:,:,:,jp_tem,Kaa), 'T',  1., pts(:,:,:,jp_sal,Kaa), 'T',  1. )
+      CALL lbc_lnk( 'finalize_lbc', puu(:,:,:,       Kaa), 'U', -1._dp, pvv(:,:,:       ,Kaa), 'V', -1._dp   &
+                       &          , pts(:,:,:,jp_tem,Kaa), 'T',  1._dp, pts(:,:,:,jp_sal,Kaa), 'T',  1._dp )
       !
       ! lbc_lnk needed for zdf_sh2 when using nn_hls = 2, moved here to allow tiling in zdf_phy
       IF( nn_hls == 2 .AND. l_zdfsh2 ) CALL lbc_lnk( 'stp', avm_k, 'W', 1.0_wp )
