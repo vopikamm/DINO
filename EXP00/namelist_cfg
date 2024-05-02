@@ -38,8 +38,8 @@
          rn_tstar_s     =    -0.5         ! Retroaction value on T at the southern boundary
          rn_tstar_n     =     5.0         ! Retroaction value on T at the northern boundary
          rn_tstar_eq    =     27.         ! Retroaction value on T at the equator
-      !rn_srp            =     -3.858E-3   ! Restoring term (must be negative) on salinity.
-      rn_srp            =      0.         ! Restoring term (must be negative) on salinity.
+      rn_srp            =     -3.858E-3   ! Restoring term (must be negative) on salinity.
+      !rn_srp            =      0.         ! Restoring term (must be negative) on salinity.
          rn_sstar_s     =     35.         ! Salinity restoring value at the southern boundary
          rn_sstar_n     =     35.1        ! Salinity restoring value at the northern boundary 
          rn_sstar_eq    =     37.25       ! Salinity restoring maximum without exponential
@@ -231,14 +231,7 @@
 !----------------------------------------------------------------------- !!rc TODO linear drag
    ln_non_lin = .true.     !  non-linear  drag: Cd = Cd0 |U|
 /
-!-----------------------------------------------------------------------
-&nambbc        !   bottom temperature boundary condition                (default: OFF)
-!-----------------------------------------------------------------------
-   ln_trabbc   = .true.   !  Apply a geothermal heating at the ocean bottom
-      nn_geoflx     = 1       !  geothermal heat flux: = 1 constant flux
-      !                       !                        = 2 read variable flux [mW/m2]
-      rn_geoflx_cst = 86.4e-3 !  Constant value of geothermal heat flux       [mW/m2]
-/
+
 !!======================================================================
 !!                        Tracer (T & S) namelists                    !!
 !!                                                                    !!
@@ -260,7 +253,6 @@
    !                     ! S-EOS coefficients (ln_seos=T):
    !                             !  rd(T,S,Z)*rau0 = -a0*(1+.5*lambda*dT+mu*Z+nu*dS)*dT+b0*dS
    rn_a0       = 0.165           !  thermal expension coefficient
-   !rn_b0       = 0.              !  saline  expension coefficient
    rn_b0       =  7.6554e-1      !  saline  expension coefficient
    rn_lambda1  = 0.06            !  cabbeling coeff in T^2  (=0 for linear eos)
    rn_lambda2  =  0.0            !  cabbeling coeff in S^2  (=0 for linear eos)

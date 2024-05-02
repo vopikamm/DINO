@@ -19,74 +19,82 @@
 !-----------------------------------------------------------------------
 &namusr_def    !   User defined :   BASIN configuration
 !-----------------------------------------------------------------------
-   rn_e1_deg        =      1.  ! Resolution in degrees of longitude (Mercator grid)
-   rn_phi_min       =    -70.    ! Latitude of the south frontier (T point) [degrees] (approximative)
-   rn_phi_max       =     70.    ! Latitude of the north frontier (T point) [degrees] (approximative)
-   rn_lam_min       =      0.    ! Longitude of the west frontier (T point) [degrees] (approximative)
-   rn_lam_max       =     60.    ! Longitude of the east frontier (T point) [degrees] (approximative)
-   nn_k             =     36     ! Number of grid points along k direction
-   nn_forcingtype   =      5     ! Forcing
-                                    ! 2: constant zonal wind stress
-                                    ! 3: no forcing
-                                    ! 4: close to Wolfe and Cessis (2014), JPO
-                                    ! 5: inspired by Wolfe and Cessi (2014), JPO and Gyre
-      rn_ztau0         =    0.1        ! Magnitude of the wind forcing [Pa] 
-      ln_diu_cyc    = .true.        ! Use diurnal cycle or not for qsr  (if nn_forcingtype is compatible)
-      ln_ann_cyc    = .true.        ! Use annual cycle or not (if nn_forcingtype is compatible)
-      rn_emp_prop   =      0.       ! Proportionality factor to apply on EMP
-      rn_trp        =    -40.       ! Retroaction term (must be negative) on T*   (set to 0. if no restoring temperature). Reference value -40.
-      rn_srp        =     -3.858E-3 ! Retroaction term (must be negative) on salt (set to 0. if no restoring salinity   ). Reference value -3.858E-3
-      ln_qsr        = .true.        ! Solar heat flux or not
+   rn_e1_deg            =      1.        ! Resolution in degrees of longitude (Mercator grid)
+   rn_phi_min           =    -70.         ! Latitude of the south frontier (T point) [degrees] (approximative)
+   rn_phi_max           =     70.         ! Latitude of the north frontier (T point) [degrees] (approximative)
+   rn_lam_min           =      0.         ! Longitude of the west frontier (T point) [degrees] (approximative)
+   rn_lam_max           =     60.         ! Longitude of the east frontier (T point) [degrees] (approximative)
+   nn_k                 =     36          ! Number of grid points along k direction
+   nn_forcingtype       =      4          ! Forcing
+                                          ! 2: constant zonal wind stress
+                                          ! 3: no forcing
+                                          ! 4: close to Wolfe and Cessis (2014), JPO
+                                          ! 5: inspired by Wolfe and Cessi (2014), JPO and Gyre
+      rn_ztau0          =    0.1          ! Magnitude of the wind forcing [Pa] 
+      ln_diu_cyc        = .false.         ! Use diurnal cycle or not for qsr  (if nn_forcingtype is compatible)
+      ln_ann_cyc        = .true.          ! Use annual cycle or not (if nn_forcingtype is compatible)
+      rn_emp_prop       =      0.         ! Proportionality factor to apply on EMP
+      rn_trp            =    -40.         ! Retroaction term (must be negative) on T*.
+         rn_tstar_s     =    -0.5         ! Retroaction value on T at the southern boundary
+         rn_tstar_n     =     5.0         ! Retroaction value on T at the northern boundary
+         rn_tstar_eq    =     27.         ! Retroaction value on T at the equator
+      rn_srp            =     -3.858E-3   ! Restoring term (must be negative) on salinity.
+      !rn_srp            =      0.         ! Restoring term (must be negative) on salinity.
+         rn_sstar_s     =     35.         ! Salinity restoring value at the southern boundary
+         rn_sstar_n     =     35.1        ! Salinity restoring value at the northern boundary 
+         rn_sstar_eq    =     37.25       ! Salinity restoring maximum without exponential
+      ln_qsr            = .true.          ! Solar heat flux or not
+      ln_emp_field      = .true.          ! EmP is read from file and replaces saltflx from S-restoring
 
-   nn_botcase       =      1        ! bottom definition (0:flat, 1:bowl cosh, 2: bowl 1-x**4)
-      rn_H          =   4000.       ! Maximum depth of the basin (approximative, is recomputed after the bathymetry calculation)
-      rn_hborder    =   2000.       ! Depth of the bathymetry at the coast
-      rn_distLam    =      3.       ! Typical length scale of the slope in degree of longitude
-      rn_dzmin      =     10.       ! minimum value of e3 at the surface   [m]
-      rn_kth        =     35.       ! position of the inflexion point
-      rn_hco        =   1000.       ! layer thickness with z-coordinate [m]
-      rn_acr        =    10.5       ! slope of the tanh
+   nn_botcase       =      1              ! bottom definition (0:flat, 1:bowl cosh, 2: bowl 1-x**4)
+      rn_H          =   4000.             ! Maximum depth of the basin (approximative, is recomputed after the bathymetry calculation)
+      rn_hborder    =   2000.             ! Depth of the bathymetry at the coast
+      rn_distLam    =      3.             ! Typical length scale of the slope in degree of longitude
+      rn_dzmin      =     10.             ! minimum value of e3 at the surface   [m]
+      rn_kth        =     35.             ! position of the inflexion point
+      rn_hco        =   1000.             ! layer thickness with z-coordinate [m]
+      rn_acr        =    10.5             ! slope of the tanh
 
-   nn_initcase      =      1        ! initial condition case
-   !                                ! 0: rest, T=cst, S=cst
-   !                                ! 1: rest, equatorial stratification in T and S
-   !                                ! 2: rest, linear     stratification in T, S uniform
-   !                                ! 3: rest, equatorial stratification in T, S uniform
-   !                                ! 4: rest, equatorial stratification in T and S, decreasing linearly to T=4 degC at the northern part of the basin
-   !nn_perio         =      0        !  periodicity condition (0: closed, 8: symmetrical at the south)
-   ln_Iperio        =   .true.      ! i-periodicity
-      rn_cha_min    =   -60.        ! southern edge of the channel [degrees] (approximate)
-      rn_cha_max    =   -40.        ! northern edge of the channel [degrees] (approximate)
-      rn_slp_cha    =    1.5        ! Slope of the boundaries in the channel
+   nn_initcase      =      4              ! initial condition case
+   !                                      ! 0: rest, T=cst, S=cst
+   !                                      ! 1: rest, equatorial stratification in T and S
+   !                                      ! 2: rest, linear     stratification in T, S uniform
+   !                                      ! 3: rest, equatorial stratification in T, S uniform
+   !                                      ! 4: rest, equatorial stratification in T and S, decreasing linearly to T=4 degC at the northern part of the basin
+   !nn_perio         =      0              !  periodicity condition (0: closed, 8: symmetrical at the south)
+   ln_Iperio        =   .true.            ! i-periodicity
+      rn_cha_min    =   -65.              ! southern edge of the channel [degrees] (approximate)
+      rn_cha_max    =   -45.              ! northern edge of the channel [degrees] (approximate)
+      rn_slp_cha    =    1.5              ! Slope of the boundaries in the channel
    !
-   ln_zco_nam       = .false.       ! z-coordinate   
-   ln_zps_nam       = .false.       ! partial-steps z-coordinate
-   ln_sco_nam       = .true.        ! s-coordinate
-   nn_ztype         =      1        ! type of vertical grid (z-coordinate or s pure coordinate) (0: uniform)
+   ln_zco_nam       = .false.             ! z-coordinate   
+   ln_zps_nam       = .false.             ! partial-steps z-coordinate
+   ln_sco_nam       = .true.              ! s-coordinate
+   nn_ztype         =      1              ! type of vertical grid (z-coordinate or s pure coordinate) (0: uniform)
    !
-   ln_mid_ridge     = .true.        ! Including a Mid-Atlantic ridge
-      rn_mr_depth   =  2000.        ! Depth of the Mid-Atlantic ridge
-      rn_mr_width   =     7.        ! Width of the Mid-Atlantic ridge
-      rn_mr_lat_s   =   -40.        ! southern edge of the Mid-Atlantic ridge [degrees]
-      rn_mr_lat_n   =    55.        ! northern edge of the Mid-Atlantic ridge [degrees]
+   ln_mid_ridge     = .false.              ! Including a Mid-Atlantic ridge
+      rn_mr_depth   =  2000.              ! Depth of the Mid-Atlantic ridge
+      rn_mr_width   =     7.              ! Width of the Mid-Atlantic ridge
+      rn_mr_lat_s   =   -40.              ! southern edge of the Mid-Atlantic ridge [degrees]
+      rn_mr_lat_n   =    55.              ! northern edge of the Mid-Atlantic ridge [degrees]
 
-      nn_mr_edge    =      1        ! shape of the southern/northern edge
-                                    ! 0: cosh-shaped edges
-                                    ! 1: gaussian edges
+      nn_mr_edge    =      1              ! shape of the southern/northern edge
+                                          ! 0: cosh-shaped edges
+                                          ! 1: gaussian edges
    !
-   ln_drake_sill    = .true.        ! Including circular Drake-Sill
-      rn_ds_depth   =  3000.        ! Depth of the circular Drake-Sill
-      rn_ds_width   =     2.        ! Width of the circular Drake-Sill 
+   ln_drake_sill    = .true.              ! Including circular Drake-Sill
+      rn_ds_depth   =  2500.              ! Depth of the circular Drake-Sill
+      rn_ds_width   =     4.              ! Width of the circular Drake-Sill 
 /
 !-----------------------------------------------------------------------
 &namrun        !   parameters of the run
 !-----------------------------------------------------------------------
    nn_no       =       0      !  job number (no more used...)
-   cn_exp      = 'NEVERWORLD' !  experience name
+   cn_exp      = 'DINO' !  experience name
    nn_it000    =       1      !  first time step
-   !nn_itend    =       115200    !  last time step (32 it => 1 day, 11520 => 1 year)
-   nn_itend    =       576000 !  last time step (32 it => 1 day, 11520 => 1 year)
-   nn_istate   =       1      !  output the initial state (1) or not (0)
+   !nn_itend    =       32     !  last time step (32 it => 1 day, 11520 => 1 year)
+   nn_itend    =       576000   !  last time step (32 it => 1 day, 11520 => 1 year)
+   nn_istate   =       0      !  output the initial state (1) or not (0)
    ! nn_stock    =      11520   !  frequency of creation of a restart file (modulo referenced to 1) 50 years
    ! nn_write    =      11520   !  frequency of write in the output file   (modulo referenced to nn_it000)
    nn_leapy    =   30         !  Months of 30 days (year of 360 days)
@@ -96,7 +104,7 @@
       !!                          !    = 0 nn_date0 read in namelist ; nn_it000 : read in namelist
       !!                          !    = 1 nn_date0 read in namelist ; nn_it000 : check consistancy between namelist and restart
       !!                          !    = 2 nn_date0 read in restart  ; nn_it000 : check consistancy between namelist and restart
-      cn_ocerst_in = "NEVERWORLD_00576000_restart" !  suffix of ocean restart name (input)
+      cn_ocerst_in = "DINO_00576000_restart" !  suffix of ocean restart name (input)
       cn_ocerst_indir = "."         !  directory from which to read input ocean restarts
       cn_ocerst_out   = "restart"   !  suffix of ocean restart name (output)
       cn_ocerst_outdir = "."         !  directory in which to write output ocean restarts
@@ -107,7 +115,7 @@
    ln_linssh   = .false.    !  =T  linear free surface  ==>>  model level are fixed in time
    !
    rn_Dt      = 2700. !  time step for the dynamics (2700. = 45 min, 1 degree)
-   !rn_Dt      = 900.  !  time step for the dynamics (900. = 15 min, 1/4 degree)
+   !rn_Dt      = 720.  !  time step for the dynamics (900. = 15 min, 1/4 degree)
    !
    ln_meshmask = .true.   !  =T create a mesh file
 /
@@ -173,8 +181,17 @@
 &namsbc        !   Surface Boundary Condition manager                   (default: NO selection)
 !-----------------------------------------------------------------------
    nn_fsbc     = 1         !  frequency of SBC module call
-  ln_usr      = .true.    !  user defined formulation                  (T => check usrdef_sbc)
+   ln_usr      = .true.    !  user defined formulation                  (T => check usrdef_sbc)
    ln_traqsr   = .true.    !  Light penetration in the ocean            (T => fill namtra_qsr)
+/
+!-----------------------------------------------------------------------
+&namsbc_flx    !   surface boundary condition : flux formulation        (ln_flx =T)
+!-----------------------------------------------------------------------
+   cn_dir      = './'      !  root directory for the fluxes data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   sn_emp      = 'emp_climatology'       ,        24         , 'emp'     , .false.     , .true. , 'yearly'  , ''               , ''       , ''
 /
 !-----------------------------------------------------------------------
 &namtra_qsr    !   penetrative solar radiation                          (ln_traqsr =T)
@@ -428,7 +445,12 @@
 !!   nam_dia25h   25h Mean Output                                       (default: OFF)
 !!   namnc4       netcdf4 chunking and compression settings             ("key_netcdf4")
 !!======================================================================
-
+!-----------------------------------------------------------------------
+&namtrd        !   trend diagnostics                                    (default: OFF)
+!-----------------------------------------------------------------------
+   ln_dyn_trd  = .false.   ! (T) 3D momentum trend output
+   ln_tra_trd  = .false.   ! (T) 3D tracer trend output
+/
 !!======================================================================
 !!               ***  Observation & Assimilation  ***                 !!
 !!                                                                    !!
