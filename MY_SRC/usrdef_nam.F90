@@ -14,7 +14,7 @@ MODULE usrdef_nam
    !!   usr_def_hgr   : initialize the horizontal mesh 
    !!----------------------------------------------------------------------
    USE dom_oce, ONLY: nimpp , njmpp            ! i- & j-indices of the local domain
-   USE par_oce, ONLY:        ! ocean space and time domain
+   !USE par_oce, ONLY: ln_read_cfg              ! ocean space and time domain
    USE phycst         ! physical constants
    !
    USE in_out_manager ! I/O manager
@@ -41,6 +41,7 @@ MODULE usrdef_nam
    LOGICAL , PUBLIC ::   ln_diu_cyc     =  .TRUE.   ! Use diurnal cycle for qsr or not
    LOGICAL , PUBLIC ::   ln_ann_cyc     =  .TRUE.   ! Use an annual cycle or not
    LOGICAL , PUBLIC ::   ln_emp_field   =  .FALSE.  ! EmP is read from file and replaces saltflx from S-restoring
+   LOGICAL , PUBLIC ::   ln_qns_field   =  .FALSE.  ! Qtot is read from file and replaces heatflx from T-restoring
    REAL(wp), PUBLIC ::   rn_emp_prop    =     1.    ! Proportionality factor to apply on the EMP
    REAL(wp), PUBLIC ::   rn_trp         =   -40.    ! Retroaction term on T*, must be negative  [W/m2/K]
    REAL(wp), PUBLIC ::   rn_srp         =     0.0   ! Restoring term on S*, must be negative    [kg/m2/s]
@@ -115,7 +116,8 @@ CONTAINS
          &                 , ln_zco_nam, ln_zps_nam, ln_sco_nam                  &
          &                 , nn_ztype, rn_H, rn_hborder, rn_distLam              &
          &                 , ln_mid_ridge, ln_drake_sill, ln_ann_cyc             &
-         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc, ln_emp_field    &
+         &                 , ln_qns_field, ln_emp_field                          &
+         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc                  &
          &                 , rn_sstar_s, rn_sstar_n, rn_sstar_eq                 &
          &                 , rn_tstar_s, rn_tstar_n, rn_tstar_eq                 &
          &                 , rn_dzmin, rn_kth, rn_hco, rn_acr,  nn_mr_edge       &
@@ -132,55 +134,28 @@ CONTAINS
       !
       WRITE( numond, namusr_def )
       !
-      cd_cfg = 'BASIN'             ! name & resolution (not used)
+      cd_cfg = 'DINO'             ! name & resolution (not used)
       kk_cfg = rn_e1_deg
       !
-      ! Number of gridpoints in j-direction
-      ! zarg_min = rpi / 4. - rpi / 180. * rn_phi_max / 2.
-      ! zarg_max = rpi / 4. - rpi / 180. * rn_phi_min / 2.
-
-      ! zjeq_min = ABS( 180./rpi * LOG( COS( zarg_min ) / SIN( zarg_min ) ) / rn_e1_deg )
-      ! zjeq_max = ABS( 180./rpi * LOG( COS( zarg_max ) / SIN( zarg_max ) ) / rn_e1_deg )
-
-      ! IF(  rn_phi_min > 0 )  zjeq_min = -zjeq_min
-      ! IF(  rn_phi_max > 0 )  zjeq_max = -zjeq_max
-
-      ! zjeq_min =  zjeq_min + 1._wp
-      ! zjeq_max =  zjeq_max + 1._wp ! We add the +1 because the j indexes start from 1: if the equator is on the first row, its index must be 1
-      
-      ! nn_jeq_min  = FLOOR( zjeq_min )
-      ! ijeq_max    = FLOOR( zjeq_max )
-
-      ! IF( ABS( REAL( nn_jeq_min, wp ) - zjeq_min ) > 0.5 )   nn_jeq_min = nn_jeq_min + 1
-      ! IF( ABS( REAL( ijeq_max, wp ) - zjeq_max ) > 0.5 )   ijeq_max = ijeq_max + 1
-      ! !
-      ! IF(lwp) WRITE(numout,*) '          Index of the equator      (real)       on the MERCATOR grid:', zjeq_min
-      ! IF(lwp) WRITE(numout,*) '          Index of the equator (nearest integer) on the MERCATOR grid:', nn_jeq_min
-      ! IF(lwp) WRITE(numout,*) '          Index of the equator (from northern boundary) on the MERCATOR grid:', ijeq_max
-
       nn_jeq_n = merc_proj(rn_phi_max, rn_e1_deg)
       nn_jeq_s = merc_proj(rn_phi_min, rn_e1_deg)
-
       IF(lwp) WRITE(numout,*) '          Index of the equator (north from merc_proj) on the MERCATOR grid:', nn_jeq_n
       IF(lwp) WRITE(numout,*) '          Index of the equator (south from merc_proj) on the MERCATOR grid:', nn_jeq_s
-
       nn_jglo = (nn_jeq_s - nn_jeq_n) + 1
-
       ! Number of gridpoints in i-direction
       ziglo = (rn_lam_max - rn_lam_min) / rn_e1_deg
       nn_iglo = FLOOR(ziglo)
       IF( ABS( REAL( nn_iglo, wp ) - ziglo ) > 0.5 )   nn_iglo = nn_iglo + 1
-
       ! To conserve volume across resolutions in i-direction
       nn_iglo = nn_iglo + 2
-
       ! Global domain size
       kpi = nn_iglo
       kpj = nn_jglo
       kpk = nn_k
       !
-      ldIperio = ln_Iperio   ;   ldJperio = .FALSE.   ! NEVERWORLD configuration : with periodic channel 
+      ldIperio = ln_Iperio   ;   ldJperio = .FALSE.   ! DINO configuration : with periodic channel 
       ldNFold  = .FALSE.     ;   cdNFtype = '-'
+      
       !
       !kperio = nn_perio   ! 0: closed basin, 8: south symmetrical
       !IF( kperio == 8 )   rn_phi0 = -rn_e1_deg   ! manually set the longitude of the global first (southern) T point
