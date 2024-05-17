@@ -14,7 +14,6 @@ MODULE usrdef_nam
    !!   usr_def_hgr   : initialize the horizontal mesh 
    !!----------------------------------------------------------------------
    USE dom_oce, ONLY: nimpp , njmpp            ! i- & j-indices of the local domain
-   !USE par_oce, ONLY: ln_read_cfg              ! ocean space and time domain
    USE phycst         ! physical constants
    !
    USE in_out_manager ! I/O manager
@@ -24,7 +23,7 @@ MODULE usrdef_nam
    IMPLICIT NONE
    PRIVATE
 
-   PUBLIC   usr_def_nam, merc_proj   ! called by nemogcm.F90
+   PUBLIC   usr_def_nam, merc_proj, usr_def_nam_cfg   ! called by nemogcm.F90
 
    !                              !!* namusr_def namelist *!!
    REAL(wp), PUBLIC ::   rn_e1_deg      =     1     ! Resolution in degrees of longitude (Mercator grid)
@@ -163,7 +162,7 @@ CONTAINS
       WRITE(numout,*) '   '                                                                                                  ;   ii = ii + 1
       WRITE(numout,*) 'usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg'                           ;   ii = ii + 1
       WRITE(numout,*) '~~~~~~~~~~~ '                                                                                         ;   ii = ii + 1
-      WRITE(numout,*) '   Namelist namusr_def : BASIN test case'                                                             ;   ii = ii + 1
+      WRITE(numout,*) '   Namelist namusr_def : DINO test case'                                                             ;   ii = ii + 1
       WRITE(numout,*) '   Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = ', rn_e1_deg, 'degrees'   ;   ii = ii + 1
       WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = ', rn_phi_min, 'degrees'  ;   ii = ii + 1
       WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_phi_max     = ', rn_phi_max, 'degrees'  ;   ii = ii + 1
@@ -188,6 +187,48 @@ CONTAINS
       WRITE(numout,*) '   Include mid-atlantic ridge                              ln_mid_ridge   = ', ln_mid_ridge           ;   ii = ii + 1
       WRITE(numout,*) '   Include circular drake sill                             ln_drake_sill  = ', ln_drake_sill          ;   ii = ii + 1
    END SUBROUTINE usr_def_nam
+
+
+   SUBROUTINE usr_def_nam_cfg( )
+      !!----------------------------------------------------------------------
+      !!                     ***  ROUTINE dom_nam  ***
+      !!                    
+      !! ** Purpose :   read user defined namelist when reading from domain configuration file (ln_read_cfg=T)
+      !!
+      !! ** Method  :   read in namusr_def containing all the user specific namelist parameter
+      !!
+      !!                Here DINO configuration
+      !!
+      !! ** input   : - namusr_def namelist found in namelist_cfg
+      !!----------------------------------------------------------------------
+      !
+      INTEGER ::   ios, ii               ! Local integer
+      !!
+      NAMELIST/namusr_def/ rn_e1_deg, rn_phi_min, rn_phi_max, rn_lam_min         &
+         &                 , rn_lam_max, nn_k, rn_emp_prop, rn_ztau0             &
+         &                 , nn_botcase, nn_initcase, nn_forcingtype             &
+         &                 , ln_Iperio, rn_cha_min, rn_cha_max, rn_slp_cha       &
+         &                 , ln_zco_nam, ln_zps_nam, ln_sco_nam                  &
+         &                 , nn_ztype, rn_H, rn_hborder, rn_distLam              &
+         &                 , ln_mid_ridge, ln_drake_sill, ln_ann_cyc             &
+         &                 , ln_qns_field, ln_emp_field                          &
+         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc                  &
+         &                 , rn_sstar_s, rn_sstar_n, rn_sstar_eq                 &
+         &                 , rn_tstar_s, rn_tstar_n, rn_tstar_eq                 &
+         &                 , rn_dzmin, rn_kth, rn_hco, rn_acr,  nn_mr_edge       &
+         &                 , rn_mr_depth, rn_mr_width, rn_mr_lat_s               &
+         &                 , rn_mr_lat_n, rn_ds_depth, rn_ds_width
+      !!----------------------------------------------------------------------
+      !
+      ii = 1
+
+      !REWIND( numnam_cfg )          ! Namelist namusr_def (exist in namelist_cfg only)
+      READ  ( numnam_cfg, namusr_def, IOSTAT = ios, ERR = 902 )
+902   IF( ios /= 0 )   CALL ctl_nam ( ios , 'namusr_def in configuration namelist' )
+      !
+      WRITE( numond, namusr_def )
+      !
+   END SUBROUTINE usr_def_nam_cfg
 
 
    FUNCTION merc_proj( pphi, pres ) RESULT( kphi )

@@ -368,6 +368,7 @@ CONTAINS
       !
       IF( ln_read_cfg ) THEN            ! Read sizes in domain configuration file
          CALL domain_cfg ( cn_cfg, nn_cfg, Ni0glo, Nj0glo, jpkglo, l_Iperio, l_Jperio, l_NFold, c_NFtype )
+         CALL usr_def_nam_cfg()
       ELSE                              ! user-defined namelist
          CALL usr_def_nam( cn_cfg, nn_cfg, Ni0glo, Nj0glo, jpkglo, l_Iperio, l_Jperio, l_NFold, c_NFtype )
       ENDIF

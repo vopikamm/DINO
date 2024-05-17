@@ -273,6 +273,7 @@ CONTAINS
       zlamt(:,:) = glamt(:,:)
       zphit(:,:) = gphit(:,:)
       !
+      ! dk: TODO: Is this mixed up? zlamt(jpi,:) = glamt(jpi-1,:) + rn_e1_deg etc...
       IF( mig(jpi) == jpiglo ) THEN
          zlamt(jpi,:) = glamt(jpi-1,:) + 1./rad * ASIN ( TANH( rn_e1_deg * rad) )
       ENDIF
@@ -428,7 +429,7 @@ CONTAINS
          zrad    = (rn_cha_max - rn_cha_min) / 2
          DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
             zds_taper  = smooth_step(zlamt(ji, jj), zminlam, zminlam + zds_width)
-            zds        = gauss_ring( zds_width, zminlam, zmidphi, zrad, zlamt(ji, ji), zphit(ji, jj), zds_depth, pbathy(ji, jj) )
+            zds        = gauss_ring( zds_width, zminlam, zmidphi, zrad, zlamt(ji, jj), zphit(ji, jj), zds_depth, pbathy(ji, jj) )
             pbathy(ji, jj) = zds_taper * zds + (1._wp - zds_taper) * pbathy(ji, jj)
          END_2D
       ENDIF
