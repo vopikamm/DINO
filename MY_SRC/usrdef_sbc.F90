@@ -156,8 +156,10 @@ CONTAINS
          CALL compute_day_of_year( kt, zcos_sais1, zcos_sais2, ln_ann_cyc)
          !
          ! Zonal wind profile as is Marques et al. (2022)
-         znds_wnd_phi    = (/rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max /)
-         znds_wnd_val    = (/0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp /)
+         ! First and last values ensure that rn_phi_min / rn_phi_max stay within bounds.
+         ! For values outside of rn_phi_min / rn_phi_max there are no winds
+         znds_wnd_phi    = (/rn_phi_min - 1._wp, rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max, rn_phi_max + 1._wp /)
+         znds_wnd_val    = (/0._wp, 0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp, 0._wp /)
          !
          ! Temperature restoring profile
          ! Chosen with the southern boundary always colder than the northern boundary
