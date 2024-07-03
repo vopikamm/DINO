@@ -265,7 +265,7 @@ CONTAINS
          WRITE(numout,*)
          WRITE(numout,*)    '    zgr_bat : defines the bathymetry at T points.'
          WRITE(numout,*)    '    ~~~~~~~'
-         WRITE(numout,*)    '       BASIN case : flat bottom or bowl shape'
+         WRITE(numout,*)    '       DINO case : flat bottom or bowl shape'
          WRITE(numout,*)    '       nn_botcase = ', nn_botcase
       ENDIF
       !!----------------------------------------------------------------------
