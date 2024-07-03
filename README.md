@@ -8,7 +8,7 @@ DINO is solved on a sphere and discretized by a horizontally isotropic mercator 
 We compute **longitude at T-points** as
 $$
 \begin{equation*}
-    \lambda(i) = \lambda_{0} + \Delta \lambda * i
+    \lambda(i) = \lambda \_{0} + \Delta \lambda * i
 \end{equation*}
 $$
 
