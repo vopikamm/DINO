@@ -133,7 +133,6 @@
 !-----------------------------------------------------------------------
 &namwad        !   Wetting and Drying (WaD)                             (default: OFF)
 !-----------------------------------------------------------------------
-   ln_wd_il    = .false.   !  T/F activation of iterative   limiter
    ln_wd_dl    = .false.   !  T/F activation of directional limiter
    ln_wd_dl_bc = .false.   !  T/F Directional limiteer Baroclinic option
    ln_wd_dl_rmp = .false.  !  T/F Turn on directional limiter ramp
@@ -141,7 +140,6 @@
    rn_wdmin1   =  0.2      !  Minimum wet depth on dried cells
    rn_wdmin2   =  0.0001   !  Tolerance of min wet depth on dried cells
    rn_wdld     =  2.5      !  Land elevation below which WaD is allowed
-   nn_wdit     =   20      !  Max iterations for WaD limiter
    rn_wd_sbcdep =  5.0     !  Depth at which to taper sbc fluxes
    rn_wd_sbcfra =  0.999   !  Fraction of SBC fluxes at taper depth (Must be <1)
 /
@@ -1199,7 +1197,7 @@
    !                       !                 = 2 first vertical derivative of mixing length bounded by 1
    !                       !                 = 3 as =2 with distinct dissipative an mixing length scale
    ln_mxl0     = .true.    !  surface mixing length scale = F(wind stress) (T) or not (F)
-      nn_mxlice    = 2        ! type of scaling under sea-ice
+      nn_mxlice    = 0        ! type of scaling under sea-ice
       !                       !    = 0 no scaling under sea-ice
       !                       !    = 1 scaling with constant sea-ice thickness
       !                       !    = 2 scaling with mean sea-ice thickness ( only with SI3 sea-ice model )
