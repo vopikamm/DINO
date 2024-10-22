@@ -107,10 +107,22 @@ that are available in the tidal-forcing implementation (see
   -->
       <!-- Zanna & Bolton parameterization -->
       <field_group id="Zanna_Bolton">
-         <field id="zb_u"       long_name="ZB tendency in i-direction"                  unit="m/s2"   grid_ref="grid_U_3D"/>
-         <field id="zb_v"       long_name="ZB tendency in j-direction"                  unit="m/s2"   grid_ref="grid_V_3D"/>
-         <field id="zb_surf_u"  long_name="ZB tendency in i-direction at the surface"   unit="m/s2"   grid_ref="grid_U_2D"/>
-         <field id="zb_surf_v"  long_name="ZB tendency in j-direction at the surface"   unit="m/s2"   grid_ref="grid_V_2D"/>
+     <field id="zb_u"       long_name="ZB tendency in i-direction"                unit="m/s2"   grid_ref="grid_U_3D"/>
+     <field id="zb_v"       long_name="ZB tendency in j-direction"                unit="m/s2"   grid_ref="grid_V_3D"/>
+     <field id="zb_surf_u"  long_name="ZB tendency in i-direction at the surface" unit="m/s2"   grid_ref="grid_U_2D"/>
+     <field id="zb_surf_v"  long_name="ZB tendency in j-direction at the surface" unit="m/s2"   grid_ref="grid_V_2D"/>
+
+
+     <field id="zb_inst_u"  long_name="ZB tendency in i-direction, instantaneous" operation='instant' unit="m/s2"   grid_ref="grid_U_3D">  zb_u </field>
+     <field id="zb_inst_v"  long_name="ZB tendency in j-direction, instantaneous" operation='instant' unit="m/s2"   grid_ref="grid_V_3D">  zb_v </field>
+     <field id="ssu_inst"  long_name="Surface velocity in i-direction, instantaneous" operation='instant' unit="m/s"   grid_ref="grid_U_2D">  ssu </field>
+     <field id="ssv_inst"  long_name="Surface velocity in j-direction, instantaneous" operation='instant' unit="m/s"   grid_ref="grid_V_2D">  ssv </field>
+
+     <field id="uoce_inst"  long_name="Velocity in i-direction, instantaneous" operation='instant' unit="m/s"   grid_ref="grid_U_3D">  uoce </field>
+     <field id="voce_inst"  long_name="Velocity in j-direction, instantaneous" operation='instant' unit="m/s"   grid_ref="grid_V_3D">  voce </field>
+
+     <field id="soce_inst"  long_name="Salinity, instantaneous"     operation='instant' unit="1e-3"   grid_ref="grid_T_3D">  soce </field>
+     <field id="toce_inst"  long_name="Temperature, instantaneous"  operation='instant' unit="degC"   grid_ref="grid_T_3D">  toce </field>
       </field_group>
 
   <!-- T grid -->
@@ -592,6 +604,7 @@ that are available in the tidal-forcing implementation (see
     <field id="e3u_0"         long_name="Initial U-cell thickness"                               standard_name="ref_cell_thickness"          unit="m"          grid_ref="grid_U_3D"/>
     <field id="utau"          long_name="Wind Stress along i-axis"                               standard_name="surface_downward_x_stress"   unit="N/m2"                            />
     <field id="uoce"          long_name="ocean current along i-axis"                             standard_name="sea_water_x_velocity"        unit="m/s"        grid_ref="grid_U_3D" />
+    <field id="uoce_sq"       long_name="ocean current along i-axis squared"                                                                 unit="m2/s2"      grid_ref="grid_U_3D"  > uoce * uoce </field>
     <field id="uoce_e3u"      long_name="ocean current along i-axis  (thickness weighted)"                                                   unit="m/s"        grid_ref="grid_U_3D"  > uoce * e3u </field>
     <field id="uoce_e3u_vsum" long_name="ocean current along i-axis * e3u summed on the vertical"  field_ref="uoce_e3u"    unit="m3/s"       grid_ref="grid_U_vsum"/>
     <field id="uocetr_vsum"   long_name="ocean transport along i-axis  summed on the vertical"         field_ref="e2u"       unit="m3/s"> this * uoce_e3u_vsum  </field>
@@ -600,8 +613,8 @@ that are available in the tidal-forcing implementation (see
     <field id="uocetr_vsum_cumul" long_name="ocean current along i-axis * e3u * e2u cumulated from southwest point" freq_offset="_reset_" operation="instant" freq_op="1mo"  unit="m3/s" />
     <field id="msftbarot"         long_name="ocean_barotropic_mass_streamfunction"   unit="kg s-1" > uocetr_vsum_cumul * $rho0 </field>
 
-
     <field id="ssu"          long_name="ocean surface current along i-axis"                                                                 unit="m/s"                             />
+    <field id="ssu_sq"       long_name="ocean surface current along i-axis squared"                                                         unit="m2/s2"  grid_ref="grid_U_2D"      > ssu * ssu </field>
     <field id="sbu"          long_name="ocean bottom current along i-axis"                                                                  unit="m/s"  grid_ref="grid_U_2D_inner" />
     <field id="ubar"         long_name="ocean barotropic current along i-axis"                                                              unit="m/s"                             />
     <field id="uocetr_eff"   long_name="Effective ocean transport along i-axis"                 standard_name="ocean_volume_x_transport"    unit="m3/s"       grid_ref="grid_U_3D" />
@@ -660,8 +673,10 @@ that are available in the tidal-forcing implementation (see
     <field id="hv"            long_name="water column height at V point"                        standard_name="water_column_height_V"       unit="m" />
     <field id="vtau"         long_name="Wind Stress along j-axis"                               standard_name="surface_downward_y_stress"   unit="N/m2"                            />
     <field id="voce"         long_name="ocean current along j-axis"                             standard_name="sea_water_y_velocity"        unit="m/s"        grid_ref="grid_V_3D" />
+    <field id="voce_sq"      long_name="ocean current along j-axis squared"                                                                 unit="m2/s2"      grid_ref="grid_V_3D"  > voce * voce </field>
     <field id="voce_e3v"     long_name="ocean current along j-axis  (thickness weighted)"                                                   unit="m/s"        grid_ref="grid_V_3D"  > voce * e3v </field>
     <field id="ssv"          long_name="ocean surface current along j-axis"                                                                 unit="m/s"                             />
+    <field id="ssv_sq"       long_name="ocean surface current along j-axis squared"                                                         unit="m2/s2"    grid_ref="grid_V_2D"    > ssv * ssv </field>
     <field id="sbv"          long_name="ocean bottom current along j-axis"                                                                  unit="m/s"  grid_ref="grid_V_2D_inner" />
     <field id="vbar"         long_name="ocean barotropic current along j-axis"                                                              unit="m/s"                             />
     <field id="vocetr_eff"   long_name="Effective ocean transport along j-axis"                 standard_name="ocean_volume_y_transport"    unit="m3/s"       grid_ref="grid_V_3D" />
@@ -688,6 +703,10 @@ that are available in the tidal-forcing implementation (see
     <field id="veiv_heattr3d" long_name="ocean bolus heat transport along j-axis"       standard_name="ocean_heat_y_transport_due_to_bolus_advection"   unit="W"    grid_ref="grid_V_3D" />
     <field id="veiv_salttr3d" long_name="ocean bolus salt transport along j-axis"       standard_name="ocean_salt_y_transport_due_to_bolus_advection"   unit="kg"   grid_ref="grid_V_3D" />
 
+
+    <field id="v_voltr"      long_name="Ocean volume X Transport"             standard_name="ocean_volume_x_transport"     unit="m3/s"       grid_ref="grid_V_3D" />
+    <field id="v_heattr_3D"  long_name="Ocean heat Transport along j-axis"    standard_name="ocean_heat_y_transport_3D"    unit="W"          grid_ref="grid_V_3D" />
+    <field id="v_salttr_3D"  long_name="Ocean salt Transport along j-axis"    standard_name="ocean_salt_y_transport_3D"    unit="1e-3*m3/s"  grid_ref="grid_V_3D" />
 
     <!-- voce_bbl: available with ln_trabbl=T and nn_bbl_adv=1 -->
     <field id="voce_bbl"     long_name="BBL ocean current along j-axis"    unit="m/s"  />

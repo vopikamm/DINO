@@ -1,7 +1,7 @@
 !!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 !! NEMO Configuration namelist : overwrite some defaults values defined in SHARED/namelist_ref
 !!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-!!                          BASIN configuration                       !!
+!!                          DINO configuration                       !!
 !!======================================================================
 !!              ***  Domain & Run management namelists  ***           !!
 !!                                                                    !!
@@ -17,7 +17,7 @@
 !!======================================================================
 !
 !-----------------------------------------------------------------------
-&namusr_def    !   User defined :   BASIN configuration
+&namusr_def    !   User defined :   DINO configuration
 !-----------------------------------------------------------------------
    rn_e1_deg            =      1.        ! Resolution in degrees of longitude (Mercator grid)
    rn_phi_min           =    -70.         ! Latitude of the south frontier (T point) [degrees] (approximative)
@@ -44,7 +44,8 @@
          rn_sstar_n     =     35.1        ! Salinity restoring value at the northern boundary 
          rn_sstar_eq    =     37.25       ! Salinity restoring maximum without exponential
       ln_qsr            = .true.          ! Solar heat flux or not
-      ln_emp_field      = .true.          ! EmP is read from file and replaces saltflx from S-restoring
+      ln_emp_field      = .false.          ! EmP is read from file and replaces saltflx from S-restoring
+      ln_qns_field      = .false.          ! EmP is read from file and replaces saltflx from S-restoring
 
    nn_botcase       =      1              ! bottom definition (0:flat, 1:bowl cosh, 2: bowl 1-x**4)
       rn_H          =   4000.             ! Maximum depth of the basin (approximative, is recomputed after the bathymetry calculation)
@@ -67,9 +68,9 @@
       rn_cha_max    =   -45.              ! northern edge of the channel [degrees] (approximate)
       rn_slp_cha    =    1.5              ! Slope of the boundaries in the channel
    !
-   ln_zco_nam       = .false.             ! z-coordinate   
+   ln_zco_nam       = .true.             ! z-coordinate   
    ln_zps_nam       = .false.             ! partial-steps z-coordinate
-   ln_sco_nam       = .true.              ! s-coordinate
+   ln_sco_nam       = .false.              ! s-coordinate
    nn_ztype         =      1              ! type of vertical grid (z-coordinate or s pure coordinate) (0: uniform)
    !
    ln_mid_ridge     = .false.              ! Including a Mid-Atlantic ridge
@@ -139,23 +140,6 @@
    ln_use_jattr = .false.  !  use (T) the file attribute: open_ocean_jstart, if present
    !                       !  in netcdf input files, as the start j-row for reading
 /
-!
-!
-! dk: TODO!-----------------------------------------------------------------------
-! dk: TODO&namtsd        !    Temperature & Salinity Data  (init/dmp)             (default: OFF)
-! dk: TODO!-----------------------------------------------------------------------
-! dk: TODO   !                       ! =T  read T-S fields for:
-! dk: TODO   ln_tsd_init = .true.         !  ocean initialisation
-! dk: TODO   ln_tsd_dmp  = .false.         !  T-S restoring   (see namtra_dmp)
-! dk: TODO
-! dk: TODO   cn_dir      = './'      !  root directory for the T-S data location
-! dk: TODO   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
-! dk: TODO   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
-! dk: TODO   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
-! dk: TODO   sn_tem = 'data_restart.nc',                       -1.     , 'votemper',   .true.    , .true. , 'yearly'  ,    ''            ,    ''    ,    ''
-! dk: TODO   sn_sal = 'data_restart.nc',                       -1.     , 'vosaline',   .true.    , .true. , 'yearly'  ,    ''            ,    ''    ,    ''
-! dk: TODO/
-!
 !
 !-----------------------------------------------------------------------
 !!======================================================================
@@ -231,7 +215,8 @@
 !----------------------------------------------------------------------- !!rc TODO linear drag
    ln_non_lin = .true.     !  non-linear  drag: Cd = Cd0 |U|
 /
-
+!-----------------------------------------------------------------------
+!
 !!======================================================================
 !!                        Tracer (T & S) namelists                    !!
 !!                                                                    !!
@@ -278,15 +263,15 @@
    !                       !  Direction of action:
    ln_traldf_lev   = .false.   !  iso-level
    ln_traldf_hor   = .false.   !  horizontal  (geopotential)
-   ln_traldf_iso   = .false.   !  iso-neutral (standard operator)
-   ln_traldf_triad = .true.    !  iso-neutral (triad    operator)
+   ln_traldf_iso   = .true.   !  iso-neutral (standard operator)
+   ln_traldf_triad = .false.    !  iso-neutral (triad    operator)
    !
    !		       	         !  iso-neutral options:        
    ln_traldf_msc   = .true.    !  Method of Stabilizing Correction      (both operators)
    rn_slpmax       =  0.01     !  slope limit                           (both operators)
-   ln_triad_iso    = .false.   !  pure horizontal mixing in ML              (triad only)   !!rc TODO ask GM to check   !!rc set to T to remove high W on the Western boundary
-   rn_sw_triad     = 0         !  =1 switching triad ; =0 all 4 triads used (triad only)   !!rc TODO verify   !!rc Done because problem at the bottom if =1   !!rc TODO ask GM to chek (bug)
-   ln_botmix_triad = .true.    !  lateral mixing on bottom                  (triad only)   !!rc Following the slope at the bottom   !!rc TODO ask GM to check
+   !ln_triad_iso    = .false.   !  pure horizontal mixing in ML              (triad only)   !!rc TODO ask GM to check   !!rc set to T to remove high W on the Western boundary
+   !rn_sw_triad     = 0         !  =1 switching triad ; =0 all 4 triads used (triad only)   !!rc TODO verify   !!rc Done because problem at the bottom if =1   !!rc TODO ask GM to chek (bug)
+   !ln_botmix_triad = .true.    !  lateral mixing on bottom                  (triad only)   !!rc Following the slope at the bottom   !!rc TODO ask GM to check
    !
    !                       !  Coefficients:
    nn_aht_ijk_t    = 0         !  space/time variation of eddy coefficient:   !!rc scaling with grid size 20 !!rc remove scaling
@@ -336,7 +321,7 @@
 !
 &namZB !   parameters of backscatter parameterization
 !-----------------------------------------------------------------------
-   ln_zanna_bolton      = .true.               ! turn on ZB
+   ln_zanna_bolton      = .false.               ! turn on ZB
    rn_gamma             = 0.5                  ! ZB-coefficient
    ln_filter            = .true.               ! key for Shapiro filter
    nn_filter            = 4                    ! number of applied filters to the stress tensor
@@ -446,11 +431,11 @@
 !!   namnc4       netcdf4 chunking and compression settings             ("key_netcdf4")
 !!======================================================================
 !-----------------------------------------------------------------------
-&namtrd        !   trend diagnostics                                    (default: OFF)
+!&namtrd        !   trend diagnostics                                    (default: OFF)
 !-----------------------------------------------------------------------
-   ln_dyn_trd  = .false.   ! (T) 3D momentum trend output
-   ln_tra_trd  = .false.   ! (T) 3D tracer trend output
-/
+!   ln_dyn_trd  = .false.   ! (T) 3D momentum trend output
+!   ln_tra_trd  = .false.   ! (T) 3D tracer trend output
+!/
 !!======================================================================
 !!               ***  Observation & Assimilation  ***                 !!
 !!                                                                    !!
