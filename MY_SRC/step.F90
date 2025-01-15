@@ -248,8 +248,8 @@ CONTAINS
                                  CALL dyn_adv( kstp, Nbb, Nnn      , uu, vv, Nrhs )  ! advection (VF or FF)	==> RHS
                                  CALL dyn_vor( kstp,      Nnn      , uu, vv, Nrhs )  ! vorticity           	==> RHS
                                  CALL dyn_ldf( kstp, Nbb, Nnn      , uu, vv, Nrhs )  ! lateral mixing
-         IF( ln_zanna_bolton )   CALL ZB_apply( kstp,Nbb      , uu, vv, Nrhs )       ! Zanna & Bolton 2020 parameterization
-         IF( KEB_on ) )          CALL KEB_apply( kstp,Nbb      , uu, vv, Nrhs )      ! KEB parameterization                   
+         IF( ln_zanna_bolton )   CALL ZB_apply( kstp, Nbb          , uu, vv, Nrhs )       ! Zanna & Bolton 2020 parameterization
+         IF( KEB_on ) )          CALL KEB_apply( kstp, Nbb         , uu, vv, ww, Nrhs )      ! KEB parameterization                   
          IF( ln_zdfosm  )        CALL dyn_osm( kstp,      Nnn      , uu, vv, Nrhs )  ! OSMOSIS non-local velocity fluxes ==> RHS
                                  CALL dyn_hpg( kstp,      Nnn      , uu, vv, Nrhs )  ! horizontal gradient of Hydrostatic pressure
       END DO

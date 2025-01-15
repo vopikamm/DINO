@@ -156,7 +156,8 @@ CONTAINS
       DO_3D_OVR( 0, 0, 0, 0 , 1, jpk)
          zbu(ji,jj,jk) = (( T_xx(ji+1,jj,jk)   * e3t(ji+1,jj,jk,Kbb)   * e2t(ji+1,jj)   ** 2                   &
             &             - T_xx(ji,jj,jk) * e3t(ji,jj,jk,Kbb) * e2t(ji,jj) ** 2) / e2u(ji,jj)  &
-            &           + ( T_xy(ji,jj,jk)   * e3f(ji,jj,jk)   * e1f(ji,jj)   ** 2                   &
+            &           + ( T_xy(ji,jj,jk)   * e3f(ji,jj,jk)   * e1f(ji,jj)   ** 2                   & 
+      !dk: why e3f not time dependant? I think it is but replaced only at midtime level.
             &             - T_xy(ji,jj-1,jk) * e3f(ji,jj-1,jk) * e1f(ji,jj-1) ** 2) / e1u(ji,jj)) &
             &           *   r1_e1u(ji,jj) * r1_e2u(ji,jj) / e3u(ji,jj,jk,Kbb) * gamma
          !

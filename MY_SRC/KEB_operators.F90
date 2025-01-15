@@ -25,6 +25,9 @@ MODULE KEB_operators
    IMPLICIT NONE   
    PUBLIC
    
+      !! * Substitutions
+#  include "do_loop_substitute.h90"
+      !!
 CONTAINS
 
    SUBROUTINE z_filter( ptn, pta ) 
@@ -52,22 +55,15 @@ CONTAINS
       !!----------------------------------------------------------------------
       
       zwz(:,:,1) = 0._wp ! zero cross-surface flux   
-      DO jk = 2, jpk
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               coef = 0.25_wp * e3w_0(ji,jj,1)**2
-               zwz(ji,jj,jk) = coef * (ptn(ji,jj,jk-1) - ptn(ji,jj,jk))  / e3w_0(ji,jj,jk) * wmask(ji,jj,jk)
-            END DO
-         END DO    
-      END DO
+      DO_3D(0,0,0,0,0,1)
+         coef = 0.25_wp * e3w_0(ji,jj,1)**2
+         zwz(ji,jj,jk) = coef * (ptn(ji,jj,jk-1) - ptn(ji,jj,jk))  / e3w_0(ji,jj,jk) * wmask(ji,jj,jk)
+      END_3D    
       
-      DO jk = 1, jpkm1
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1   
-                  pta(ji,jj,jk) = ptn(ji,jj,jk)  + ( zwz(ji,jj,jk) - zwz(ji,jj,jk+1) ) / e3t_0(ji,jj,jk)
-            END DO
-         END DO    
-      END DO
+      
+      DO_3D(0,0,0,0,1,0)  
+         pta(ji,jj,jk) = ptn(ji,jj,jk)  + ( zwz(ji,jj,jk) - zwz(ji,jj,jk+1) ) / e3t_0(ji,jj,jk)
+      END_3D
       
    END SUBROUTINE z_filter
 
@@ -112,62 +108,45 @@ CONTAINS
       !   ---------------------
       ! I. Horizontal advection
       !   ---------------------
-      DO jk = 1, jpkm1
-         DO jj = 1, jpjm1
-            DO ji = 1, jpim1   
-               zun = e2u(ji,jj) * e3u_0(ji,jj,jk) * pun(ji,jj,jk)
-               zvn = e1v(ji,jj) * e3v_0(ji,jj,jk) * pvn(ji,jj,jk)
-     
-               unp = max(zun,0._wp)
-               unm = zun - unp
-               vnp = max(zvn,0._wp)
-               vnm = zvn - vnp
+      DO_3D(1,0,1,0,1,0)  
+         zun = e2u(ji,jj) * e3u_0(ji,jj,jk) * pun(ji,jj,jk)
+         zvn = e1v(ji,jj) * e3v_0(ji,jj,jk) * pvn(ji,jj,jk)
 
-               zwx(ji,jj) = unp * ptn(ji,jj,jk) + unm * ptn(ji+1,jj,jk)
-               zwy(ji,jj) = vnp * ptn(ji,jj,jk) + vnm * ptn(ji,jj+1,jk)
-            END DO
-         END DO
-         
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1   
-                  zbtr = r1_e12t(ji,jj) / e3t_0(ji,jj,jk)
-                  rhsn(ji,jj,jk) = - zbtr * (  zwx(ji,jj) - zwx(ji-1,jj  )   &
-                                             + zwy(ji,jj) - zwy(ji  ,jj-1) )
-            END DO
-         END DO
-      END DO
+         unp = max(zun,0._wp)
+         unm = zun - unp
+         vnp = max(zvn,0._wp)
+         vnm = zvn - vnp
+         zwx(ji,jj) = unp * ptn(ji,jj,jk) + unm * ptn(ji+1,jj,jk)
+         zwy(ji,jj) = vnp * ptn(ji,jj,jk) + vnm * ptn(ji,jj+1,jk)
+      END_3D
+      
+      DO_3D(0,0,0,0,1,0)
+         zbtr = r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+         rhsn(ji,jj,jk) = - zbtr * (  zwx(ji,jj) - zwx(ji-1,jj  )   &
+                                    + zwy(ji,jj) - zwy(ji  ,jj-1) )
+      END_3D
 
       !   ---------------------
       ! II. Vertical advection
       !   ---------------------
 
       IF (bc_type) THEN
-         zwz(:,:,1) = e12t(:,:) * pwn(:,:,1) * ptn(:,:,1) ! see traadv_cen2.F90
+         zwz(:,:,1) = e1e2t(1:jpi,1:jpj) * pwn(1:jpi,1:jpj,1) * ptn(1:jpi,1:jpj,1) ! see traadv_cen2.F90
       ELSE
          zwz(:,:,1) = 0._wp ! zero cross-surface flux   
       END IF
       
-      DO jk = 2, jpk
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               zwn = e12t(ji,jj) * pwn(ji,jj,jk)
-
-               wnp = max(zwn, 0._wp)
-               wnm = zwn - wnp
-
-               zwz(ji,jj,jk) = wnp * ptn(ji,jj,jk) + wnm * ptn(ji,jj,jk-1)
-            END DO
-         END DO    
-      END DO
+      DO_3D(0,0,0,0,0,1)
+         zwn = e1e2t(ji,jj) * pwn(ji,jj,jk)
+         wnp = max(zwn, 0._wp)
+         wnm = zwn - wnp
+         zwz(ji,jj,jk) = wnp * ptn(ji,jj,jk) + wnm * ptn(ji,jj,jk-1)
+      END_3D
       
-      DO jk = 1, jpkm1
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1   
-                  zbtr = r1_e12t(ji,jj) / e3t_0(ji,jj,jk)
-                  rhsn(ji,jj,jk) = rhsn(ji,jj,jk) - zbtr * ( zwz(ji,jj,jk) - zwz(ji,jj,jk+1) )
-            END DO
-         END DO    
-      END DO
+      DO_3D(0,0,0,0,1,0)
+         zbtr = r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+         rhsn(ji,jj,jk) = rhsn(ji,jj,jk) - zbtr * ( zwz(ji,jj,jk) - zwz(ji,jj,jk+1) )    
+      END_3D
       
    END SUBROUTINE upwind_advection
    
@@ -198,7 +177,7 @@ CONTAINS
       REAL(wp), DIMENSION (jpi,jpj) :: ptn_m    ! masked array to apply zero Dirichlet B.C.
       !!----------------------------------------------------------------------
 
-      DO jk=1,jpkm1
+      DO jk=1,jpk-1
          !   ---------------------
          ! I. First derivative (gradient, scaled by divergence metric terms)
          !   ---------------------
@@ -208,15 +187,12 @@ CONTAINS
             ptn_m(:,:) = ptn(:,:,jk)
          END IF
 
-         DO jj = 1, jpjm1
-            ! umask, vmask make zero cross-boundary fluxes
-            DO ji = 1, jpim1   
-               zabe1 = coef * re2u_e1u(ji,jj) * e3u_0(ji,jj,jk)
-               zabe2 = coef * re1v_e2v(ji,jj) * e3v_0(ji,jj,jk) 
-               zwx(ji,jj) = zabe1 * ( ptn_m(ji+1,jj  ) - ptn_m(ji,jj) )
-               zwy(ji,jj) = zabe2 * ( ptn_m(ji  ,jj+1) - ptn_m(ji,jj) )
-            END DO
-         END DO         
+         DO_2D(1,0,1,0)
+            zabe1 = coef * e2_e1u(ji,jj) * e3u_0(ji,jj,jk)
+            zabe2 = coef * e1_e2v(ji,jj) * e3v_0(ji,jj,jk) 
+            zwx(ji,jj) = zabe1 * ( ptn_m(ji+1,jj  ) - ptn_m(ji,jj) )
+            zwy(ji,jj) = zabe2 * ( ptn_m(ji  ,jj+1) - ptn_m(ji,jj) )
+         END_2D
          
          IF (.not. bc_type) THEN
             zwx(:,:) = zwx(:,:) * umask(:,:,jk)
@@ -226,12 +202,10 @@ CONTAINS
          !   ---------------------
          ! II. Second derivative (divergence)
          !   ---------------------
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1   
-               zbtr = r1_e12t(ji,jj) / e3t_0(ji,jj,jk)
-               rhsn(ji,jj,jk) = zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
-            END DO
-         END DO
+         DO_2D(0,0,0,0)
+            zbtr = r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+            rhsn(ji,jj,jk) = zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
+         END_2D   
       END DO
       
    END SUBROUTINE laplace_T3D
@@ -264,29 +238,24 @@ CONTAINS
       REAL(wp),  DIMENSION (jpi,jpj) :: zwx, zwy       ! fluxes of tracer in u,v-points
       !!----------------------------------------------------------------------
       
-      DO jk=1,jpkm1
+      DO jk=1,jpk-1
          !   ---------------------
          ! I. First derivative (gradient, scaled by divergence metric terms)
          !   ---------------------
-         DO jj = 1, jpjm1
-            ! umask, vmask make zero cross-boundary fluxes
-            DO ji = 1, jpim1   
-               zabe1 = 0.125_wp * e12u(ji,jj) * e3u_0(ji,jj,jk)
-               zabe2 = 0.125_wp * e12v(ji,jj) * e3v_0(ji,jj,jk)
-               zwx(ji,jj) = zabe1 * ( ptn(ji+1,jj  ,jk) - ptn(ji,jj,jk) ) * umask(ji,jj,jk)
-               zwy(ji,jj) = zabe2 * ( ptn(ji  ,jj+1,jk) - ptn(ji,jj,jk) ) * vmask(ji,jj,jk)
-            END DO
-         END DO         
+         DO_2D(1,0,1,0)
+            zabe1 = 0.125_wp * e1e2u(ji,jj) * e3u_0(ji,jj,jk)
+            zabe2 = 0.125_wp * e1e2v(ji,jj) * e3v_0(ji,jj,jk)
+            zwx(ji,jj) = zabe1 * ( ptn(ji+1,jj  ,jk) - ptn(ji,jj,jk) ) * umask(ji,jj,jk)
+            zwy(ji,jj) = zabe2 * ( ptn(ji  ,jj+1,jk) - ptn(ji,jj,jk) ) * vmask(ji,jj,jk)
+         END_2D
          
          !   ---------------------
          ! II. Second derivative (divergence)
          !   ---------------------
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1   
-               zbtr = r1_e12t(ji,jj) / e3t_0(ji,jj,jk)
-               ptn(ji,jj,jk) = ptn(ji,jj,jk) + zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
-            END DO
-         END DO
+         DO_2D(0,0,0,0)
+            zbtr = r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+            ptn(ji,jj,jk) = ptn(ji,jj,jk) + zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
+         END_2D
       END DO
       
    END SUBROUTINE filter_laplace_T3D
@@ -320,30 +289,25 @@ CONTAINS
       REAL(wp),  DIMENSION (jpi,jpj) :: ptn_m          ! masked array
       !!----------------------------------------------------------------------
       
-      DO jk=1,jpkm1
+      DO jk=1,jpk-1
          !   ---------------------
          ! I. First derivative (gradient, scaled by divergence metric terms)
          !   ---------------------
          ptn_m(:,:) = ptn(:,:,jk) * tmask(:,:,jk)
-         DO jj = 1, jpjm1
-            ! umask, vmask make zero cross-boundary fluxes
-            DO ji = 1, jpim1   
-               zabe1 = 0.125_wp * e12u(ji,jj) * e3u_0(ji,jj,jk)
-               zabe2 = 0.125_wp * e12v(ji,jj) * e3v_0(ji,jj,jk)
+         DO_2D(1,0,1,0)
+               zabe1 = 0.125_wp * e1e2u(ji,jj) * e3u_0(ji,jj,jk)
+               zabe2 = 0.125_wp * e1e2v(ji,jj) * e3v_0(ji,jj,jk)
                zwx(ji,jj) = zabe1 * ( ptn_m(ji+1,jj  ) - ptn_m(ji,jj) )
                zwy(ji,jj) = zabe2 * ( ptn_m(ji  ,jj+1) - ptn_m(ji,jj) )
-            END DO
-         END DO         
+         END_2D
          
          !   ---------------------
          ! II. Second derivative (divergence)
          !   ---------------------
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1   
-               zbtr = r1_e12t(ji,jj) / e3t_0(ji,jj,jk)
-               ptn(ji,jj,jk) = ptn(ji,jj,jk) + zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
-            END DO
-         END DO
+         DO_2D(0,0,0,0)
+            zbtr = r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+            ptn(ji,jj,jk) = ptn(ji,jj,jk) + zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
+         END_2D
       END DO
       
    END SUBROUTINE filter_laplace_T3D_dirichlet
@@ -378,7 +342,7 @@ CONTAINS
          ELSE 
             CALL filter_laplace_T3D(ptim)
          END IF
-         CALL lbc_lnk(ptim, 'T', 1.)
+         CALL lbc_lnk('filter_laplace_T3D_ntimes', ptim, 'T', 1.)
       END DO
       
       pta = ptim
@@ -415,31 +379,27 @@ CONTAINS
       REAL(wp), DIMENSION (jpi,jpj)     :: zwx, zwy    ! fluxes of tracer in v,u-points (since scale in f-points)
       !!----------------------------------------------------------------------
       
-      DO jk=1,jpkm1
+      DO jk=1,jpk-1
          !   ---------------------
          ! I. First derivative (gradient, scaled by divergence metric terms)
          !   ---------------------
          ! set zeros at the land and boundary
          ptn(:,:,jk) = ptn(:,:,jk) * ffmask(:,:,jk)
-         DO jj = 1, jpjm1
+         DO_2D(1,0,1,0)
             ! ji+1, jj+1 shifts are due to position of fluxes points relative to f-point
-            DO ji = 1, jpim1   
-               zabe1 = 0.125_wp * e12v(ji+1,jj) * e3v_0(ji+1,jj,jk)
-               zabe2 = 0.125_wp * e12u(ji,jj+1) * e3u_0(ji,jj+1,jk)
-               zwx(ji,jj) = zabe1 * ( ptn(ji+1,jj  ,jk) - ptn(ji,jj,jk) )
-               zwy(ji,jj) = zabe2 * ( ptn(ji  ,jj+1,jk) - ptn(ji,jj,jk) )
-            END DO
-         END DO         
+            zabe1 = 0.125_wp * e1e2v(ji+1,jj) * e3v_0(ji+1,jj,jk)
+            zabe2 = 0.125_wp * e1e2u(ji,jj+1) * e3u_0(ji,jj+1,jk)
+            zwx(ji,jj) = zabe1 * ( ptn(ji+1,jj  ,jk) - ptn(ji,jj,jk) )
+            zwy(ji,jj) = zabe2 * ( ptn(ji  ,jj+1,jk) - ptn(ji,jj,jk) )
+         END_2D         
          
          !   ---------------------
          ! II. Second derivative (divergence)
          !   ---------------------
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1   
-               zbtr = r1_e12f(ji,jj) / e3f_0(ji,jj,jk)
-               ptn(ji,jj,jk) = ptn(ji,jj,jk) + zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
-            END DO
-         END DO
+         DO_2D(0,0,0,0)
+            zbtr = r1_e1e2f(ji,jj) / e3f_0(ji,jj,jk)
+            ptn(ji,jj,jk) = ptn(ji,jj,jk) + zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
+         END_2D
       END DO
       
    END SUBROUTINE filter_laplace_f3D
@@ -470,7 +430,7 @@ CONTAINS
       
       DO jtimes = 1, ntimes
          CALL filter_laplace_f3D(ptim, ffmask)
-         CALL lbc_lnk(ptim, 'F', 1.)
+         CALL lbc_lnk('filter_laplace_f3D_ntimes', ptim, 'F', 1.)
       END DO
       
       pta = ptim
@@ -524,37 +484,30 @@ CONTAINS
       CALL filter_laplace_f3D_ntimes( prot, prot_f, nback / 2, ffmask)
       
       ! compute Eback as in dynldf_lap
-      DO jk = 1, jpkm1
-         Eback_f(:,:) = 0.25_wp * prot_f(:,:,jk)**2 * e12f(:,:) * e3f_0(:,:,jk) * ffmask(:,:,jk)
+      DO jk = 1, jpk-1
+         Eback_f(:,:) = 0.25_wp * prot_f(:,:,jk)**2 * e1e2f(:,:) * e3f_0(:,:,jk) * ffmask(:,:,jk)
 
          ! no need for MPI exchange
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               Eback(ji,jj,jk) =  nu2t(ji,jj,jk) * (                                                         &
-                                  Eback_f(ji,jj) + Eback_f(ji-1,jj) + Eback_f(ji,jj-1) + Eback_f(ji-1,jj-1)  &
-                                                   ) * r1_e12t(ji,jj) / e3t_0(ji,jj,jk)
-            END DO
-         END DO
+         DO_2D(0,0,0,0)
+            Eback(ji,jj,jk) =  nu2t(ji,jj,jk) * (                                                         &
+                               Eback_f(ji,jj) + Eback_f(ji-1,jj) + Eback_f(ji,jj-1) + Eback_f(ji-1,jj-1)  &
+                                                ) * r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+         END_2D
       END DO
 
       CALL filter_laplace_f3D_ntimes( prot_f, prot_f, nback / 2, ffmask) 
 
       ! Laplacian operator      
-      DO jk = 1, jpkm1                               
-         DO jj = 1, jpjm1
-            DO ji = 1, jpim1
-               zuf(ji,jj) = - 0.25_wp * (nu2t(ji,jj,jk) + nu2t(ji+1,jj,jk) + nu2t(ji+1,jj+1,jk) + nu2t(ji,jj+1,jk)) *   &
-                           prot_f(ji,jj,jk) * e3f_0(ji,jj,jk) * ffmask(ji,jj,jk)
-            END DO
-         END DO    
+      DO jk = 1, jpk-1
+         DO_2D(1,0,1,0)                            
+            zuf(ji,jj) = - 0.25_wp * (nu2t(ji,jj,jk) + nu2t(ji+1,jj,jk) + nu2t(ji+1,jj+1,jk) + nu2t(ji,jj+1,jk)) *   &
+                        prot_f(ji,jj,jk) * e3f_0(ji,jj,jk) * ffmask(ji,jj,jk)
+         END_2D
 
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               pua(ji,jj,jk) = - ( zuf(ji,jj) - zuf(ji,jj-1) ) * r1_e2u(ji,jj) / e3u_0(ji,jj,jk)
-
-               pva(ji,jj,jk) = + ( zuf(ji,jj) - zuf(ji-1,jj) ) * r1_e1v(ji,jj) / e3v_0(ji,jj,jk)
-            END DO
-         END DO
+         DO_2D(0,0,0,0)
+            pua(ji,jj,jk) = - ( zuf(ji,jj) - zuf(ji,jj-1) ) * r1_e2u(ji,jj) / e3u_0(ji,jj,jk)
+            pva(ji,jj,jk) = + ( zuf(ji,jj) - zuf(ji-1,jj) ) * r1_e1v(ji,jj) / e3v_0(ji,jj,jk)
+         END_2D
       END DO
 
    END SUBROUTINE KEB_ldf_lap
@@ -577,14 +530,12 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj) :: zuf
       !!----------------------------------------------------------------------
       
-      DO jk = 1, jpkm1                
+      DO jk = 1, jpk-1                
          zuf(:,:) = psi(:,:,jk) * e3f_0(:,:,jk)               
-         DO jj = 2, jpj
-            DO ji = 2, jpi
-               fx(ji,jj,jk) = - ( zuf(ji,jj) - zuf(ji,jj-1) ) * r1_e2u(ji,jj) / e3u_0(ji,jj,jk)
-               fy(ji,jj,jk) = + ( zuf(ji,jj) - zuf(ji-1,jj) ) * r1_e1v(ji,jj) / e3v_0(ji,jj,jk)
-            END DO
-         END DO
+         DO_2D(0,1,0,1)
+            fx(ji,jj,jk) = - ( zuf(ji,jj) - zuf(ji,jj-1) ) * r1_e2u(ji,jj) / e3u_0(ji,jj,jk)
+            fy(ji,jj,jk) = + ( zuf(ji,jj) - zuf(ji-1,jj) ) * r1_e1v(ji,jj) / e3v_0(ji,jj,jk)
+         END_2D
       END DO
       
    END SUBROUTINE horizontal_curl
@@ -605,14 +556,12 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj) ::   zu, zv
       !!----------------------------------------------------------------------
       
-      DO jk = 1, jpkm1                   
+      DO jk = 1, jpk-1                   
          zu(:,:) = fx(:,:,jk) * e3u_0(:,:,jk) * e2u(:,:)
          zv(:,:) = fy(:,:,jk) * e3v_0(:,:,jk) * e1v(:,:)
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               hdiv(ji,jj,jk) = (zu(ji,jj) - zu(ji-1,jj) + zv(ji,jj) - zv(ji,jj-1)) / (e12t(ji,jj) * e3t_0(ji,jj,jk))
-            END DO
-         END DO
+         DO_2D(0,0,0,0)
+            hdiv(ji,jj,jk) = (zu(ji,jj) - zu(ji-1,jj) + zv(ji,jj) - zv(ji,jj-1)) / (e1e2t(ji,jj) * e3t_0(ji,jj,jk))
+         END_2D
       END DO
    
    END SUBROUTINE horizontal_divergence
@@ -633,14 +582,12 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj) ::   zu, zv
       !!----------------------------------------------------------------------
       
-      DO jk = 1, jpkm1                   
+      DO jk = 1, jpk-1                   
          zu(:,:) = fx(:,:,jk) * e1u(:,:)
          zv(:,:) = fy(:,:,jk) * e2v(:,:)
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               hrot(ji,jj,jk) = (zv(ji+1,jj) - zv(ji,jj) - zu(ji,jj+1) + zu(ji,jj)) / e12f(ji,jj)
-            END DO
-         END DO
+         DO_2D(0,0,0,0)
+            hrot(ji,jj,jk) = (zv(ji+1,jj) - zv(ji,jj) - zu(ji,jj+1) + zu(ji,jj)) / e1e2f(ji,jj)
+         END_2D
       END DO
       
    END SUBROUTINE compute_rotor
@@ -666,34 +613,28 @@ CONTAINS
       REAL (wp), DIMENSION (jpi,jpj) ::   zux, zuy, zvx, zvy, zue1, zue2, zve1, zve2, D2_f
 
       D2 = 0._wp
-      DO jk = 1, jpkm1
+      DO jk = 1, jpk-1
          zue2(:,:)=pu(:,:,jk) * r1_e2u(:,:)
          zve1(:,:)=pv(:,:,jk) * r1_e1v(:,:)
          zue1(:,:)=pu(:,:,jk) * r1_e1u(:,:)
          zve2(:,:)=pv(:,:,jk) * r1_e2v(:,:)
 
-         DO jj=2,jpjm1
-            DO ji=2,jpim1
-               zux(ji,jj) = (zue2(ji,jj)-zue2(ji-1,jj)) * r1_e1t(ji,jj) * e2t(ji,jj)
-               zvy(ji,jj) = (zve1(ji,jj)-zve1(ji,jj-1)) * r1_e2t(ji,jj) * e1t(ji,jj)
-            END DO
-         END DO
+         DO_2D(0,0,0,0)
+            zux(ji,jj) = (zue2(ji,jj)-zue2(ji-1,jj)) * r1_e1t(ji,jj) * e2t(ji,jj)
+            zvy(ji,jj) = (zve1(ji,jj)-zve1(ji,jj-1)) * r1_e2t(ji,jj) * e1t(ji,jj)
+         END_2D
 
-         DO jj=1,jpjm1
-            DO ji=1,jpim1
-               zvx(ji,jj) = (zve2(ji+1,jj)-zve2(ji,jj)) * r1_e1f(ji,jj) * e2f(ji,jj) * ffmask(ji,jj,jk)
-               zuy(ji,jj) = (zue1(ji,jj+1)-zue1(ji,jj)) * r1_e2f(ji,jj) * e1f(ji,jj) * ffmask(ji,jj,jk)
-            END DO
-         END DO
+         DO_2D(1,0,1,0)
+            zvx(ji,jj) = (zve2(ji+1,jj)-zve2(ji,jj)) * r1_e1f(ji,jj) * e2f(ji,jj) * ffmask(ji,jj,jk)
+            zuy(ji,jj) = (zue1(ji,jj+1)-zue1(ji,jj)) * r1_e2f(ji,jj) * e1f(ji,jj) * ffmask(ji,jj,jk)
+         END_2D
 
          D2_f(:,:) = (zvx(:,:) + zuy(:,:)) ** 2
 
-         DO jj=2,jpjm1
-            DO ji=2,jpim1
-               D2(ji,jj,jk) = tmask(ji,jj,jk) * ((zux(ji,jj) - zvy(ji,jj)) ** 2 + &
-                              (D2_f(ji,jj) + D2_f(ji-1,jj) + D2_f(ji-1,jj-1) + D2_f(ji,jj-1)) * 0.25_wp)
-            END DO
-         END DO
+         DO_2D(0,0,0,0)
+            D2(ji,jj,jk) = tmask(ji,jj,jk) * ((zux(ji,jj) - zvy(ji,jj)) ** 2 + &
+                           (D2_f(ji,jj) + D2_f(ji-1,jj) + D2_f(ji-1,jj-1) + D2_f(ji,jj-1)) * 0.25_wp)
+         END_2D
       END DO
 
    END SUBROUTINE deformation_rate
@@ -727,15 +668,13 @@ CONTAINS
       CALL deformation_rate(pu, pv, D2, ffmask)
 
       TKE = 0._wp
-      DO jk = 1, jpkm1
+      DO jk = 1, jpk-1
          omega2(:,:) = prot(:,:,jk) ** 2 * ffmask(:,:,jk)
 
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               TKE(ji,jj,jk) = c0 * e12t(ji,jj) * tmask(ji,jj,jk) * (D2(ji,jj,jk) + &
+         DO_2D(0,0,0,0)
+               TKE(ji,jj,jk) = c0 * e1e2t(ji,jj) * tmask(ji,jj,jk) * (D2(ji,jj,jk) + &
                                (omega2(ji,jj) + omega2(ji-1,jj) + omega2(ji-1,jj-1) + omega2(ji,jj-1)) * 0.25_wp)
-            END DO
-         END DO
+         END_2D
       END DO
       
    END SUBROUTINE estimate_TKE
@@ -759,24 +698,18 @@ CONTAINS
       REAL(wp) :: R_local
 
       REAL(wp), DIMENSION(jpi,jpj,jpk) :: D2      ! squared deformation rate
-      REAL(wp), DIMENSION(jpi,jpj)     :: r1_ff   ! inverse Coriolis parameter in T points
+      !REAL(wp), DIMENSION(jpi,jpj)     :: r1_ff   ! inverse Coriolis parameter in T points
 
       CALL deformation_rate(pu, pv, D2, ffmask)
 
-      DO jj = 2, jpjm1
-         DO ji = 2, jpim1
-            r1_ff(ji,jj) = 1._wp / ((ff(ji,jj) + ff(ji-1,jj) + ff(ji-1,jj-1) + ff(ji,jj-1)) * 0.25_wp)
-         END DO
-      END DO
+      ! DO_2D(0,0,0,0)
+      !       r1_ff(ji,jj) = 1._wp / ((ff(ji,jj) + ff(ji-1,jj) + ff(ji-1,jj-1) + ff(ji,jj-1)) * 0.25_wp)
+      ! END_2D
 
-      DO jk = 1, jpkm1
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               R_local = sqrt(D2(ji,jj,jk)) * r1_ff(ji,jj)
-               local_cdiss(ji,jj,jk) = R_diss / (R_local + R_diss)
-            END DO
-         END DO
-      END DO
+      DO_3D(0,0,0,0,1,0)
+         R_local = sqrt(D2(ji,jj,jk)) / ff_t(ji,jj)
+         local_cdiss(ji,jj,jk) = R_diss / (R_local + R_diss)
+      END_3D
 
    END SUBROUTINE Klower_cdiss
 
@@ -792,12 +725,10 @@ CONTAINS
       INTEGER      :: ji, jj
       REAL(KIND=8) :: grand
 
-      DO jj=1,jpj
-         DO ji=1,jpi
-            CALL kiss_gaussian(grand)
-            field2d(ji,jj) = grand
-         END DO
-      END DO
+      DO_2D(1,1,1,1)
+         CALL kiss_gaussian(grand)
+         field2d(ji,jj) = grand
+      END_2D
 
    END SUBROUTINE gauss_white_noise_2d
 
@@ -853,17 +784,13 @@ CONTAINS
       c0_2d(:,:) = d2 / (2._wp * T_decorr) / &
                   ((1._wp-rx) / (e1f(:,:) ** 2) + (1._wp-ry) / (e2f(:,:) ** 2))
 
-      DO jk = 1, jpkm1
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               ! T to F interpolation
-               Es_f = 0.25_wp * (Esource(ji,jj,jk) + Esource(ji+1,jj,jk) + Esource(ji,jj+1,jk) + Esource(ji+1,jj+1,jk))
-               psi(ji,jj,jk) = sqrt(Es_f * c0_2d(ji,jj)) * phi(ji,jj)
-            END DO
-         END DO
-      END DO
+      DO_3D(0,0,0,0,1,0)
+         ! T to F interpolation
+         Es_f = 0.25_wp * (Esource(ji,jj,jk) + Esource(ji+1,jj,jk) + Esource(ji,jj+1,jk) + Esource(ji+1,jj+1,jk))
+         psi(ji,jj,jk) = sqrt(Es_f * c0_2d(ji,jj)) * phi(ji,jj)
+      END_3D
 
-      CALL lbc_lnk(psi, 'F', 1.)
+      CALL lbc_lnk('compute_psi', psi, 'F', 1.)
       CALL filter_laplace_f3D_ntimes(psi, psi, nstoch, ffmask)
 
       psi = psi * ffmask ! will be needed for curl
@@ -887,21 +814,19 @@ CONTAINS
 
       REAL(wp), DIMENSION(jpi,jpj) :: Eback_u, Eback_v
 
-      CALL lbc_lnk(fx, 'U', -1.)
-      CALL lbc_lnk(fy, 'V', -1.)
+      CALL lbc_lnk('compute_Eback_AR1', fx, 'U', -1.)
+      CALL lbc_lnk('compute_Eback_AR1', fy, 'V', -1.)
 
       ! fields must be exchanged
-      DO jk=1, jpkm1
-         Eback_u(:,:) = 0.5_wp * fx(:,:,jk) * pun(:,:,jk) * e12u(:,:) * e3u_0(:,:,jk) * umask(:,:,jk)
-         Eback_v(:,:) = 0.5_wp * fy(:,:,jk) * pvn(:,:,jk) * e12v(:,:) * e3v_0(:,:,jk) * vmask(:,:,jk)
+      DO jk=1, jpk-1
+         Eback_u(:,:) = 0.5_wp * fx(:,:,jk) * pun(:,:,jk) * e1e2u(:,:) * e3u_0(:,:,jk) * umask(:,:,jk)
+         Eback_v(:,:) = 0.5_wp * fy(:,:,jk) * pvn(:,:,jk) * e1e2v(:,:) * e3v_0(:,:,jk) * vmask(:,:,jk)
 
          ! no need for MPI exchange
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               Eback(ji,jj,jk) = (Eback_u(ji,jj) + Eback_u(ji-1,jj) + Eback_v(ji,jj) + Eback_v(ji,jj-1)) * &
-                                 r1_e12t(ji,jj) / e3t_0(ji,jj,jk)
-            END DO
-         END DO
+         DO_2D(0,0,0,0)
+            Eback(ji,jj,jk) = (Eback_u(ji,jj) + Eback_u(ji-1,jj) + Eback_v(ji,jj) + Eback_v(ji,jj-1)) * &
+                              r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+         END_2D
       END DO
 
    END SUBROUTINE compute_Eback_AR1
@@ -956,7 +881,7 @@ CONTAINS
       INTEGER  :: jk
       
       field2d = 0._wp
-      DO jk = 1, jpkm1
+      DO jk = 1, jpk-1
          field2d(:,:) = field2d(:,:) + field3d(:,:,jk) * e3(:,:,jk) * mask(:,:,jk)
       END DO
    END SUBROUTINE integrate_z
@@ -971,7 +896,7 @@ CONTAINS
       
       field2d = 0._wp
       depth2d = 0._wp
-      DO jk = 1, jpkm1
+      DO jk = 1, jpk-1
          field2d(:,:) = field2d(:,:) + field3d(:,:,jk) * e3(:,:,jk) * mask(:,:,jk)
          depth2d(:,:) = depth2d(:,:) + e3(:,:,jk) * mask(:,:,jk)
       END DO
@@ -991,16 +916,16 @@ CONTAINS
       REAL(wp) :: area2d(jpk), intgrl2d(jpk)
       REAL(wp) :: array2d(jpi,jpj)
       
-      DO jk = 1, jpkm1
+      DO jk = 1, jpk-1
          array2d(:,:) = field3d(:,:,jk) * e1(:,:) * e2(:,:) * mask(:,:,jk)
-         intgrl2d(jk) = SUM(array2d(2:nlci-1,2:nlcj-1))
+         intgrl2d(jk) = SUM(array2d(2:jpi-1,2:jpj-1))
 
          array2d(:,:) = e1(:,:) * e2(:,:) * mask(:,:,jk)
-         area2d(jk) = SUM(array2d(2:nlci-1,2:nlcj-1))
+         area2d(jk) = SUM(array2d(2:jpi-1,2:jpj-1))
       END DO      
 
-      CALL mpp_sum(intgrl2d, jpk)
-      CALL mpp_sum(area2d, jpk)
+      CALL mpp_sum('average_xy', intgrl2d, jpk)
+      CALL mpp_sum('average_xy', area2d, jpk)
 
       field1d(:) = intgrl2d(:) / area2d(:)
 
@@ -1015,21 +940,19 @@ CONTAINS
       REAL(wp) :: volume, dV
       REAL(wp), DIMENSION(jpi,jpj) :: e12
 
-      e12(:,:) = e1(:,:) * e2(:,:)
       volume = 0._wp
       res = 0._wp
-      DO jk = 1, jpkm1
-         DO jj = 2, nlcj-1
-            DO ji = 2, nlci-1
-               dV = e12(ji,jj) * e3(ji,jj,jk) * mask(ji,jj,jk)
-               volume = volume + dV
-               res = res + field3d(ji,jj,jk) * dV
-            END DO
-         END DO
-      END DO
 
-      CALL mpp_sum(res)
-      CALL mpp_sum(volume)
+      e12(:,:) = e1(:,:) * e2(:,:)
+
+      DO_3D(0,0,0,0,1,0)
+         dV = e12(ji,jj) * e3(ji,jj,jk) * mask(ji,jj,jk)
+         volume = volume + dV
+         res = res + field3d(ji,jj,jk) * dV
+      END_3D
+
+      CALL mpp_sum('average_xyz', res)
+      CALL mpp_sum('average_xyz', volume)
       
       res = res / volume
       
@@ -1043,15 +966,11 @@ CONTAINS
       
       res = 1.e+34
 
-      DO jk = 1, jpkm1                               
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               IF (mask(ji,jj,jk) > 0.5_wp) res = min(res, field3d(ji,jj,jk))               
-            END DO
-         END DO
-      END DO
+      DO_3D(0,0,0,0,1,0)
+         IF (mask(ji,jj,jk) > 0.5_wp) res = min(res, field3d(ji,jj,jk))
+      END_3D
 
-      CALL mpp_min(res)
+      CALL mpp_min('min_xyz', res)
       
    END FUNCTION min_xyz
 
@@ -1063,15 +982,11 @@ CONTAINS
       
       res = -1.e+34
 
-      DO jk = 1, jpkm1                               
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
-               IF (mask(ji,jj,jk) > 0.5_wp) res = max(res, field3d(ji,jj,jk))               
-            END DO
-         END DO
-      END DO
+      DO_3D(0,0,0,0,1,0)
+         IF (mask(ji,jj,jk) > 0.5_wp) res = max(res, field3d(ji,jj,jk))
+      END_3D
 
-      CALL mpp_max(res)
+      CALL mpp_max('max_xyz', res)
       
    END FUNCTION max_xyz
 

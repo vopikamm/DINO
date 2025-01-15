@@ -12,8 +12,9 @@ MODULE KEB_testing
     
  CONTAINS
     
-   SUBROUTINE test_negvisc_KEB( TKE, rhs_adv, rhs_diff, Esource, Eback, Ediss, &
+   SUBROUTINE test_negvisc_KEB( puu, pvv, pww, TKE, rhs_adv, rhs_diff, Esource, Eback, Ediss, &
                                 local_cdiss, ffmask, rhsu, rhsv, Ediss_check )
+      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  puu, pvv, pww ! now velocities
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    :: TKE, rhs_adv, rhs_diff
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    :: Esource, Eback, Ediss
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    :: local_cdiss, ffmask
@@ -40,11 +41,11 @@ MODULE KEB_testing
       IF (lwp) write(numout, *) ''
       
       if (lwp) write(numout,*) 'conservation:'
-      CALL upwind_advection( TKE, un, vn, wn, rhs, .false. )
+      CALL upwind_advection( TKE, puu, pvv, pww, rhs, .false. )
       rerr = relative_nonconserv( rhs, e1t, e2t, e3t_0, tmask)
       if (lwp) write(numout,*) 'no-flux            (1e-20 ok):', rerr
   
-      CALL upwind_advection( TKE, un, vn, wn, rhs, .true. )
+      CALL upwind_advection( TKE, puu, pvv, pww, rhs, .true. )
       rerr = relative_nonconserv( rhs, e1t, e2t, e3t_0, tmask)
       if (lwp) write(numout,*) 'linear free-surface (1e-8 ok):', rerr
       
@@ -54,16 +55,16 @@ MODULE KEB_testing
       max_val = 0._wp
 
       DO jk = 1, jpkm1
-         rhs(:,:,jk) = abs(un(:,:,jk)) / e1u(:,:)
+         rhs(:,:,jk) = abs(puu(:,:,jk)) / e1u(:,:)
       END DO
       max_val = max(max_val, rdt * max_xyz(rhs, umask))
 
       DO jk = 1, jpkm1
-         rhs(:,:,jk) = abs(vn(:,:,jk)) / e2v(:,:)
+         rhs(:,:,jk) = abs(pvv(:,:,jk)) / e2v(:,:)
       END DO
       max_val = max(max_val, rdt * max_xyz(rhs, vmask))
 
-      rhs = abs(wn) / e3w_0
+      rhs = abs(pww) / e3w_0
       max_val = max(max_val, rdt * max_xyz(rhs, wmask))
 
       IF (lwp) write(numout, *) 'CFL (<1 ok) = ', max_val
@@ -133,11 +134,12 @@ MODULE KEB_testing
 
       IF (lwp) write(numout, *) ''
 
-      IF (lwp) write(numout, *) 'filter_laplace_f3D_ntimes, Dirichlet:'
-      CALL filter_laplace_f3D_ntimes( rotb, rhs, 10, ffmask ) 
-      rerr = relative_nonconserv( rotb - rhs, e1f, e2f, e3f_0, ffmask)
-      if (lwp) write(numout,*) 'conservation (1e-4  ok):', rerr
-      CALL check_positiveness(rotb, rhs, tmask)
+      ! dk: this test requires rotation, which is not passed variable anymore
+      ! IF (lwp) write(numout, *) 'filter_laplace_f3D_ntimes, Dirichlet:'
+      ! CALL filter_laplace_f3D_ntimes( rotb, rhs, 10, ffmask ) 
+      ! rerr = relative_nonconserv( rotb - rhs, e1f, e2f, e3f_0, ffmask)
+      ! if (lwp) write(numout,*) 'conservation (1e-4  ok):', rerr
+      ! CALL check_positiveness(rotb, rhs, tmask)
       
       IF (lwp) write(numout, *) ''
   
@@ -150,7 +152,7 @@ MODULE KEB_testing
       IF (lwp) write(numout, *) ''
 
       if (lwp) write(numout,*) '! -------  conservation of vorticity for negvisc KEB  ----------- !'
-      CALL lbc_lnk( rhsu, 'U', -1. )   ;   CALL lbc_lnk( rhsv, 'V', -1. )
+      CALL lbc_lnk('test_negvisc_KEB', rhsu, 'U', -1. )   ;   CALL lbc_lnk('test_negvisc_KEB', rhsv, 'V', -1. )
       CALL compute_rotor(rhsu, rhsv, rhs)
       rerr = relative_nonconserv( rhs, e1f, e2f, e3f_0, ffmask )
       if (lwp) write(numout,*) 'KEB_ldf_lap (1e-5 ok):', rerr
@@ -166,8 +168,11 @@ MODULE KEB_testing
   
       if (lwp) write(numout,*) '! -----------------  accuracy of Eback estimate  ---------------- !'
       mean_1 = average_xyz(Eback, e1t, e2t, e3t_0, tmask)
-      mean_2 = average_xyz(rhsu * ub, e1u, e2u, e3u_0, umask)
-      mean_3 = average_xyz(rhsv * vb, e1v, e2v, e3v_0, vmask)
+      mean_2 = average_xyz(rhsu * puu, e1u, e2u, e3u_0, umask)
+      mean_3 = average_xyz(rhsv * pvv, e1v, e2v, e3v_0, vmask)
+      ! dk: drastic changes in time stepping from 3.6 to 4.2 not adapted here to allow accessing ub, vb
+      ! mean_2 = average_xyz(rhsu * ub, e1u, e2u, e3u_0, umask)
+      ! mean_3 = average_xyz(rhsv * vb, e1v, e2v, e3v_0, vmask)
       if (lwp) write(numout,*) 'KEB_ldf_lap, %  (1-3% ok) = ', (mean_2+mean_3-mean_1) / mean_1 * 100.
       
       IF (lwp) write(numout, *) ''
@@ -224,11 +229,12 @@ MODULE KEB_testing
 
       IF (lwp) write(numout, *) ''
 
-      IF (lwp) write(numout, *) 'filter_laplace_f3D_ntimes, Dirichlet:'
-      CALL filter_laplace_f3D_ntimes( rotb, rhs, 10, ffmask ) 
-      rerr = relative_nonconserv( rotb - rhs, e1f, e2f, e3f_0, ffmask)
-      if (lwp) write(numout,*) 'conservation (1e-4  ok):', rerr
-      CALL check_positiveness(rotb, rhs, tmask)
+      ! dk: this test requires rotation, which is not passed variable anymore
+      ! IF (lwp) write(numout, *) 'filter_laplace_f3D_ntimes, Dirichlet:'
+      ! CALL filter_laplace_f3D_ntimes( rotb, rhs, 10, ffmask ) 
+      ! rerr = relative_nonconserv( rotb - rhs, e1f, e2f, e3f_0, ffmask)
+      ! if (lwp) write(numout,*) 'conservation (1e-4  ok):', rerr
+      ! CALL check_positiveness(rotb, rhs, tmask)
 
       IF (lwp) write(numout, *) ''
 

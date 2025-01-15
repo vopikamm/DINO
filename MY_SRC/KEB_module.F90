@@ -16,7 +16,7 @@ MODULE KEB_module
    USE iom                    ! input-output manager
    USE storng                 ! generation of gaussian noise
    USE in_out_manager
-   USE bdy_par, only: lk_bdy  ! for Warning
+   !USE bdy_par, only: lk_bdy  ! for Warning
 
    USE KEB_operators          ! spatial operators for KEB
    USE KEB_testing            ! check spatial operators
@@ -81,7 +81,9 @@ MODULE KEB_module
    ! a posteriori correction for AR1 parameterization   
    REAL(wp) :: Estoch_mean  ! AR1 backscattered energy before correction, time-mean
    REAL(wp) :: Esource_mean ! Energy to be backscattered, time-mean
-   
+      !! * Substitutions
+#  include "do_loop_substitute.h90"
+      !!
 CONTAINS 
 
    SUBROUTINE KEB_init ( )
@@ -93,7 +95,7 @@ CONTAINS
       NAMELIST/KEB_prms/ KEB_on, KEB_test, constant_cdiss, c_diss, R_diss, ndiss, dirichlet_filter, &
       KEB_negvisc, tke_adv, tke_diff, dirichlet_TKE, nu_TKE, tke_filter, c_back, nback, KEB_AR1, nstoch, T_decorr
       
-      REWIND( numnam_cfg )
+      !REWIND( numnam_cfg )
       READ  ( numnam_cfg, KEB_prms )
       
       ! if KEB is turned off, turn off all tendencies
@@ -115,9 +117,10 @@ CONTAINS
          WRITE(numout,*)
          WRITE(numout,*) 'KEB_init: kinetic energy backscatter parameterizations - initialization'
          WRITE(numout,*) '~~~~~~~~~~~~'
-         IF (lk_bdy) WRITE(numout,*) 'KEB Warning: lk_bdy = .true. Check tmask in KEB_module.f90 before use, because lk_bdy key modifies it'
-         IF (lk_vvl) WRITE(numout,*) 'KEB Warning: lk_vvl = .true. Check scale factors e3t_0, e3u_0, e3v_0, e3f_0 in KEB files' 
-
+         ! dk: bdy_par.F90 not included in 4.2, but warning might stay relevant ?
+         ! IF (lk_bdy) WRITE(numout,*) 'KEB Warning: lk_bdy = .true. Check tmask in KEB_module.f90 before use, because lk_bdy key modifies it'
+         ! IF (lk_vvl) WRITE(numout,*) 'KEB Warning: lk_vvl = .true. Check scale factors e3t_0, e3u_0, e3v_0, e3f_0 in KEB files' 
+         ! dk: right now e3t are not time dependant... That is not correct
          WRITE(numout,*) '   Namelist KEB_prms : set KEB parameters'
          WRITE(numout,*) '      KEB is working                    KEB_on =', KEB_on
          WRITE(numout,*) '      testing KEB operators           KEB_test =', KEB_test
@@ -176,15 +179,11 @@ CONTAINS
 
       ! without rn_shlat
       ffmask = 0._wp
-      DO jk = 1, jpk
-         DO jj = 1, jpjm1
-            DO ji = 1, jpim1
-               ffmask(ji,jj,jk) = tmask(ji,jj  ,jk) * tmask(ji+1,jj  ,jk)   &
-                                * tmask(ji,jj+1,jk) * tmask(ji+1,jj+1,jk)
-            END DO
-         END DO
-      END DO
-      CALL lbc_lnk( ffmask, 'F', 1._wp )
+      DO_3D(1,0,1,0,1,1)
+         ffmask(ji,jj,jk) = tmask(ji,jj  ,jk) * tmask(ji+1,jj  ,jk)   &
+                          * tmask(ji,jj+1,jk) * tmask(ji+1,jj+1,jk)
+      END_3D
+      CALL lbc_lnk('KEB_init', ffmask, 'F', 1._wp )
 
       ! init subgrid TKE with zeros
       TKE     = 0._wp
@@ -221,7 +220,7 @@ CONTAINS
       IF ( ln_rstart ) THEN
          id1 = iom_varid( numror, 'KEB_tke', ldstop = .FALSE.)
          IF (id1 > 0) THEN
-            CALL iom_get( numror, jpdom_autoglo, 'KEB_tke', TKE)
+            CALL iom_get( numror, jpdom_auto, 'KEB_tke', TKE)
             WRITE(numout,*) '~~~~~~~~~~~~'
             IF (lwp) WRITE(numout,*) '      KEB: TKE set from restart file'
             WRITE(numout,*) '~~~~~~~~~~~~'
@@ -237,9 +236,9 @@ CONTAINS
          id4 = iom_varid( numror, 'KEB_source', ldstop = .FALSE.)
          id5 = iom_varid( numror, 'KEB_stoch', ldstop = .FALSE.)
          IF (id1 > 0 .and. id2 > 0 .and. id3 > 0 .and. id4 > 0 .and. id5 > 0) THEN
-            CALL iom_get( numror, jpdom_autoglo, 'KEB_fx', fx)
-            CALL iom_get( numror, jpdom_autoglo, 'KEB_fy', fy)
-            CALL iom_get( numror, jpdom_autoglo, 'KEB_psi', psi)
+            CALL iom_get( numror, jpdom_auto, 'KEB_fx', fx)
+            CALL iom_get( numror, jpdom_auto, 'KEB_fy', fy)
+            CALL iom_get( numror, jpdom_auto, 'KEB_psi', psi)
             CALL iom_get( numror, 'KEB_source', Esource_mean)
             CALL iom_get( numror, 'KEB_stoch', Estoch_mean)
             WRITE(numout,*) '~~~~~~~~~~~~'
@@ -269,7 +268,7 @@ CONTAINS
 
    END SUBROUTINE KEB_rst
 
-   SUBROUTINE KEB_apply( kt, Kbb, puu, pvv, Krhs )
+   SUBROUTINE KEB_apply( kt, Kbb, puu, pvv, pww, Krhs )
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE KEB_apply  ***   
       !! ** Purpose :   Multiplies Ediss by cdiss and applies KEB tendences
@@ -277,22 +276,22 @@ CONTAINS
       !!----------------------------------------------------------------------
       INTEGER                             , INTENT( in )  ::  kt               ! ocean time-step index
       INTEGER                             , INTENT( in )  ::  Kbb, Krhs   ! ocean time level indices
-      REAL(wp), DIMENSION(jpi,jpj,jpk,jpt), INTENT(inout) ::  puu, pvv 
+      REAL(wp), DIMENSION(jpi,jpj,jpk,jpt), INTENT(inout) ::  puu, pvv, pww 
       !
       REAL(wp), DIMENSION(jpi,jpj,jpk) ::   zurhs, zvrhs
 
       IF (constant_cdiss) THEN
          local_cdiss = c_diss
       ELSE
-         CALL Klower_cdiss( un, vn, Ediss, R_diss, local_cdiss, ffmask )
+         CALL Klower_cdiss( puu(:,:,:,Kbb), pvv(:,:,:,Kbb), Ediss, R_diss, local_cdiss, ffmask )
       END IF
       Esource = Ediss * local_cdiss ! Ediss is computed in dynldf_bilap.F90
 
-      CALL lbc_lnk(Esource, 'T', 1.)
+      CALL lbc_lnk('KEB_apply', Esource, 'T', 1.)
       CALL filter_laplace_T3D_ntimes(Esource, Esource, ndiss, dirichlet_filter)
       
       ! produce backscatter given Esource field
-      IF (KEB_negvisc) CALL KEB_negvisc_tendency(kt, Kbb, puu(:,:,:,Kbb), pvv(:,:,:,Kbb), zurhs, zvrhs)
+      IF (KEB_negvisc) CALL KEB_negvisc_tendency(kt, Kbb, puu(:,:,:,Kbb), pvv(:,:,:,Kbb), pww(:,:,:,Kbb), zurhs, zvrhs)
       IF (KEB_AR1    ) CALL KEB_AR1_tendency(kt, Kbb, puu(:,:,:,Kbb), pvv(:,:,:,Kbb), zurhs, zvrhs)
       
       CALL KEB_statistics( )
@@ -302,7 +301,7 @@ CONTAINS
       !
    END SUBROUTINE KEB_apply
    
-   SUBROUTINE KEB_negvisc_tendency(kt, Kbb, puu, pvv, kebu, kebv)      
+   SUBROUTINE KEB_negvisc_tendency(kt, Kbb, puu, pvv, pww, kebu, kebv)      
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE KEB_negvisc_tendency  ***   
       !! ** Purpose :   Computes negative viscosity momentum tendency
@@ -310,7 +309,7 @@ CONTAINS
       !!----------------------------------------------------------------------
       INTEGER, INTENT(in) ::   kt   ! time step index
       INTEGER, INTENT(in) ::   Kbb  ! ocean time level indices
-      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    ::  puu, pvv         ! before velocity  [m/s]
+      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    ::  puu, pvv, pww         ! before velocity  [m/s]
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  kebu, kebv       ! u-, v-component of KEB tendency
 
       REAL(wp), DIMENSION(jpi,jpj,jpk) :: rot       ! u-, v-component of KEB tendency 
@@ -318,8 +317,8 @@ CONTAINS
       INTEGER  ::   ji, jj, jk, n           ! dummy loop indices
       
       ! compute negative viscosity and rotation at now time step
-      DO jk = 1, jpkm1
-         nu2t(:,:,jk) = sqrt(2._wp) * c_back * sqrt(e12t(:,:) * max(TKE(:,:,jk),0._wp)) ! lbc_lnk is already applied to TKE
+      DO jk = 1, jpk-1
+         nu2t(:,:,jk) = sqrt(2._wp) * c_back * sqrt(e1e2t(:,:) * max(TKE(:,:,jk),0._wp)) ! lbc_lnk is already applied to TKE
 
          DO_2D( nn_hls-1, nn_hls, nn_hls-1, nn_hls )
             !                                      ! (warning: computed for ji-1,jj-1); dk: see dynldf_lap_blp
@@ -335,18 +334,18 @@ CONTAINS
       CALL iom_put('negviscy', kebv)
       
       ! update TKE
-      IF (tke_adv)   CALL upwind_advection ( TKE, un, vn, wn, rhs_adv, .true. ) ! .true. = free surface b.c.
+      IF (tke_adv)   CALL upwind_advection ( TKE, puu, pvv, pww, rhs_adv, .true. ) ! .true. = free surface b.c.
       IF (tke_diff)  CALL laplace_T3D( TKE, rhs_diff, nu_TKE, dirichlet_TKE ) 
 
-      ! IF (KEB_test) CALL test_negvisc_KEB( TKE, rhs_adv, rhs_diff, Esource, Eback, Ediss, &
-      !                                      local_cdiss, ffmask, rhsu, rhsv, Ediss_check )
+      ! IF (KEB_test) CALL test_negvisc_KEB( puu(:,:,:,Kbb), pvv(:,:,:,Kbb), TKE, rhs_adv, rhs_diff, &
+      !                                       Esource, Eback, Ediss, local_cdiss, ffmask, rhsu, rhsv, Ediss_check )
 
       ! update subgrid energy to after time step
       TKE = TKE + tmask * (rhs_adv + rhs_diff + Esource - Eback) * rdt
 
       IF (tke_filter) CALL z_filter(TKE, TKE)
       
-      CALL lbc_lnk( TKE, 'T', 1.)
+      CALL lbc_lnk('KEB_negvisc_tendency', TKE, 'T', 1.)
       
    END SUBROUTINE KEB_negvisc_tendency
    
@@ -455,7 +454,7 @@ CONTAINS
       !     iom_use('est_TKE_z') .OR. iom_use('est_TKE_0d')) THEN
       !    CALL estimate_TKE(un, vn, rotn, z3d, ffmask)
       !    CALL put_fields('est_TKE', z3d)
-      END IF
+      ! END IF
 
    END SUBROUTINE KEB_statistics
 
