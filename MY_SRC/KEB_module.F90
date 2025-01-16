@@ -83,6 +83,7 @@ MODULE KEB_module
    REAL(wp) :: Esource_mean ! Energy to be backscattered, time-mean
       !! * Substitutions
 #  include "do_loop_substitute.h90"
+#  include "domzgr_substitute.h90"
       !!
 CONTAINS 
 
@@ -288,13 +289,14 @@ CONTAINS
       Esource = Ediss * local_cdiss ! Ediss is computed in dynldf_bilap.F90
 
       CALL lbc_lnk('KEB_apply', Esource, 'T', 1.)
-      CALL filter_laplace_T3D_ntimes(Esource, Esource, ndiss, dirichlet_filter)
+      CALL filter_laplace_T3D_ntimes(Esource, Esource, ndiss, dirichlet_filter, Kbb)
       
       ! produce backscatter given Esource field
       IF (KEB_negvisc) CALL KEB_negvisc_tendency(kt, Kbb, puu(:,:,:,Kbb), pvv(:,:,:,Kbb), pww(:,:,:,Kbb), zurhs, zvrhs)
       IF (KEB_AR1    ) CALL KEB_AR1_tendency(kt, Kbb, puu(:,:,:,Kbb), pvv(:,:,:,Kbb), zurhs, zvrhs)
       
-      CALL KEB_statistics( )
+      ! dk: e.g. here Kbb -> Krhs could make sense?
+      CALL KEB_statistics( Kbb )
 
       puu(:,:,:,Krhs) = puu(:,:,:,Krhs) + zurhs
       pvv(:,:,:,Krhs) = pvv(:,:,:,Krhs) + zvrhs
@@ -328,14 +330,14 @@ CONTAINS
          END_2D
       END DO
 
-      CALL KEB_ldf_lap( rot, nu2t, nback, Eback, kebu, kebv, ffmask ) 
+      CALL KEB_ldf_lap( rot, nu2t, nback, Eback, kebu, kebv, ffmask, Kbb ) 
 
       CALL iom_put('negviscx', kebu)
       CALL iom_put('negviscy', kebv)
       
       ! update TKE
-      IF (tke_adv)   CALL upwind_advection ( TKE, puu, pvv, pww, rhs_adv, .true. ) ! .true. = free surface b.c.
-      IF (tke_diff)  CALL laplace_T3D( TKE, rhs_diff, nu_TKE, dirichlet_TKE ) 
+      IF (tke_adv)   CALL upwind_advection ( TKE, puu, pvv, pww, rhs_adv, .true., Kbb ) ! .true. = free surface b.c.
+      IF (tke_diff)  CALL laplace_T3D( TKE, rhs_diff, nu_TKE, dirichlet_TKE, Kbb ) 
 
       ! IF (KEB_test) CALL test_negvisc_KEB( puu(:,:,:,Kbb), pvv(:,:,:,Kbb), TKE, rhs_adv, rhs_diff, &
       !                                       Esource, Eback, Ediss, local_cdiss, ffmask, rhsu, rhsv, Ediss_check )
@@ -343,7 +345,7 @@ CONTAINS
       ! update subgrid energy to after time step
       TKE = TKE + tmask * (rhs_adv + rhs_diff + Esource - Eback) * rdt
 
-      IF (tke_filter) CALL z_filter(TKE, TKE)
+      IF (tke_filter) CALL z_filter(TKE, TKE, Kbb)
       
       CALL lbc_lnk('KEB_negvisc_tendency', TKE, 'T', 1.)
       
@@ -366,6 +368,7 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    ::  puu, pvv         ! before velocity  [m/s]
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  kebu, kebv       ! u-, v-component of KEB tendency
 
+      REAL(wp), DIMENSION(jpi,jpj,jpk)                ::  e3t_3D           ! e3 substitution needed outside of function
       REAL(wp) :: amp_increase
       
       INTEGER  ::   ji, jj, jk, n           ! dummy loop indices
@@ -379,19 +382,25 @@ CONTAINS
       CALL gauss_white_noise_2d( phi )
 
       ! weight with energy source and correct amplitude
-      CALL compute_psi( Esource, phi, nstoch, T_decorr, psi, ffmask )
+      CALL compute_psi( Esource, phi, nstoch, T_decorr, psi, ffmask, Kbb )
 
       ! correlation in time, doesn't change variance
       psi = psib * (1._wp - rdt / T_decorr) + sqrt(rdt / T_decorr * (2._wp - rdt / T_decorr)) * psi
 
       ! convert streamfunction to velocity tendency
-      CALL horizontal_curl( psi, fx, fy )
+      CALL horizontal_curl( psi, fx, fy, Kbb)
 
       ! IF (KEB_test) CALL test_AR1_KEB( Esource, Ediss, local_cdiss, ffmask, fx, fy, Ediss_check )   
 
       ! a posteriori correction of energy input
-      CALL compute_Eback_AR1( fx, fy, puu, pvv, Eback )
-      amp_increase = aposteriori_correction( Esource, Eback, Esource_mean, Estoch_mean)
+      CALL compute_Eback_AR1( fx, fy, puu, pvv, Eback, Kbb)
+
+      !Here we expand e3t outside of aposteriori_correction function since debugger does not allow inside
+      DO_3D(nn_hls,nn_hls,nn_hls,nn_hls,1,1)
+         e3t_3D(ji,jj,jk) = e3t(ji,jj,jk,Kbb)
+      END_3D
+
+      amp_increase = aposteriori_correction( Esource, Eback, Esource_mean, Estoch_mean, e3t_3D)
 
       fx = fx * amp_increase
       fy = fy * amp_increase
@@ -409,20 +418,27 @@ CONTAINS
 
    END SUBROUTINE KEB_AR1_tendency
    
-   SUBROUTINE KEB_statistics( )
-      
+   SUBROUTINE KEB_statistics( Kbb )
+      INTEGER, INTENT(in   ) ::   Kbb    ! ocean time level index
+
+      INTEGER :: ji, jj, jk
+      REAL(wp), DIMENSION(jpi,jpj,jpk) :: e3t_3D
       REAL(wp), DIMENSION(jpi,jpj,jpk) :: z3d
       REAL(wp), SAVE :: Eback_sum = 0._wp, Ediss_sum = 0._wp
       REAL(wp) :: Eback_m, TKE_m
       REAL(wp) :: min_TKE, time_TKE
       REAL(wp) :: average_cdiss
 
-      CALL put_fields('nu2t', nu2t)
-      CALL put_fields('TKE', TKE)
-      CALL put_fields('Ediss', Ediss)
-      CALL put_fields('Eback', Eback)
-      CALL put_fields('Esource', Esource)
-      CALL put_fields('local_cdiss', local_cdiss)
+      DO_3D(nn_hls,nn_hls,nn_hls,nn_hls,1,1)
+         e3t_3D(ji,jj,jk) = e3t(ji,jj,jk,Kbb)
+      END_3D
+
+      CALL put_fields('nu2t', nu2t, e3t_3D)
+      CALL put_fields('TKE', TKE, e3t_3D)
+      CALL put_fields('Ediss', Ediss, e3t_3D)
+      CALL put_fields('Eback', Eback, e3t_3D)
+      CALL put_fields('Esource', Esource, e3t_3D)
+      CALL put_fields('local_cdiss', local_cdiss, e3t_3D)
 
       IF (iom_use('min_TKE')) THEN
          min_TKE = min_xyz(TKE, tmask)
@@ -430,8 +446,8 @@ CONTAINS
       END IF
 
       IF (iom_use('average_cdiss')) THEN
-         Eback_sum = Eback_sum + average_xyz(Eback,e1t,e2t,e3t_0,tmask)
-         Ediss_sum = Ediss_sum + average_xyz(Ediss,e1t,e2t,e3t_0,tmask)
+         Eback_sum = Eback_sum + average_xyz(Eback,e1t,e2t,e3t_3D,tmask)
+         Ediss_sum = Ediss_sum + average_xyz(Ediss,e1t,e2t,e3t_3D,tmask)
          average_cdiss = 0._wp
          IF (Ediss_sum > 1.e-16) THEN
             average_cdiss = Eback_sum / Ediss_sum
@@ -441,8 +457,8 @@ CONTAINS
 
       ! time scale of returning energy in days
       IF (iom_use('time_TKE')) THEN
-         Eback_m = average_xyz(Eback,e1t,e2t,e3t_0,tmask)
-         TKE_m   = average_xyz(TKE,e1t,e2t,e3t_0,tmask)
+         Eback_m = average_xyz(Eback,e1t,e2t,e3t_3D,tmask)
+         TKE_m   = average_xyz(TKE,e1t,e2t,e3t_3D,tmask)
          time_TKE = 0._wp
          IF (Eback_m > 1.e-16) THEN
             time_TKE = TKE_m / Eback_m / 86400._wp
@@ -458,14 +474,15 @@ CONTAINS
 
    END SUBROUTINE KEB_statistics
 
-   SUBROUTINE put_fields(cdname, pfield3d)
+   SUBROUTINE put_fields(cdname, pfield3d, e3t_3D)
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE put_fields  ***   
       !! ** Purpose :   save 3d, surface, depth-averaged and xyz-averaged
       !!                fields
       !!----------------------------------------------------------------------
-      CHARACTER(LEN=*)                , INTENT(in) :: cdname
-      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in) :: pfield3d
+      CHARACTER(LEN=*)                , INTENT(in)    :: cdname
+      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    :: pfield3d
+      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    :: e3t_3D
       
       REAL(wp), DIMENSION(jpi,jpj) :: z2d
       REAL(wp) :: z0d
@@ -478,11 +495,11 @@ CONTAINS
       CALL iom_put(cdname, pfield3d)
       CALL iom_put(trim(cdname_s), pfield3d(:,:,1))
       IF (iom_use(trim(cdname_0d))) THEN
-         z0d = average_xyz(pfield3d, e1t, e2t, e3t_0, tmask)
+         z0d = average_xyz(pfield3d, e1t, e2t, e3t_3D, tmask)
          CALL iom_put(trim(cdname_0d), z0d)
       END IF
       IF (iom_use(trim(cdname_z))) THEN
-         CALL average_z(pfield3d, z2d, e3t_0, tmask)
+         CALL average_z(pfield3d, z2d, e3t_3D, tmask)
          CALL iom_put(trim(cdname_z), z2d)
       END IF
 

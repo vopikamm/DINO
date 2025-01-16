@@ -27,10 +27,11 @@ MODULE KEB_operators
    
       !! * Substitutions
 #  include "do_loop_substitute.h90"
+#  include "domzgr_substitute.h90"
       !!
 CONTAINS
 
-   SUBROUTINE z_filter( ptn, pta ) 
+   SUBROUTINE z_filter( ptn, pta, Kbb ) 
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE z_filter  ***
       !!                   
@@ -48,26 +49,28 @@ CONTAINS
       
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    ::  ptn           ! tracer in T-points
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  pta           ! filtered tracer in T-points
+      INTEGER                         , INTENT(in   ) ::  Kbb          ! ocean time level index
       !
       INTEGER  :: ji, jj, jk                         ! dummy loop indices
       REAL(wp) :: coef
       REAL(wp), DIMENSION(jpi,jpj,jpk) :: zwz        ! flux of tracer in w-points
+
       !!----------------------------------------------------------------------
       
       zwz(:,:,1) = 0._wp ! zero cross-surface flux   
       DO_3D(0,0,0,0,0,1)
-         coef = 0.25_wp * e3w_0(ji,jj,1)**2
-         zwz(ji,jj,jk) = coef * (ptn(ji,jj,jk-1) - ptn(ji,jj,jk))  / e3w_0(ji,jj,jk) * wmask(ji,jj,jk)
+         coef = 0.25_wp * e3w(ji,jj,1,Kbb)**2
+         zwz(ji,jj,jk) = coef * (ptn(ji,jj,jk-1) - ptn(ji,jj,jk))  / e3w(ji,jj,jk,Kbb) * wmask(ji,jj,jk)
       END_3D    
       
       
       DO_3D(0,0,0,0,1,0)  
-         pta(ji,jj,jk) = ptn(ji,jj,jk)  + ( zwz(ji,jj,jk) - zwz(ji,jj,jk+1) ) / e3t_0(ji,jj,jk)
+         pta(ji,jj,jk) = ptn(ji,jj,jk)  + ( zwz(ji,jj,jk) - zwz(ji,jj,jk+1) ) / e3t(ji,jj,jk,Kbb)
       END_3D
       
    END SUBROUTINE z_filter
 
-   SUBROUTINE upwind_advection( ptn, pun, pvn, pwn, rhsn, bc_type ) 
+   SUBROUTINE upwind_advection( ptn, pun, pvn, pwn, rhsn, bc_type, Kbb) 
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE upwind_advection  ***
       !!                   
@@ -96,6 +99,7 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in   ) ::  pun, pvn, pwn ! 3 ocean velocity components
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  rhsn          ! advection tendency in T-points
       LOGICAL,                          INTENT(in   ) ::  bc_type       ! T: free-surface B.C., F: no-flux B.C.
+      INTEGER                         , INTENT(in   ) ::  Kbb           ! ocean time level index
       !
       INTEGER  :: ji, jj, jk                         ! dummy loop indices
       REAL(wp) :: zbtr
@@ -109,8 +113,8 @@ CONTAINS
       ! I. Horizontal advection
       !   ---------------------
       DO_3D(1,0,1,0,1,0)  
-         zun = e2u(ji,jj) * e3u_0(ji,jj,jk) * pun(ji,jj,jk)
-         zvn = e1v(ji,jj) * e3v_0(ji,jj,jk) * pvn(ji,jj,jk)
+         zun = e2u(ji,jj) * e3u(ji,jj,jk,Kbb) * pun(ji,jj,jk)
+         zvn = e1v(ji,jj) * e3v(ji,jj,jk,Kbb) * pvn(ji,jj,jk)
 
          unp = max(zun,0._wp)
          unm = zun - unp
@@ -121,7 +125,7 @@ CONTAINS
       END_3D
       
       DO_3D(0,0,0,0,1,0)
-         zbtr = r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+         zbtr = r1_e1e2t(ji,jj) / e3t(ji,jj,jk,Kbb)
          rhsn(ji,jj,jk) = - zbtr * (  zwx(ji,jj) - zwx(ji-1,jj  )   &
                                     + zwy(ji,jj) - zwy(ji  ,jj-1) )
       END_3D
@@ -144,13 +148,13 @@ CONTAINS
       END_3D
       
       DO_3D(0,0,0,0,1,0)
-         zbtr = r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+         zbtr = r1_e1e2t(ji,jj) / e3t(ji,jj,jk,Kbb)
          rhsn(ji,jj,jk) = rhsn(ji,jj,jk) - zbtr * ( zwz(ji,jj,jk) - zwz(ji,jj,jk+1) )    
       END_3D
       
    END SUBROUTINE upwind_advection
    
-   SUBROUTINE laplace_T3D( ptn, rhsn, coef, bc_type ) 
+   SUBROUTINE laplace_T3D( ptn, rhsn, coef, bc_type, Kbb) 
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE laplace_T3D  ***
       !!                   
@@ -170,6 +174,7 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::   rhsn       ! trend  in T-points
       REAL(wp)                                        ::   coef       ! viscosity coeff
       LOGICAL,                          INTENT(in   ) ::   bc_type    ! lateral B.C.: T: Dirichlet, F: no-flux
+      INTEGER                         , INTENT(in   ) ::   Kbb        ! ocean time level index
       !
       INTEGER  ::   ji, jj, jk           ! dummy loop indices
       REAL(wp) ::   zabe1, zabe2, zbtr   ! local scalars
@@ -188,8 +193,8 @@ CONTAINS
          END IF
 
          DO_2D(1,0,1,0)
-            zabe1 = coef * e2_e1u(ji,jj) * e3u_0(ji,jj,jk)
-            zabe2 = coef * e1_e2v(ji,jj) * e3v_0(ji,jj,jk) 
+            zabe1 = coef * e2_e1u(ji,jj) * e3u(ji,jj,jk,Kbb)
+            zabe2 = coef * e1_e2v(ji,jj) * e3v(ji,jj,jk,Kbb) 
             zwx(ji,jj) = zabe1 * ( ptn_m(ji+1,jj  ) - ptn_m(ji,jj) )
             zwy(ji,jj) = zabe2 * ( ptn_m(ji  ,jj+1) - ptn_m(ji,jj) )
          END_2D
@@ -203,14 +208,14 @@ CONTAINS
          ! II. Second derivative (divergence)
          !   ---------------------
          DO_2D(0,0,0,0)
-            zbtr = r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+            zbtr = r1_e1e2t(ji,jj) / e3t(ji,jj,jk,Kbb)
             rhsn(ji,jj,jk) = zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
          END_2D   
       END DO
       
    END SUBROUTINE laplace_T3D
    
-   SUBROUTINE filter_laplace_T3D( ptn ) 
+   SUBROUTINE filter_laplace_T3D( ptn, Kbb ) 
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE filter_laplace_T3D  ***
       !!                   
@@ -232,6 +237,7 @@ CONTAINS
       !!----------------------------------------------------------------------
       
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::   ptn        ! before and after filtering in T-points
+      INTEGER                         , INTENT(in   ) ::   Kbb        ! ocean time level index
       !
       INTEGER  ::   ji, jj, jk                         ! dummy loop indices
       REAL(wp) ::   zabe1, zabe2, zbtr   ! local scalars
@@ -243,8 +249,8 @@ CONTAINS
          ! I. First derivative (gradient, scaled by divergence metric terms)
          !   ---------------------
          DO_2D(1,0,1,0)
-            zabe1 = 0.125_wp * e1e2u(ji,jj) * e3u_0(ji,jj,jk)
-            zabe2 = 0.125_wp * e1e2v(ji,jj) * e3v_0(ji,jj,jk)
+            zabe1 = 0.125_wp * e1e2u(ji,jj) * e3u(ji,jj,jk,Kbb)
+            zabe2 = 0.125_wp * e1e2v(ji,jj) * e3v(ji,jj,jk,Kbb)
             zwx(ji,jj) = zabe1 * ( ptn(ji+1,jj  ,jk) - ptn(ji,jj,jk) ) * umask(ji,jj,jk)
             zwy(ji,jj) = zabe2 * ( ptn(ji  ,jj+1,jk) - ptn(ji,jj,jk) ) * vmask(ji,jj,jk)
          END_2D
@@ -253,14 +259,14 @@ CONTAINS
          ! II. Second derivative (divergence)
          !   ---------------------
          DO_2D(0,0,0,0)
-            zbtr = r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+            zbtr = r1_e1e2t(ji,jj) / e3t(ji,jj,jk,Kbb)
             ptn(ji,jj,jk) = ptn(ji,jj,jk) + zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
          END_2D
       END DO
       
    END SUBROUTINE filter_laplace_T3D
 
-   SUBROUTINE filter_laplace_T3D_dirichlet( ptn ) 
+   SUBROUTINE filter_laplace_T3D_dirichlet( ptn, Kbb ) 
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE filter_laplace_T3D_dirichlet  ***
       !!                   
@@ -282,6 +288,7 @@ CONTAINS
       !!----------------------------------------------------------------------
       
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::   ptn        ! before and after filtering in T-points
+      INTEGER                         , INTENT(in   ) ::   Kbb        ! ocean time level index
       !
       INTEGER  ::   ji, jj, jk                         ! dummy loop indices
       REAL(wp) ::   zabe1, zabe2, zbtr   ! local scalars
@@ -295,8 +302,8 @@ CONTAINS
          !   ---------------------
          ptn_m(:,:) = ptn(:,:,jk) * tmask(:,:,jk)
          DO_2D(1,0,1,0)
-               zabe1 = 0.125_wp * e1e2u(ji,jj) * e3u_0(ji,jj,jk)
-               zabe2 = 0.125_wp * e1e2v(ji,jj) * e3v_0(ji,jj,jk)
+               zabe1 = 0.125_wp * e1e2u(ji,jj) * e3u(ji,jj,jk,Kbb)
+               zabe2 = 0.125_wp * e1e2v(ji,jj) * e3v(ji,jj,jk,Kbb)
                zwx(ji,jj) = zabe1 * ( ptn_m(ji+1,jj  ) - ptn_m(ji,jj) )
                zwy(ji,jj) = zabe2 * ( ptn_m(ji  ,jj+1) - ptn_m(ji,jj) )
          END_2D
@@ -305,14 +312,14 @@ CONTAINS
          ! II. Second derivative (divergence)
          !   ---------------------
          DO_2D(0,0,0,0)
-            zbtr = r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+            zbtr = r1_e1e2t(ji,jj) / e3t(ji,jj,jk,Kbb)
             ptn(ji,jj,jk) = ptn(ji,jj,jk) + zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
          END_2D
       END DO
       
    END SUBROUTINE filter_laplace_T3D_dirichlet
    
-   SUBROUTINE filter_laplace_T3D_ntimes( ptn, pta, ntimes, bc_type ) 
+   SUBROUTINE filter_laplace_T3D_ntimes( ptn, pta, ntimes, bc_type, Kbb) 
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE filter_laplace_T3D_ntimes  ***
       !!                   
@@ -325,6 +332,7 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::   pta        ! after  filtering in T-points
       INTEGER,                          INTENT(in   ) ::   ntimes     ! the number of filter applications
       LOGICAL,                          INTENT(in   ) ::   bc_type    ! lateral B.C.: T: Dirichlet, F: no-flux
+      INTEGER                         , INTENT(in   ) ::   Kbb        ! ocean time level index
       
       INTEGER  :: jtimes                          ! dummy loop
       REAL(wp), DIMENSION (jpi,jpj,jpk) :: ptim   ! intermediate array
@@ -338,9 +346,9 @@ CONTAINS
       
       DO jtimes = 1, ntimes
          IF (bc_type) THEN
-            CALL filter_laplace_T3D_dirichlet(ptim)
+            CALL filter_laplace_T3D_dirichlet(ptim, Kbb)
          ELSE 
-            CALL filter_laplace_T3D(ptim)
+            CALL filter_laplace_T3D(ptim, Kbb)
          END IF
          CALL lbc_lnk('filter_laplace_T3D_ntimes', ptim, 'T', 1.)
       END DO
@@ -349,7 +357,7 @@ CONTAINS
       
    END SUBROUTINE filter_laplace_T3D_ntimes
     
-   SUBROUTINE filter_laplace_f3D( ptn, ffmask ) 
+   SUBROUTINE filter_laplace_f3D( ptn, ffmask, Kbb ) 
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE filter_laplace_f3D  ***
       !!                   
@@ -373,6 +381,7 @@ CONTAINS
       
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::   ptn        ! before and after filtering in f-points
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in   ) ::   ffmask     ! fmask without rn_shlat
+      INTEGER                         , INTENT(in   ) ::   Kbb        ! ocean time level index
       !
       INTEGER  ::   ji, jj, jk                         ! dummy loop indices
       REAL(wp) ::   zabe1, zabe2, zbtr   ! local scalars
@@ -387,8 +396,8 @@ CONTAINS
          ptn(:,:,jk) = ptn(:,:,jk) * ffmask(:,:,jk)
          DO_2D(1,0,1,0)
             ! ji+1, jj+1 shifts are due to position of fluxes points relative to f-point
-            zabe1 = 0.125_wp * e1e2v(ji+1,jj) * e3v_0(ji+1,jj,jk)
-            zabe2 = 0.125_wp * e1e2u(ji,jj+1) * e3u_0(ji,jj+1,jk)
+            zabe1 = 0.125_wp * e1e2v(ji+1,jj) * e3v(ji+1,jj,jk,Kbb)
+            zabe2 = 0.125_wp * e1e2u(ji,jj+1) * e3u(ji,jj+1,jk,Kbb)
             zwx(ji,jj) = zabe1 * ( ptn(ji+1,jj  ,jk) - ptn(ji,jj,jk) )
             zwy(ji,jj) = zabe2 * ( ptn(ji  ,jj+1,jk) - ptn(ji,jj,jk) )
          END_2D         
@@ -397,14 +406,14 @@ CONTAINS
          ! II. Second derivative (divergence)
          !   ---------------------
          DO_2D(0,0,0,0)
-            zbtr = r1_e1e2f(ji,jj) / e3f_0(ji,jj,jk)
+            zbtr = r1_e1e2f(ji,jj) / e3f(ji,jj,jk)
             ptn(ji,jj,jk) = ptn(ji,jj,jk) + zbtr * (zwx(ji,jj) - zwx(ji-1,jj) + zwy(ji,jj) - zwy(ji,jj-1))
          END_2D
       END DO
       
    END SUBROUTINE filter_laplace_f3D
    
-   SUBROUTINE filter_laplace_f3D_ntimes( ptn, pta, ntimes, ffmask ) 
+   SUBROUTINE filter_laplace_f3D_ntimes( ptn, pta, ntimes, ffmask, Kbb ) 
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE filter_laplace_f3D_ntimes  ***
       !!                   
@@ -417,6 +426,7 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::   pta        ! after  filtering in f-points
       INTEGER, INTENT(in) ::   ntimes                                 ! the number of filter applications
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in   ) ::   ffmask     ! fmask without rn_shlat
+      INTEGER                         , INTENT(in   ) ::   Kbb        ! ocean time level index
       
       INTEGER  :: jtimes                          ! dummy loop
       REAL(wp), DIMENSION (jpi,jpj,jpk) :: ptim   ! intermediate array
@@ -429,7 +439,7 @@ CONTAINS
       ptim = ptn
       
       DO jtimes = 1, ntimes
-         CALL filter_laplace_f3D(ptim, ffmask)
+         CALL filter_laplace_f3D(ptim, ffmask, Kbb)
          CALL lbc_lnk('filter_laplace_f3D_ntimes', ptim, 'F', 1.)
       END DO
       
@@ -437,7 +447,7 @@ CONTAINS
       
    END SUBROUTINE filter_laplace_f3D_ntimes
 
-   SUBROUTINE KEB_ldf_lap( prot, nu2t, nback, Eback, pua, pva, ffmask ) 
+   SUBROUTINE KEB_ldf_lap( prot, nu2t, nback, Eback, pua, pva, ffmask, Kbb) 
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE KEB_ldf_lap  ***
       !!                  
@@ -471,6 +481,7 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  Eback            ! Energy backscatter, in T points
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in   ) ::  ffmask           ! fmask without rn_shlat
       INTEGER,                          INTENT(in   ) ::  nback            ! number of filters for tendency
+      INTEGER                         , INTENT(in   ) ::  Kbb              ! ocean time level index
       
       !
       INTEGER  ::   ji, jj, jk           ! dummy loop indices
@@ -481,38 +492,38 @@ CONTAINS
 
       !!----------------------------------------------------------------------
 
-      CALL filter_laplace_f3D_ntimes( prot, prot_f, nback / 2, ffmask)
+      CALL filter_laplace_f3D_ntimes( prot, prot_f, nback / 2, ffmask, Kbb)
       
       ! compute Eback as in dynldf_lap
       DO jk = 1, jpk-1
-         Eback_f(:,:) = 0.25_wp * prot_f(:,:,jk)**2 * e1e2f(:,:) * e3f_0(:,:,jk) * ffmask(:,:,jk)
+         Eback_f(:,:) = 0.25_wp * prot_f(:,:,jk)**2 * e1e2f(:,:) * e3f(:,:,jk) * ffmask(:,:,jk)
 
          ! no need for MPI exchange
          DO_2D(0,0,0,0)
             Eback(ji,jj,jk) =  nu2t(ji,jj,jk) * (                                                         &
                                Eback_f(ji,jj) + Eback_f(ji-1,jj) + Eback_f(ji,jj-1) + Eback_f(ji-1,jj-1)  &
-                                                ) * r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+                                                ) * r1_e1e2t(ji,jj) / e3t(ji,jj,jk,Kbb)
          END_2D
       END DO
 
-      CALL filter_laplace_f3D_ntimes( prot_f, prot_f, nback / 2, ffmask) 
+      CALL filter_laplace_f3D_ntimes( prot_f, prot_f, nback / 2, ffmask, Kbb) 
 
       ! Laplacian operator      
       DO jk = 1, jpk-1
          DO_2D(1,0,1,0)                            
             zuf(ji,jj) = - 0.25_wp * (nu2t(ji,jj,jk) + nu2t(ji+1,jj,jk) + nu2t(ji+1,jj+1,jk) + nu2t(ji,jj+1,jk)) *   &
-                        prot_f(ji,jj,jk) * e3f_0(ji,jj,jk) * ffmask(ji,jj,jk)
+                        prot_f(ji,jj,jk) * e3f(ji,jj,jk) * ffmask(ji,jj,jk)
          END_2D
 
          DO_2D(0,0,0,0)
-            pua(ji,jj,jk) = - ( zuf(ji,jj) - zuf(ji,jj-1) ) * r1_e2u(ji,jj) / e3u_0(ji,jj,jk)
-            pva(ji,jj,jk) = + ( zuf(ji,jj) - zuf(ji-1,jj) ) * r1_e1v(ji,jj) / e3v_0(ji,jj,jk)
+            pua(ji,jj,jk) = - ( zuf(ji,jj) - zuf(ji,jj-1) ) * r1_e2u(ji,jj) / e3u(ji,jj,jk,Kbb)
+            pva(ji,jj,jk) = + ( zuf(ji,jj) - zuf(ji-1,jj) ) * r1_e1v(ji,jj) / e3v(ji,jj,jk,Kbb)
          END_2D
       END DO
 
    END SUBROUTINE KEB_ldf_lap
 
-   SUBROUTINE horizontal_curl( psi, fx, fy )
+   SUBROUTINE horizontal_curl( psi, fx, fy, Kbb)
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE horizontal_curl  ***
       !!                   
@@ -524,6 +535,7 @@ CONTAINS
       !
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in   ) ::  psi              ! vertical component of vector field, in f-points
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  fx, fy           ! curl-compnents in u- and v-points
+      INTEGER                         , INTENT(in   ) ::  Kbb              ! ocean time level index
       
       INTEGER  ::   ji, jj, jk           ! dummy loop indices
 
@@ -531,16 +543,16 @@ CONTAINS
       !!----------------------------------------------------------------------
       
       DO jk = 1, jpk-1                
-         zuf(:,:) = psi(:,:,jk) * e3f_0(:,:,jk)               
+         zuf(:,:) = psi(:,:,jk) * e3f(:,:,jk)               
          DO_2D(0,1,0,1)
-            fx(ji,jj,jk) = - ( zuf(ji,jj) - zuf(ji,jj-1) ) * r1_e2u(ji,jj) / e3u_0(ji,jj,jk)
-            fy(ji,jj,jk) = + ( zuf(ji,jj) - zuf(ji-1,jj) ) * r1_e1v(ji,jj) / e3v_0(ji,jj,jk)
+            fx(ji,jj,jk) = - ( zuf(ji,jj) - zuf(ji,jj-1) ) * r1_e2u(ji,jj) / e3u(ji,jj,jk,Kbb)
+            fy(ji,jj,jk) = + ( zuf(ji,jj) - zuf(ji-1,jj) ) * r1_e1v(ji,jj) / e3v(ji,jj,jk,Kbb)
          END_2D
       END DO
       
    END SUBROUTINE horizontal_curl
 
-   SUBROUTINE horizontal_divergence( fx, fy, hdiv )
+   SUBROUTINE horizontal_divergence( fx, fy, hdiv, Kbb)
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE horizontal_divergence  ***
       !!                   
@@ -550,6 +562,7 @@ CONTAINS
       !
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in   ) ::  fx, fy           ! vector field in u and v points
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  hdiv             ! horizontal divergence
+      INTEGER                         , INTENT(in   ) ::  Kbb              ! ocean time level index
       
       INTEGER  ::   ji, jj, jk           ! dummy loop indices
 
@@ -557,10 +570,10 @@ CONTAINS
       !!----------------------------------------------------------------------
       
       DO jk = 1, jpk-1                   
-         zu(:,:) = fx(:,:,jk) * e3u_0(:,:,jk) * e2u(:,:)
-         zv(:,:) = fy(:,:,jk) * e3v_0(:,:,jk) * e1v(:,:)
+         zu(:,:) = fx(:,:,jk) * e3u(:,:,jk,Kbb) * e2u(:,:)
+         zv(:,:) = fy(:,:,jk) * e3v(:,:,jk,Kbb) * e1v(:,:)
          DO_2D(0,0,0,0)
-            hdiv(ji,jj,jk) = (zu(ji,jj) - zu(ji-1,jj) + zv(ji,jj) - zv(ji,jj-1)) / (e1e2t(ji,jj) * e3t_0(ji,jj,jk))
+            hdiv(ji,jj,jk) = (zu(ji,jj) - zu(ji-1,jj) + zv(ji,jj) - zv(ji,jj-1)) / (e1e2t(ji,jj) * e3t(ji,jj,jk,Kbb))
          END_2D
       END DO
    
@@ -732,7 +745,7 @@ CONTAINS
 
    END SUBROUTINE gauss_white_noise_2d
 
-   SUBROUTINE compute_psi( Esource, phi, nstoch, T_decorr, psi, ffmask )
+   SUBROUTINE compute_psi( Esource, phi, nstoch, T_decorr, psi, ffmask, Kbb)
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE compute_psi  ***
       !!                   
@@ -766,6 +779,7 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in   ) ::  ffmask  ! fmask without rn_shlat
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  psi     ! stochastic streamfunction
       REAL(wp), DIMENSION(jpi,jpj)    , INTENT(in   ) ::  phi     ! white-noise N(0,1)
+      INTEGER                         , INTENT(in   ) ::  Kbb     ! ocean time level index
       REAL(wp), INTENT(in) :: T_decorr
       INTEGER , INTENT(in) :: nstoch
 
@@ -791,13 +805,13 @@ CONTAINS
       END_3D
 
       CALL lbc_lnk('compute_psi', psi, 'F', 1.)
-      CALL filter_laplace_f3D_ntimes(psi, psi, nstoch, ffmask)
+      CALL filter_laplace_f3D_ntimes(psi, psi, nstoch, ffmask, Kbb)
 
       psi = psi * ffmask ! will be needed for curl
 
    END SUBROUTINE compute_psi
 
-   SUBROUTINE compute_Eback_AR1( fx, fy, pun, pvn, Eback )
+   SUBROUTINE compute_Eback_AR1( fx, fy, pun, pvn, Eback, Kbb)
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE compute_Eback_AR1  ***
       !!                   
@@ -809,6 +823,7 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  fx, fy   ! velocity tendency
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(inout) ::  Eback    ! energy tendency in T points
       REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    ::  pun, pvn ! velocity
+      INTEGER                         , INTENT(in   ) ::  Kbb      ! ocean time level index
 
       INTEGER :: ji, jj, jk
 
@@ -819,19 +834,19 @@ CONTAINS
 
       ! fields must be exchanged
       DO jk=1, jpk-1
-         Eback_u(:,:) = 0.5_wp * fx(:,:,jk) * pun(:,:,jk) * e1e2u(:,:) * e3u_0(:,:,jk) * umask(:,:,jk)
-         Eback_v(:,:) = 0.5_wp * fy(:,:,jk) * pvn(:,:,jk) * e1e2v(:,:) * e3v_0(:,:,jk) * vmask(:,:,jk)
+         Eback_u(:,:) = 0.5_wp * fx(:,:,jk) * pun(:,:,jk) * e1e2u(:,:) * e3u(:,:,jk,Kbb) * umask(:,:,jk)
+         Eback_v(:,:) = 0.5_wp * fy(:,:,jk) * pvn(:,:,jk) * e1e2v(:,:) * e3v(:,:,jk,Kbb) * vmask(:,:,jk)
 
          ! no need for MPI exchange
          DO_2D(0,0,0,0)
             Eback(ji,jj,jk) = (Eback_u(ji,jj) + Eback_u(ji-1,jj) + Eback_v(ji,jj) + Eback_v(ji,jj-1)) * &
-                              r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk)
+                              r1_e1e2t(ji,jj) / e3t(ji,jj,jk,Kbb)
          END_2D
       END DO
 
    END SUBROUTINE compute_Eback_AR1
 
-   FUNCTION aposteriori_correction( Esource, Estoch,  Esource_mean, Estoch_mean ) result(amp_increase)
+   FUNCTION aposteriori_correction( Esource, Estoch,  Esource_mean, Estoch_mean, e3t_3D ) result(amp_increase)
       !!----------------------------------------------------------------------
       !!                  ***  ROUTINE aposteriori_correction  ***
       !!                   
@@ -845,9 +860,10 @@ CONTAINS
       !!  
       !!----------------------------------------------------------------------
       !
-      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in) ::  Esource ! desired energy input
-      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in) ::  Estoch  ! energy input before correction
-      REAL(wp), INTENT(inout) :: Esource_mean,  Estoch_mean
+      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    ::  Esource ! desired energy input
+      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in)    ::  Estoch  ! energy input before correction
+      REAL(wp)                        , INTENT(inout) ::  Esource_mean,  Estoch_mean
+      REAL(wp), DIMENSION(jpi,jpj,jpk), INTENT(in) ::  e3t_3D  ! needed to use e3 substitution in function
       REAL(wp) :: amp_increase
 
       REAL(wp) :: Estoch_m, Esource_m
@@ -857,8 +873,8 @@ CONTAINS
       beta = rdt / T
       alpha = 1._wp - beta
 
-      Estoch_m  = average_xyz(Estoch, e1t, e2t, e3t_0, tmask)
-      Esource_m = average_xyz(Esource, e1t, e2t, e3t_0, tmask)
+      Estoch_m  = average_xyz(Estoch, e1t, e2t, e3t_3D, tmask)
+      Esource_m = average_xyz(Esource, e1t, e2t, e3t_3D, tmask)
 
       ! time accumulation of stochastic input and energy source
       Esource_mean = alpha * Esource_mean + beta * Esource_m

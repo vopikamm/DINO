@@ -238,15 +238,15 @@ CONTAINS
          
          DO jk=1, jpk-1
             DO_2D(1,0,1,0)
-               Ediss_u(ji,jj) = - 0.5_wp * zulap(ji,jj,jk)**2 * e1e2u(ji,jj) * e3u_0(ji,jj,jk) * umask(ji,jj,jk)
-               Ediss_v(ji,jj) = - 0.5_wp * zvlap(ji,jj,jk)**2 * e1e2v(ji,jj) * e3v_0(ji,jj,jk) * vmask(ji,jj,jk)
+               Ediss_u(ji,jj) = - 0.5_wp * zulap(ji,jj,jk)**2 * e1e2u(ji,jj) * e3u(ji,jj,jk,Kbb) * umask(ji,jj,jk)
+               Ediss_v(ji,jj) = - 0.5_wp * zvlap(ji,jj,jk)**2 * e1e2v(ji,jj) * e3v(ji,jj,jk,Kbb) * vmask(ji,jj,jk)
             END_2D
             ! Ediss defined in KEB_module.F90; TODO: should this stay a global variable?
             ! no need for MPI exchange
             DO_2D(0,0,0,0)
                Ediss(ji,jj,jk) =                                                                    & 
                (Ediss_u(ji,jj) + Ediss_u(ji-1,jj) + Ediss_v(ji,jj) + Ediss_v(ji,jj-1))              &
-               * r1_e1e2t(ji,jj) / e3t_0(ji,jj,jk) ! dk: find out if coefficient is applied twice, then: / ahmt(ji,jj,jk)
+               * r1_e1e2t(ji,jj) / e3t(ji,jj,jk, Kbb) ! dk: find out if coefficient is applied twice, then: / ahmt(ji,jj,jk)
             END_2D
          END DO
       END IF
