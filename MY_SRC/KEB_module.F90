@@ -180,7 +180,7 @@ CONTAINS
 
       ! without rn_shlat
       ffmask = 0._wp
-      DO_3D(1,0,1,0,1,1)
+      DO_3D(1,0,1,0,1,jpk)
          ffmask(ji,jj,jk) = tmask(ji,jj  ,jk) * tmask(ji+1,jj  ,jk)   &
                           * tmask(ji,jj+1,jk) * tmask(ji+1,jj+1,jk)
       END_3D
@@ -396,7 +396,7 @@ CONTAINS
       CALL compute_Eback_AR1( fx, fy, puu, pvv, Eback, Kbb)
 
       !Here we expand e3t outside of aposteriori_correction function since debugger does not allow inside
-      DO_3D(nn_hls,nn_hls,nn_hls,nn_hls,1,1)
+      DO_3D(nn_hls,nn_hls,nn_hls,nn_hls,1,jpk)
          e3t_3D(ji,jj,jk) = e3t(ji,jj,jk,Kbb)
       END_3D
 
@@ -429,7 +429,7 @@ CONTAINS
       REAL(wp) :: min_TKE, time_TKE
       REAL(wp) :: average_cdiss
 
-      DO_3D(nn_hls,nn_hls,nn_hls,nn_hls,1,1)
+      DO_3D(nn_hls,nn_hls,nn_hls,nn_hls,1,jpk)
          e3t_3D(ji,jj,jk) = e3t(ji,jj,jk,Kbb)
       END_3D
 

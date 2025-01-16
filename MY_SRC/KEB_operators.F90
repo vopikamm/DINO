@@ -58,13 +58,13 @@ CONTAINS
       !!----------------------------------------------------------------------
       
       zwz(:,:,1) = 0._wp ! zero cross-surface flux   
-      DO_3D(0,0,0,0,0,1)
+      DO_3D(0,0,0,0,2,jpk)
          coef = 0.25_wp * e3w(ji,jj,1,Kbb)**2
          zwz(ji,jj,jk) = coef * (ptn(ji,jj,jk-1) - ptn(ji,jj,jk))  / e3w(ji,jj,jk,Kbb) * wmask(ji,jj,jk)
       END_3D    
       
       
-      DO_3D(0,0,0,0,1,0)  
+      DO_3D(0,0,0,0,1,jpk-1)  
          pta(ji,jj,jk) = ptn(ji,jj,jk)  + ( zwz(ji,jj,jk) - zwz(ji,jj,jk+1) ) / e3t(ji,jj,jk,Kbb)
       END_3D
       
@@ -112,7 +112,7 @@ CONTAINS
       !   ---------------------
       ! I. Horizontal advection
       !   ---------------------
-      DO_3D(1,0,1,0,1,0)  
+      DO_3D(1,0,1,0,1,jpk-1)  
          zun = e2u(ji,jj) * e3u(ji,jj,jk,Kbb) * pun(ji,jj,jk)
          zvn = e1v(ji,jj) * e3v(ji,jj,jk,Kbb) * pvn(ji,jj,jk)
 
@@ -124,7 +124,7 @@ CONTAINS
          zwy(ji,jj) = vnp * ptn(ji,jj,jk) + vnm * ptn(ji,jj+1,jk)
       END_3D
       
-      DO_3D(0,0,0,0,1,0)
+      DO_3D(0,0,0,0,1,jpk-1)
          zbtr = r1_e1e2t(ji,jj) / e3t(ji,jj,jk,Kbb)
          rhsn(ji,jj,jk) = - zbtr * (  zwx(ji,jj) - zwx(ji-1,jj  )   &
                                     + zwy(ji,jj) - zwy(ji  ,jj-1) )
@@ -140,14 +140,14 @@ CONTAINS
          zwz(:,:,1) = 0._wp ! zero cross-surface flux   
       END IF
       
-      DO_3D(0,0,0,0,0,1)
+      DO_3D(0,0,0,0,2,jpk)
          zwn = e1e2t(ji,jj) * pwn(ji,jj,jk)
          wnp = max(zwn, 0._wp)
          wnm = zwn - wnp
          zwz(ji,jj,jk) = wnp * ptn(ji,jj,jk) + wnm * ptn(ji,jj,jk-1)
       END_3D
       
-      DO_3D(0,0,0,0,1,0)
+      DO_3D(0,0,0,0,1,jpk-1)
          zbtr = r1_e1e2t(ji,jj) / e3t(ji,jj,jk,Kbb)
          rhsn(ji,jj,jk) = rhsn(ji,jj,jk) - zbtr * ( zwz(ji,jj,jk) - zwz(ji,jj,jk+1) )    
       END_3D
@@ -719,7 +719,7 @@ CONTAINS
       !       r1_ff(ji,jj) = 1._wp / ((ff(ji,jj) + ff(ji-1,jj) + ff(ji-1,jj-1) + ff(ji,jj-1)) * 0.25_wp)
       ! END_2D
 
-      DO_3D(0,0,0,0,1,0)
+      DO_3D(0,0,0,0,1,jpk-1)
          R_local = sqrt(D2(ji,jj,jk)) / ff_t(ji,jj)
          local_cdiss(ji,jj,jk) = R_diss / (R_local + R_diss)
       END_3D
@@ -798,7 +798,7 @@ CONTAINS
       c0_2d(:,:) = d2 / (2._wp * T_decorr) / &
                   ((1._wp-rx) / (e1f(:,:) ** 2) + (1._wp-ry) / (e2f(:,:) ** 2))
 
-      DO_3D(0,0,0,0,1,0)
+      DO_3D(0,0,0,0,1,jpk-1)
          ! T to F interpolation
          Es_f = 0.25_wp * (Esource(ji,jj,jk) + Esource(ji+1,jj,jk) + Esource(ji,jj+1,jk) + Esource(ji+1,jj+1,jk))
          psi(ji,jj,jk) = sqrt(Es_f * c0_2d(ji,jj)) * phi(ji,jj)
@@ -961,7 +961,7 @@ CONTAINS
 
       e12(:,:) = e1(:,:) * e2(:,:)
 
-      DO_3D(0,0,0,0,1,0)
+      DO_3D(0,0,0,0,1,jpk-1)
          dV = e12(ji,jj) * e3(ji,jj,jk) * mask(ji,jj,jk)
          volume = volume + dV
          res = res + field3d(ji,jj,jk) * dV
@@ -982,7 +982,7 @@ CONTAINS
       
       res = 1.e+34
 
-      DO_3D(0,0,0,0,1,0)
+      DO_3D(0,0,0,0,1,jpk-1)
          IF (mask(ji,jj,jk) > 0.5_wp) res = min(res, field3d(ji,jj,jk))
       END_3D
 
@@ -998,7 +998,7 @@ CONTAINS
       
       res = -1.e+34
 
-      DO_3D(0,0,0,0,1,0)
+      DO_3D(0,0,0,0,1,jpk-1)
          IF (mask(ji,jj,jk) > 0.5_wp) res = max(res, field3d(ji,jj,jk))
       END_3D
 

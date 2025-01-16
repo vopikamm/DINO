@@ -35,7 +35,7 @@ MODULE KEB_testing
       
       ! expanding all e3s to 3D arrays. The substitution is not accepted as function input.
       ! Presumably strikt debugger on array shapes in function call vs subroutine call.
-      DO_3D(nn_hls,nn_hls,nn_hls,nn_hls,1,1)
+      DO_3D(nn_hls,nn_hls,nn_hls,nn_hls,1,jpk)
          e3t_3D(ji,jj,jk) = e3t(ji,jj,jk,Kbb)      
          e3f_3D(ji,jj,jk) = e3f(ji,jj,jk)
          e3u_3D(ji,jj,jk) = e3u(ji,jj,jk,Kbb)
@@ -220,7 +220,7 @@ MODULE KEB_testing
       ! expanding all e3s to 3D arrays. The substitution is not accepted as function input.
       ! Presumably strict debugger on array shapes in function call vs subroutine call.
       ! dk: is this whole loop?
-      DO_3D(nn_hls,nn_hls,nn_hls,nn_hls,1,1)
+      DO_3D(nn_hls,nn_hls,nn_hls,nn_hls,1,jpk)
          e3t_3D(ji,jj,jk) = e3t(ji,jj,jk,Kbb)      
          e3f_3D(ji,jj,jk) = e3f(ji,jj,jk)
          e3u_3D(ji,jj,jk) = e3u(ji,jj,jk,Kbb)
