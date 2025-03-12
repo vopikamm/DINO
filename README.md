@@ -32,7 +32,7 @@ First you need to add `DINO` to the configuration list in `demo_cfgs.txt`:
 ```
 echo "DINO  OCE" >> ../demo_cfgs.txt
 ```
-
+If you chose to rename the configuration folder, replace `"DINO  OCE"` with `"<YOUR_NAME>  OCE"` and also rename the file [cpp_DINO.fcm](https://github.com/vopikamm/DINO/blob/4bbbe8337de59952eb2f42a20b2fd30250354dee/cpp_DINO.fcm) to `cpp_<YOUR_NAME>.fcm`. 
 Now compile from the NEMO root directory, e.g.:
 
 ```
