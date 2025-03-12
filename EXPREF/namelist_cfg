@@ -19,11 +19,11 @@
 !-----------------------------------------------------------------------
 &namusr_def    !   User defined :   DINO configuration
 !-----------------------------------------------------------------------
-   rn_e1_deg            =      1.        ! Resolution in degrees of longitude (Mercator grid)
+   rn_e1_deg            =      1.0        ! Resolution in degrees of longitude (Mercator grid)
    rn_phi_min           =    -70.         ! Latitude of the south frontier (T point) [degrees] (approximative)
    rn_phi_max           =     70.         ! Latitude of the north frontier (T point) [degrees] (approximative)
    rn_lam_min           =      0.         ! Longitude of the west frontier (T point) [degrees] (approximative)
-   rn_lam_max           =     60.         ! Longitude of the east frontier (T point) [degrees] (approximative)
+   rn_lam_max           =     50.         ! Longitude of the east frontier (T point) [degrees] (approximative)
    nn_k                 =     36          ! Number of grid points along k direction
    nn_forcingtype       =      4          ! Forcing
                                           ! 2: constant zonal wind stress
@@ -45,7 +45,6 @@
          rn_sstar_eq    =     37.25       ! Salinity restoring maximum without exponential
       ln_qsr            = .true.          ! Solar heat flux or not
       ln_emp_field      = .false.          ! EmP is read from file and replaces saltflx from S-restoring
-      ln_qns_field      = .false.          ! EmP is read from file and replaces saltflx from S-restoring
 
    nn_botcase       =      1              ! bottom definition (0:flat, 1:bowl cosh, 2: bowl 1-x**4)
       rn_H          =   4000.             ! Maximum depth of the basin (approximative, is recomputed after the bathymetry calculation)
@@ -175,7 +174,7 @@
    !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
    !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
    !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
-   sn_emp      = 'emp_climatology'       ,        24         , 'emp'     , .false.     , .true. , 'yearly'  , ''               , ''       , ''
+   sn_emp      = 'emp_1deg'              ,        -1         ,  'emp'    , .true.      , .true. , 'yearly'  , ''               , ''       , ''
 /
 !-----------------------------------------------------------------------
 &namtra_qsr    !   penetrative solar radiation                          (ln_traqsr =T)
@@ -274,7 +273,7 @@
    !ln_botmix_triad = .true.    !  lateral mixing on bottom                  (triad only)   !!rc Following the slope at the bottom   !!rc TODO ask GM to check
    !
    !                       !  Coefficients:
-   nn_aht_ijk_t    = 0         !  space/time variation of eddy coefficient:   !!rc scaling with grid size 20 !!rc remove scaling
+   nn_aht_ijk_t    = 20         !  space/time variation of eddy coefficient:   !!rc scaling with grid size 20 !!rc remove scaling
       !                             !   =-20 (=-30)    read in eddy_diffusivity_2D.nc (..._3D.nc) file
       !                             !   =  0           constant
       !                             !   = 10 F(k)      =ldf_c1d
@@ -284,7 +283,7 @@
       !                             !   = 31 F(i,j,k,t)=F(local velocity and grid-spacing)
       !                        !  time invariant coefficients:  aht0 = 1/2  Ud*Ld   (lap case)
       !                             !                           or   = 1/12 Ud*Ld^3 (blp case)
-      rn_Ud        = 0.03           !  lateral diffusive velocity [m/s] (nn_aht_ijk_t= 0, 10, 20, 30)
+      rn_Ud        = 0.027           !  lateral diffusive velocity [m/s] (nn_aht_ijk_t= 0, 10, 20, 30)
       rn_Ld        = 100.e+3        !  lateral diffusive length   [m]   (nn_aht_ijk_t= 0, 10)
 /
 !-----------------------------------------------------------------------
@@ -319,13 +318,6 @@
 !!   namdta_dyn    offline TOP: dynamics read in files                  (OFF_SRC only)
 !!======================================================================
 !
-&namZB !   parameters of backscatter parameterization
-!-----------------------------------------------------------------------
-   ln_zanna_bolton      = .false.               ! turn on ZB
-   rn_gamma             = 0.5                  ! ZB-coefficient
-   ln_filter            = .true.               ! key for Shapiro filter
-   nn_filter            = 4                    ! number of applied filters to the stress tensor
-/
 !-----------------------------------------------------------------------
 &namdyn_adv    !   formulation of the momentum advection                (default: NO selection)
 !-----------------------------------------------------------------------
@@ -378,9 +370,9 @@
 !-----------------------------------------------------------------------
    ln_dynldf_lap =  .true.     !  laplacian operator
    ln_dynldf_lev =  .true.     !  iso-level
-   nn_ahm_ijk_t  = 0           !  = 0  constant = 1/2  Uv*Lv   (lap case) 
-      rn_Uv      = 0.3              !  lateral viscous velocity [m/s]
-      rn_Lv      = 100.e+3          !  lateral viscous length   [m]
+   nn_ahm_ijk_t  = 20          !  space/time variation of eddy coefficient :
+      !                        !  = 20  F(i,j)=F(grid spacing)=c2d
+      rn_Uv      = 0.27        !  lateral viscous velocity [m/s] (nn_ahm_ijk_t= 0, 10, 20, 30)
 /
 
 !!======================================================================

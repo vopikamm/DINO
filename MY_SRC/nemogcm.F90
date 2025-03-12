@@ -74,9 +74,6 @@ MODULE nemogcm
    USE mppini         ! shared/distributed memory setting (mpp_init routine)
    USE lib_fortran    ! Fortran utilities (allows no signed zero when 'key_nosignedzero' defined)
    USE halo_mng       ! halo manager
-   USE zanna_bolton   ! Zanna & Bolton (2020) parameterization
-   USE KEB_module      ! kinetic energy backscatter setting       (KEB_init)
-
 
    IMPLICIT NONE
    PRIVATE
@@ -467,8 +464,6 @@ CONTAINS
                            CALL dyn_ldf_init         ! lateral mixing
                            CALL dyn_hpg_init( Nnn )  ! horizontal gradient of Hydrostatic pressure
                            CALL dyn_spg_init         ! surface pressure gradient
-                           CALL ZB_2020_init         ! init Zanna Bolton parameterization
-                           CALL KEB_init             ! init kinetic energy backscatter parameterization
 
       !                                      ! Icebergs
                            CALL icb_init( rn_Dt, nit000)   ! initialise icebergs instance

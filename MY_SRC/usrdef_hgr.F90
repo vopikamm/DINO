@@ -2,11 +2,14 @@ MODULE usrdef_hgr
    !!======================================================================
    !!                       ***  MODULE  usrdef_hgr  ***
    !!
-   !!                      ===  CANAL configuration  ===
+   !!                      ===  DINO configuration  ===
    !!
    !! User defined :   mesh and Coriolis parameter of a user configuration
    !!======================================================================
-   !! History :  NEMO  ! 2017-11  (J. Chanut)  Original code
+   !! History :  NEMO  
+   !!                  ! 2017-11  (J. Chanut)  Original code
+   !!                  ! 2025-03  (D. Kamm)    DINO Mercator grid
+   !!                  
    !!----------------------------------------------------------------------
 
    !!----------------------------------------------------------------------
@@ -88,49 +91,6 @@ CONTAINS
       !  The formula should work even if the equator is outside the domain.      !
       
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      
-      !zarg = rpi / 4. - rpi / 180. * rn_phi0 / 2.
-      !zjeq = ABS( 180./rpi * LOG( COS( zarg ) / SIN( zarg ) ) / rn_e1_deg )
-      !IF(  rn_phi0 > 0 )  zjeq = -zjeq
-      !zjeq =  zjeq + 1._wp ! We add the +1 because the j indexes start from 1: if the equator is on the first row, its index must be 1
-      !ijeq = FLOOR( zjeq )
-      !IF( ABS( REAL( ijeq, wp ) - zjeq ) > 0.5 )   ijeq = ijeq + 1
-      !!
-      !IF(lwp) WRITE(numout,*) '          Index of the equator      (real)       on the MERCATOR grid:', zjeq
-      !IF(lwp) WRITE(numout,*) '          Index of the equator (nearest integer) on the MERCATOR grid:', ijeq
-
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-
-      !!
-      !DO jj = 1, jpj
-      !   DO ji = 1, jpi
-      !      zti = REAL( ji - 1 + nimpp - 1 )         ;   ztj = REAL( jj - ijeq + njmpp - 1 )
-      !      zui = REAL( ji - 1 + nimpp - 1 ) + 0.5   ;   zuj = REAL( jj - ijeq + njmpp - 1 )
-      !      zvi = REAL( ji - 1 + nimpp - 1 )         ;   zvj = REAL( jj - ijeq + njmpp - 1 ) + 0.5
-      !      zfi = REAL( ji - 1 + nimpp - 1 ) + 0.5   ;   zfj = REAL( jj - ijeq + njmpp - 1 ) + 0.5
-      !   ! Longitude
-      !      plamt(ji,jj) = zlam0 + rn_e1_deg * zti
-      !      plamu(ji,jj) = zlam0 + rn_e1_deg * zui
-      !      plamv(ji,jj) = zlam0 + rn_e1_deg * zvi
-      !      plamf(ji,jj) = zlam0 + rn_e1_deg * zfi
-      !   ! Latitude
-      !      pphit(ji,jj) = 1./rad * ASIN ( TANH( rn_e1_deg *rad* ztj ) )
-      !      pphiu(ji,jj) = 1./rad * ASIN ( TANH( rn_e1_deg *rad* zuj ) )
-      !      pphiv(ji,jj) = 1./rad * ASIN ( TANH( rn_e1_deg *rad* zvj ) )
-      !      pphif(ji,jj) = 1./rad * ASIN ( TANH( rn_e1_deg *rad* zfj ) )
-      !   ! e1
-      !      pe1t(ji,jj) = ra * rad * COS( rad * pphit(ji,jj) ) * rn_e1_deg
-      !      pe1u(ji,jj) = ra * rad * COS( rad * pphiu(ji,jj) ) * rn_e1_deg
-      !      pe1v(ji,jj) = ra * rad * COS( rad * pphiv(ji,jj) ) * rn_e1_deg
-      !      pe1f(ji,jj) = ra * rad * COS( rad * pphif(ji,jj) ) * rn_e1_deg
-      !   ! e2
-      !      pe2t(ji,jj) = ra * rad * COS( rad * pphit(ji,jj) ) * rn_e1_deg
-      !      pe2u(ji,jj) = ra * rad * COS( rad * pphiu(ji,jj) ) * rn_e1_deg
-      !      pe2v(ji,jj) = ra * rad * COS( rad * pphiv(ji,jj) ) * rn_e1_deg
-      !      pe2f(ji,jj) = ra * rad * COS( rad * pphif(ji,jj) ) * rn_e1_deg
-      !   END DO
-      !END DO
-      !
       !
       DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
             zti = REAL( mig0(ji) - 1, wp )             ;     ztj = REAL( mjg0(jj) - nn_jeq_s, wp )

@@ -2,11 +2,12 @@ MODULE usrdef_sbc
    !!======================================================================
    !!                       ***  MODULE  usrdef_sbc  ***
    !! 
-   !!                      ===  BASIN configuration  ===
+   !!                      ===  DINO configuration  ===
    !!
    !! User defined :   surface forcing of a user configuration
    !!======================================================================
    !! History :  4.0   ! 2017-11  (J.Chanut)  user defined interface
+   !!                  ! 2025-03  (D. Kamm)   Analytical SBC for DINO
    !!----------------------------------------------------------------------
 
    !!----------------------------------------------------------------------
@@ -160,22 +161,7 @@ CONTAINS
          ! For values outside of rn_phi_min / rn_phi_max there are no winds
          znds_wnd_phi    = (/rn_phi_min - 1._wp, rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max, rn_phi_max + 1._wp /)
          znds_wnd_val    = (/0._wp, 0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp, 0._wp /)
-         !
-         ! Temperature restoring profile
-         ! Chosen with the southern boundary always colder than the northern boundary
-         ! Seasonnal cycle on T* coming from zcos_sais2 with extrema in July/January
-         ! zts_eq         =  27._wp       ! [deg C] Temperature at the equator
-         ! zdts_n         =  8._wp        ! [deg C] seasonal temperature difference in the north
-         ! zdts_s         =   1._wp       ! [deg C] seasonal temperature difference in the south
-         ! znds_tmp_phi    = (/rn_phi_min, 10. * zcos_sais2, rn_phi_max /)
-         ! znds_tmp_val    = (/-0.5 * zdts_s * (1 + zcos_sais2) , zts_eq, 0.5 * zdts_n * (1 + zcos_sais2)/)
-         !
-         ! Evaporation - Precipitation
-         ! znds_emp_phi    = (/rn_phi_min, -50._wp, -20._wp, 0._wp, 20._wp, 50._wp, rn_phi_max /)
-         ! znds_emp_val    = (/-0.00001_wp, -0.00002_wp, 0.000035_wp, -0.000025_wp, 0.000035_wp, -0.00002_wp, -0.00001_wp /)
-         !
-         ! znds_slt_phi    = (/rn_phi_min, -40._wp, 0._wp, 40._wp, rn_phi_max /)
-         ! znds_slt_val    = (/35.401_wp, 34.505_wp, 36.09_wp, 34.931_wp, 35.401_wp /)         
+         !         
          !
          IF( kt == nit000 ) THEN
             ALLOCATE( ztstar(jpi,jpj) )         ! Allocation of ztstar
@@ -194,10 +180,6 @@ CONTAINS
                         & + (rn_sstar_eq - rn_sstar_n) * (1 + COS( 2 * rpi * gphit(ji,jj) / ( rn_phi_max - rn_phi_min) )) / 2 &
                         & - 1.25_wp * EXP( - gphit(ji,jj) ** 2 / 7.5_wp ** 2 )
                   ENDIF
-                  ! Caneill
-                  !zsstar(ji,jj) = 37.12_wp * EXP( - gphit(ji,jj)**2 / 260._wp**2 ) - 1.1_wp * EXP( - gphit(ji,jj)**2 / 7.5_wp**2 )
-                  ! S-curve interpolation
-                  !zsstar(ji,jj)  = znl_cbc(znds_slt_phi, znds_slt_val, gphit(ji,jj))
                END_2D
             ENDIF
             

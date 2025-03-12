@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+    <!-- 
+============================================================================================================
+=                                           output files definition                                        =
+=                                            Define your own files                                         =
+=                                         put the variables you want...                                    =
+============================================================================================================
+    -->
+    
+    <file_definition type="one_file" name="@expname@_@freq@" sync_freq="10d" min_digits="4">
+      <file_group id="3m" output_freq="3mo"  output_level="10" enabled=".TRUE." >  <!-- 1m files -->  
+
+	<file id="file1" name_suffix="_grid_T_3D" description="ocean T grid variables" >
+	  <field field_ref="toce" /> 
+	  <field field_ref="soce" /> 
+	  <field field_ref='e3t' />
+	  <field field_ref='rhop' />
+	</file>
+
+	<file id="file2" name_suffix="_grid_U_3D" description="ocean U grid variables" >
+	  <field field_ref="uoce" />
+	  <field field_ref="uoce_sq" />
+	  <field field_ref='e3u' />
+	</file>
+	
+	<file id="file3" name_suffix="_grid_V_3D" description="ocean V grid variables" >
+	  <field field_ref="voce" />
+	  <field field_ref="voce_sq" />
+	  <field field_ref='e3v' />
+	</file>
+	
+	<file id="file4" name_suffix="_grid_W_3D" description="ocean W grid variables" >
+	  <field field_ref="woce" />
+	  <field field_ref='e3w' />
+	</file>
+
+      </file_group>
+
+	<file_group id="1m" output_freq="1mo"  output_level="10" enabled=".TRUE." >  <!-- 1m files -->  
+	<file id="file5" name_suffix="_grid_T_2D" description="ocean T grid variables monthly" >
+	  <field field_ref="ssh"  />
+	  <field field_ref="sst" />
+	  <field field_ref="sss" /> 
+	  <!-- <field field_ref="empmr" />  -->
+	  <field field_ref="saltflx" /> 
+	  <field field_ref='qns'  />
+	  <field field_ref='qsr'  />
+	  <field field_ref='mldr10_1' />
+	  <field field_ref='mldr10_1max' />
+	</file>
+    </file_group>
+
+	<file_group id="10d" output_freq="10d"  output_level="10" enabled=".TRUE." >   
+	<file id="file6" name_suffix="_inst_grid_U_3D" description="instant ocean U grid variables monthly" >
+	  <field field_ref="uoce_inst"  	/>
+	</file>
+
+	<file id="file7" name_suffix="_inst_grid_V_3D" description="instant ocean V grid variables monthly" >
+	  <field field_ref="voce_inst"  	/>
+	</file>
+
+	<file id="file8" name_suffix="_inst_grid_T_3D" description="instant ocean T grid variables monthly" >
+	  <field field_ref="toce_inst"  	/>
+	  <field field_ref="soce_inst"  	/>
+	</file>
+    </file_group>
+
+   </file_definition>

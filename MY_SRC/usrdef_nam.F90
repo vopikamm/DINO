@@ -2,11 +2,12 @@ MODULE usrdef_nam
    !!======================================================================
    !!                       ***  MODULE  usrdef_nam  ***
    !!
-   !!                      ===  BASIN configuration  ===
+   !!                      ===  DINO configuration  ===
    !!
    !! User defined : set the domain characteristics of a user configuration
    !!======================================================================
    !! History :  NEMO ! 2017-10  (J. Chanut)  Original code
+   !!                 ! 2025-25  (D. Kamm) Adaptation for DINO
    !!----------------------------------------------------------------------
 
    !!----------------------------------------------------------------------
@@ -131,7 +132,7 @@ CONTAINS
 902   IF( ios /= 0 )   CALL ctl_nam ( ios , 'namusr_def in configuration namelist' )
       !
       !
-      WRITE( numond, namusr_def )
+      IF(lwp) WRITE( numond, namusr_def )
       !
       cd_cfg = 'DINO'             ! name & resolution (not used)
       kk_cfg = rn_e1_deg
@@ -158,34 +159,36 @@ CONTAINS
       !
       !kperio = nn_perio   ! 0: closed basin, 8: south symmetrical
       !IF( kperio == 8 )   rn_phi0 = -rn_e1_deg   ! manually set the longitude of the global first (southern) T point
-      !                             ! control print
-      WRITE(numout,*) '   '                                                                                                  ;   ii = ii + 1
-      WRITE(numout,*) 'usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg'                           ;   ii = ii + 1
-      WRITE(numout,*) '~~~~~~~~~~~ '                                                                                         ;   ii = ii + 1
-      WRITE(numout,*) '   Namelist namusr_def : DINO test case'                                                             ;   ii = ii + 1
-      WRITE(numout,*) '   Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = ', rn_e1_deg, 'degrees'   ;   ii = ii + 1
-      WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = ', rn_phi_min, 'degrees'  ;   ii = ii + 1
-      WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_phi_max     = ', rn_phi_max, 'degrees'  ;   ii = ii + 1
-      WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_lam_min     = ', rn_lam_min, 'degrees'  ;   ii = ii + 1
-      WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_lam_max     = ', rn_lam_max, 'degrees'  ;   ii = ii + 1
-      WRITE(numout,*) '   Number of grid points along i direction                 nn_piglo       = ', kpi                    ;   ii = ii + 1
-      WRITE(numout,*) '   Number of grid points along j direction                 nn_pjglo       = ', kpj                    ;   ii = ii + 1
-      WRITE(numout,*) '   Number of grid points along k direction                 nn_k           = ', kpk                    ;   ii = ii + 1
-      WRITE(numout,*) '   Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = ', nn_forcingtype         ;   ii = ii + 1
-      WRITE(numout,*) '   Magnitude of wind forcing                               rn_ztau0       = ', rn_ztau0               ;   ii = ii + 1
-      WRITE(numout,*) '   Use annual cycle or not                                 ln_ann_cyc     = ', ln_ann_cyc             ;   ii = ii + 1
-      WRITE(numout,*) '   Proportionality factor applied on EMP                   rn_emp_prop    = ', rn_emp_prop            ;   ii = ii + 1
-      WRITE(numout,*) '   Bottom definition                                       nn_botcase     = ', nn_botcase             ;   ii = ii + 1
-      WRITE(numout,*) '      (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)'                                                    ;   ii = ii + 1
-      WRITE(numout,*) '   Maximum / asymptotical depth of the basin               rn_H           = ', rn_H, 'm'              ;   ii = ii + 1
-      WRITE(numout,*) '   Depth of the bathymetry at the coast                    rn_hborder     = ', rn_hborder, 'm'        ;   ii = ii + 1
-      WRITE(numout,*) '   Typical length scale of the slope in longitude          rn_distLam     = ', rn_distLam, 'degrees'
-      WRITE(numout,*) '   Initial condition case                                  nn_initcase    = ', nn_initcase            ;   ii = ii + 1
-      WRITE(numout,*) '      (0:rest and constant T and S, '                                                                 ;   ii = ii + 1
-      WRITE(numout,*) '       1: rest and stratification)'                                                                   ;   ii = ii + 1
-      WRITE(numout,*) '      (0:closed, 8:south symmetrical)'                                                                ;   ii = ii + 1
-      WRITE(numout,*) '   Include mid-atlantic ridge                              ln_mid_ridge   = ', ln_mid_ridge           ;   ii = ii + 1
-      WRITE(numout,*) '   Include circular drake sill                             ln_drake_sill  = ', ln_drake_sill          ;   ii = ii + 1
+      !                            ! control print
+      IF(lwp) THEN
+         WRITE(numout,*) '   '                                                                                                  ;   ii = ii + 1
+         WRITE(numout,*) 'usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg'                           ;   ii = ii + 1
+         WRITE(numout,*) '~~~~~~~~~~~ '                                                                                         ;   ii = ii + 1
+         WRITE(numout,*) '   Namelist namusr_def : DINO test case'                                                             ;   ii = ii + 1
+         WRITE(numout,*) '   Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = ', rn_e1_deg, 'degrees'   ;   ii = ii + 1
+         WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = ', rn_phi_min, 'degrees'  ;   ii = ii + 1
+         WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_phi_max     = ', rn_phi_max, 'degrees'  ;   ii = ii + 1
+         WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_lam_min     = ', rn_lam_min, 'degrees'  ;   ii = ii + 1
+         WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_lam_max     = ', rn_lam_max, 'degrees'  ;   ii = ii + 1
+         WRITE(numout,*) '   Number of grid points along i direction                 nn_piglo       = ', kpi                    ;   ii = ii + 1
+         WRITE(numout,*) '   Number of grid points along j direction                 nn_pjglo       = ', kpj                    ;   ii = ii + 1
+         WRITE(numout,*) '   Number of grid points along k direction                 nn_k           = ', kpk                    ;   ii = ii + 1
+         WRITE(numout,*) '   Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = ', nn_forcingtype         ;   ii = ii + 1
+         WRITE(numout,*) '   Magnitude of wind forcing                               rn_ztau0       = ', rn_ztau0               ;   ii = ii + 1
+         WRITE(numout,*) '   Use annual cycle or not                                 ln_ann_cyc     = ', ln_ann_cyc             ;   ii = ii + 1
+         WRITE(numout,*) '   Proportionality factor applied on EMP                   rn_emp_prop    = ', rn_emp_prop            ;   ii = ii + 1
+         WRITE(numout,*) '   Bottom definition                                       nn_botcase     = ', nn_botcase             ;   ii = ii + 1
+         WRITE(numout,*) '      (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)'                                                    ;   ii = ii + 1
+         WRITE(numout,*) '   Maximum / asymptotical depth of the basin               rn_H           = ', rn_H, 'm'              ;   ii = ii + 1
+         WRITE(numout,*) '   Depth of the bathymetry at the coast                    rn_hborder     = ', rn_hborder, 'm'        ;   ii = ii + 1
+         WRITE(numout,*) '   Typical length scale of the slope in longitude          rn_distLam     = ', rn_distLam, 'degrees'
+         WRITE(numout,*) '   Initial condition case                                  nn_initcase    = ', nn_initcase            ;   ii = ii + 1
+         WRITE(numout,*) '      (0:rest and constant T and S, '                                                                 ;   ii = ii + 1
+         WRITE(numout,*) '       1: rest and stratification)'                                                                   ;   ii = ii + 1
+         WRITE(numout,*) '      (0:closed, 8:south symmetrical)'                                                                ;   ii = ii + 1
+         WRITE(numout,*) '   Include mid-atlantic ridge                              ln_mid_ridge   = ', ln_mid_ridge           ;   ii = ii + 1
+         WRITE(numout,*) '   Include circular drake sill                             ln_drake_sill  = ', ln_drake_sill          ;   ii = ii + 1
+      END IF
    END SUBROUTINE usr_def_nam
 
 
@@ -226,7 +229,7 @@ CONTAINS
       READ  ( numnam_cfg, namusr_def, IOSTAT = ios, ERR = 902 )
 902   IF( ios /= 0 )   CALL ctl_nam ( ios , 'namusr_def in configuration namelist' )
       !
-      WRITE( numond, namusr_def )
+      IF(lwp) WRITE( numond, namusr_def )
       !
    END SUBROUTINE usr_def_nam_cfg
 

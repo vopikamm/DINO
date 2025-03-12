@@ -2,11 +2,12 @@ MODULE usrdef_istate
    !!======================================================================
    !!                     ***  MODULE usrdef_istate   ***
    !!
-   !!                      ===  CANAL configuration  ===
+   !!                      ===  DINO configuration  ===
    !!
    !! User defined : set the initial state of a user configuration
    !!======================================================================
    !! History :  NEMO ! 2017-11  (J. Chanut) Original code
+   !!                 ! 2025-03  (D. Kamm) Add linear decrease to poles
    !!----------------------------------------------------------------------
 
    !!----------------------------------------------------------------------
@@ -153,7 +154,7 @@ CONTAINS
          zTbot = MINVAL( pts(:,:,:,jp_tem)  + 100 * ( 1._wp - ptmask(:,:,:)))   ! Must be a positive temperature
          zSbot = MINVAL( pts(:,:,:,jp_sal)  + 100 * ( 1._wp - ptmask(:,:,:)))
          !
-         WRITE(numout,*) 'Sbot before = ', zSbot
+         IF(lwp) WRITE(numout,*) 'Sbot before = ', zSbot
          !
          IF( lk_mpp )   THEN
             zmpparr(1) = zphiMAX
@@ -165,7 +166,7 @@ CONTAINS
             zSbot = - zmpparr(3)
          ENDIF
          !
-         WRITE(numout,*) 'Sbot after = ', zSbot
+         IF(lwp) WRITE(numout,*) 'Sbot after = ', zSbot
          !
          z1_phiMAX = 1._wp / zphiMAX
          DO jk = 1, jpkm1
