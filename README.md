@@ -23,7 +23,7 @@ git clone https://github.com/vopikamm/DINO.git
 
 If you plan to reproduce the reference experiments, please use the **zenodo release**. This archive includes restart files, Evaporation-Precipitation forcing fields (emp) and namelists to reproduce the 1° (R1), 1/4° (R4) and 1/16° (R16) experiments, both from the `initial state` (init) or just from the last few years of `data production` (prod), as indicated in the spin-up strategy:
 
-![png](readme_files/schematic.png)
+![png](readme_figures/schematic.png)
 
 ### Compilation 
 
