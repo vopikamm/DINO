@@ -41,10 +41,11 @@ Now compile from the NEMO root directory, e.g.:
 This will compile DINO into a new folder `/DINO_compiled` add another new folder `/EXP00` inside, which contains the reference experiment `/EXPREF` and a symbolic link to the excecutable `nemo.exe`.
 
 ### Build your experiment
-Choose the experiment you want to run and if you want to run it from the `initial` or `production` restart file. Go into its folder and rename the respective namelist file, e.g for EXP_R1 from init: 
+Choose the experiment you want to run and if you want to run it from the `initial` or `production` restart file. Copy the experiment folder and rename the respective namelist file, e.g for EXP_R1 from init: 
 
 ```
-cd tests/DINO_compiled/EXP_R1
+cp -r ./DINO/EXP_R1 ./DINO_compiled/
+cd ./DINO_compiled/EXP_R1
 mv namelist_cfg_init namelist_cfg
 ```
 
