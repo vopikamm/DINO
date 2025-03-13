@@ -1,6 +1,6 @@
-# DINO
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15016824.svg)](https://doi.org/10.5281/zenodo.15016824)
-A DIabatic Neverworld Ocean in NEMO 4.2.1. This repository contains the source code for the NEMO test configuration `DINO`. An archived version together with the reference experiments for 1°, 1/4° and 1/16° horizontal resolution are published at zenodo. A short summary of the configuration details can be found in [this Python module](https://github.com/vopikamm/dinostics/blob/7f776460128afb2af9153aab06af70e4aad152b7/dino_configuration.py) with some visualizations in [this jupyter notebook](https://github.com/vopikamm/dinostics/blob/7f776460128afb2af9153aab06af70e4aad152b7/DINO_config.ipynb). A more elaborate description of the configuration is currently in review.
+# DINO [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15016824.svg)](https://doi.org/10.5281/zenodo.15016824)
+
+A DIabatic Neverworld Ocean in NEMO 4.2.1. This repository contains the source code for the NEMO test configuration `DINO`. An archived version together with the reference experiments for 1°, 1/4° and 1/16° horizontal resolution are published at [zenodo](https://doi.org/10.5281/zenodo.15016824). A short summary of the configuration details can be found in [this Python module](https://github.com/vopikamm/dinostics/blob/7f776460128afb2af9153aab06af70e4aad152b7/dino_configuration.py) with some visualizations in [this jupyter notebook](https://github.com/vopikamm/dinostics/blob/7f776460128afb2af9153aab06af70e4aad152b7/DINO_config.ipynb). A more elaborate description of the configuration is currently in review.
 
 ## Content
 * /EXPREF:  1°    spin-up from scratch (no forcing, restart files needed)
@@ -35,7 +35,7 @@ Now compile from the NEMO root directory, e.g.:
 This will compile DINO into a new folder `/DINO_compiled` add another new folder `/EXP00` inside, which contains a symbolic link to the excecutable `nemo.exe`. This experiment corresponds to running DINO at 1° from scratch.
 
 ### Build your experiment
-If you plan to reproduce the reference experiments, you will need the restart files, evaporation-minus-precipitation (emp) fields, file definition files and namelists found in `/reference_experiments.zip` of the **zenodo release** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15016824.svg)](https://doi.org/10.5281/zenodo.15016824). They are unfortunately too large to be provided via Github. Download and copy the folder into your compiled DINO configuration `/DINO_compiled`. Now you are ready to reproduce the 1° (R1), 1/4° (R4) and 1/16° (R16) experiments, both from the `initial state` (init) or just from the last few years of `data production` (prod), as indicated in the spin-up strategy:
+If you plan to reproduce the reference experiments, you will need the restart files, evaporation-minus-precipitation (emp) fields, file definition files and namelists found in `/reference_experiments.zip` of the [**zenodo release**](https://doi.org/10.5281/zenodo.15016824). They are unfortunately too large to be provided via Github. Download and copy the folder into your compiled DINO configuration `/DINO_compiled`. Now you are ready to reproduce the 1° (R1), 1/4° (R4) and 1/16° (R16) experiments, both from the `initial state` (init) or just from the last few years of `data production` (prod), as indicated in the spin-up strategy:
 
 ![png](readme_figures/schematic.png)
 
