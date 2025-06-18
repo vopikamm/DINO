@@ -1,3 +1,5 @@
+#if defined show_comments
+! These comments are not intended to be retained during preprocessing; i.e. do not define "show_comments"
 !!----------------------------------------------------------------------
 !!                    ***  domzgr_substitute.h90   ***
 !!----------------------------------------------------------------------
@@ -5,61 +7,755 @@
 !!      factors depending on the vertical coord. used, using CPP macro.
 !!----------------------------------------------------------------------
 !! History :  4.2  !  2020-02  (S. Techene, G. Madec)  star coordinate
+!!            4.5  !  2022-08  (S. Techene, G. Madec)  simplified formulation
 !!----------------------------------------------------------------------
-!! NEMO/OCE 4.2 , NEMO Consortium (2020)
-!! $Id$
+!! NEMO/OCE 5.0, NEMO Consortium (2024)
 !! Software governed by the CeCILL license (see ./LICENSE)
 !!----------------------------------------------------------------------
-#if defined key_qco
-#   define  e3t(i,j,k,t)   (e3t_0(i,j,k)*(1._wp+r3t(i,j,t)*tmask(i,j,k)))
-#   define  e3u(i,j,k,t)   (e3u_0(i,j,k)*(1._wp+r3u(i,j,t)*umask(i,j,k)))
-#   define  e3v(i,j,k,t)   (e3v_0(i,j,k)*(1._wp+r3v(i,j,t)*vmask(i,j,k)))
-#   define  e3f(i,j,k)     (e3f_0(i,j,k)*(1._wp+r3f(i,j)*fe3mask(i,j,k)))
-#   define  e3f_vor(i,j,k) (e3f_0vor(i,j,k)*(1._wp+r3f(i,j)*fe3mask(i,j,k)))
-#   define  e3w(i,j,k,t)   (e3w_0(i,j,k)*(1._wp+r3t(i,j,t)))
-#   define  e3uw(i,j,k,t)  (e3uw_0(i,j,k)*(1._wp+r3u(i,j,t)))
-#   define  e3vw(i,j,k,t)  (e3vw_0(i,j,k)*(1._wp+r3v(i,j,t)))
-#   define  ht(i,j)        (ht_0(i,j)*(1._wp+r3t(i,j,Kmm)))
-#   define  hu(i,j,t)      (hu_0(i,j)*(1._wp+r3u(i,j,t)))
-#   define  hv(i,j,t)      (hv_0(i,j)*(1._wp+r3v(i,j,t)))
-#   define  r1_hu(i,j,t)   (r1_hu_0(i,j)/(1._wp+r3u(i,j,t)))
-#   define  r1_hv(i,j,t)   (r1_hv_0(i,j)/(1._wp+r3v(i,j,t)))
-# if defined key_isf
-#   define  gdept(i,j,k,t)      ((gdept_0(i,j,k)-risfdep(i,j))*(1._wp+r3t(i,j,t))+risfdep(i,j)) 
-#   define  gdepw(i,j,k,t)      ((gdepw_0(i,j,k)-risfdep(i,j))*(1._wp+r3t(i,j,t))+risfdep(i,j))
-#   define  gdept_isf0(i,j,k,t) ((gdept_0(i,j,k)-risfdep(i,j))*(1._wp+r3t(i,j,t))-ssh(i,j,t)) 
-#   define  gdepw_isf0(i,j,k,t) ((gdepw_0(i,j,k)-risfdep(i,j))*(1._wp+r3t(i,j,t))-ssh(i,j,t))
-# else
-#   define  gdept(i,j,k,t)      (gdept_0(i,j,k)*(1._wp+r3t(i,j,t)))
-#   define  gdepw(i,j,k,t)      (gdepw_0(i,j,k)*(1._wp+r3t(i,j,t)))
-#   define  gdept_z0(i,j,k,t)   (gdept_0(i,j,k)*(1._wp+r3t(i,j,t))-ssh(i,j,t))
-#   define  gdepw_z0(i,j,k,t)   (gdepw_0(i,j,k)*(1._wp+r3t(i,j,t))-ssh(i,j,t))
-# endif
-#   define  gde3w(i,j,k)   (gdept(i,j,k,Kmm)-ssh(i,j,Kmm))
-#elif defined key_linssh
-#   define  e3t(i,j,k,t)   e3t_0(i,j,k)
-#   define  e3u(i,j,k,t)   e3u_0(i,j,k)
-#   define  e3v(i,j,k,t)   e3v_0(i,j,k)
-#   define  e3f(i,j,k)     e3f_0(i,j,k)
-#   define  e3f_vor(i,j,k) e3f_0vor(i,j,k)
-#   define  e3w(i,j,k,t)   e3w_0(i,j,k)
-#   define  e3uw(i,j,k,t)  e3uw_0(i,j,k)
-#   define  e3vw(i,j,k,t)  e3vw_0(i,j,k)
-#   define  ht(i,j)        ht_0(i,j)
-#   define  hu(i,j,t)      hu_0(i,j)
-#   define  hv(i,j,t)      hv_0(i,j)
-#   define  r1_hu(i,j,t)   r1_hu_0(i,j)
-#   define  r1_hv(i,j,t)   r1_hv_0(i,j)
-#   define  gdept(i,j,k,t) gdept_0(i,j,k)
-#   define  gdepw(i,j,k,t) gdepw_0(i,j,k)
-# if defined key_isf
-#   define  gdept_isf0(i,j,k,t) gdept_0(i,j,k) 
-#   define  gdepw_isf0(i,j,k,t) gdepw_0(i,j,k)
-# else
-#   define  gdept_z0(i,j,k,t) gdept_0(i,j,k)
-#   define  gdepw_z0(i,j,k,t) gdepw_0(i,j,k)
-# endif
-#   define  gde3w(i,j,k)   gdept_0(i,j,k)
-#endif
+!
+! key_qco :   e3#(i,j,k,t) = (E3#_0(i,j,k)*(1._wp+r3#(i,j,t)#mask(i,j,k))) = (E3#_0(i,j,k) Tmsk(r3#,#mask))
+!
+! key_lin :   e3#(i,j,k,t) = (E3#_0(i,j,k))
+!
+! key_qco : gdep#(i,j,k,t) =  (gdep#_0(i,j,k)*(1._wp+r3#(i,j,t))) = (gdep#_0(i,j,k) Time(r3#)
+!   + isf   gdep#(i,j,k,t) = ((gdept_0(i,j,k)-risfdep(i,j))*(1._wp+r3#(i,j,t))+risfdep(i,j)) = ((gdep#_0(i,j,k) Tisf(r3#,risfdep) 
+!
+! key_lin : gdep#(i,j,k,t) = (gdep#_0(i,j,k))
+!
+! NEW keys
+!
+! key_zco :     E3#_0(i,j,k) =  e3#_1d(k)
+!              DEP#_0(i,j,k) = gdep#_0(k)
+! key_zps : At a T-level partial-step point e3 are reduced (use 3D fields), not at a W-level (use 1D fields)
+!                E3#_0(i,j,k) =   e3#_0(i,j,k) for t-,u-,v-,f-points    
+!                E3#_0(i,j,k) =  e3#_1d(k)   for # = w-,uw-,vw-points
+!           but both gdept, gdepw remain at the 1D reference depth:
+!              DEP#_0(i,j,k) = gdep#_1d(k)
+! key_sco : gdep# and e3# vary with ocean depth : use 3D fields
+!               E3#_0(i,j,k) =  e3#_1d(i,j,k)
+!              DEP#_0(i,j,k) = gdep#_0(i,j,k)
+! key_ALE : gdep# and e3# vary in space AND time thus no substitution is required
+!           NB: key_ALE currently not available (and thus key_ztilde)
+!
+!
+! CAUTION e3fvor calculation at each timestep ==>>>   not in a DO_3D ....
 !!----------------------------------------------------------------------
+#endif
 
+# if defined   key_qco
+#      define  Tmsk(r3,msk,i,j,k,t)      *(1._wp+r3(i,j,t)*msk(i,j,k))
+!!st - this should desapear (a terme r3f aura un indice temporel)
+#      define  Tmskf(r3,msk,i,j,k,t)     *(1._wp+r3(i,j)*msk(i,j,k))
+!st
+#      define  Time(r3,i,j,t)            *(1._wp+r3(i,j,t))
+#      define  Divi(r3,i,j,t)          /(1._wp+r3(i,j,t))
+#      define  DEPT_z0(i,j,k,t)           gdept(i,j,k,t)-ssh(i,j,t)
+#  if defined   key_isf
+#      define  Tisf(r3,isf,i,j,t)      -isf(i,j)) Time(r3,i,j,t)+isf(i,j)
+#  else
+#      define  Tisf(r3,isf,i,j,t)      ) Time(r3,i,j,t)
+#  endif
+# elif defined key_linssh
+#      define  Tmsk(r3,msk,i,j,k,t)
+#      define  Tmskf(r3,msk,i,j,k,t)
+#      define  Time(r3,i,j,t)
+#      define  Divi(r3,i,j,t)        
+#      define  DEPT_z0(i,j,k,t)          gdept(i,j,k,Kmm)
+#  if defined   key_isf
+#      define  Tisf(r3,isf,i,j,t)      )
+#  else
+#      define  Tisf(r3,isf,i,j,t)      )
+#  endif
+# endif
+
+#if defined key_vco_1d   ||   defined key_vco_1d3d
+#     define  E3w_0(i,j,k)    e3w_1d(k)
+#     define  E3uw_0(i,j,k)   e3w_1d(k)
+#     define  E3vw_0(i,j,k)   e3w_1d(k)
+#     define  DEPt_0(i,j,k)   gdept_1d(k)
+#     define  DEPw_0(i,j,k)   gdepw_1d(k)
+#     define  E3fv_0(i,j,k)   e3f_0vor(i,j,k)
+#     define  gdept_0(i,j,k)  gdept_1d(k)
+#     define  gdepw_0(i,j,k)  gdepw_1d(k)
+#     define  e3w_0(i,j,k)    e3w_1d(k)
+#     define  e3uw_0(i,j,k)   e3w_1d(k)
+#     define  e3vw_0(i,j,k)   e3w_1d(k)
+# if defined key_vco_1d
+#     define  E3t_0(i,j,k)    e3t_1d(k)
+#     define  E3u_0(i,j,k)    e3t_1d(k)
+#     define  E3v_0(i,j,k)    e3t_1d(k)
+#     define  E3f_0(i,j,k)    e3t_1d(k)
+#     define  e3t_0(i,j,k)    e3t_1d(k)
+#     define  e3u_0(i,j,k)    e3t_1d(k)
+#     define  e3v_0(i,j,k)    e3t_1d(k)
+#     define  e3f_0(i,j,k)    e3t_1d(k)
+# elif defined key_vco_1d3d
+#     define  E3t_0(i,j,k)    e3t_3d(i,j,k)
+#     define  E3u_0(i,j,k)    e3u_3d(i,j,k)
+#     define  E3v_0(i,j,k)    e3v_3d(i,j,k)
+#     define  E3f_0(i,j,k)    e3f_3d(i,j,k)
+#     define  e3t_0(i,j,k)    e3t_3d(i,j,k)
+#     define  e3u_0(i,j,k)    e3u_3d(i,j,k)
+#     define  e3v_0(i,j,k)    e3v_3d(i,j,k)
+#     define  e3f_0(i,j,k)    e3f_3d(i,j,k)
+# endif
+#elif defined key_vco_3d
+#     define  E3w_0(i,j,k)    e3w_3d(i,j,k)
+#     define  E3uw_0(i,j,k)   e3uw_3d(i,j,k)
+#     define  E3vw_0(i,j,k)   e3vw_3d(i,j,k)
+#     define  DEPt_0(i,j,k)   gdept_3d(i,j,k)
+#     define  DEPw_0(i,j,k)   gdepw_3d(i,j,k)
+#     define  e3w_0(i,j,k)    e3w_3d(i,j,k)
+#     define  e3uw_0(i,j,k)   e3uw_3d(i,j,k)
+#     define  e3vw_0(i,j,k)   e3vw_3d(i,j,k)
+#     define  gdept_0(i,j,k)   gdept_3d(i,j,k)
+#     define  gdepw_0(i,j,k)   gdepw_3d(i,j,k)
+!
+#     define  E3t_0(i,j,k)    e3t_3d(i,j,k)
+#     define  E3u_0(i,j,k)    e3u_3d(i,j,k)
+#     define  E3v_0(i,j,k)    e3v_3d(i,j,k)
+#     define  E3f_0(i,j,k)    e3f_3d(i,j,k)
+#     define  E3fv_0(i,j,k)   e3f_0vor(i,j,k)
+#     define  e3t_0(i,j,k)    e3t_3d(i,j,k)
+#     define  e3u_0(i,j,k)    e3u_3d(i,j,k)
+#     define  e3v_0(i,j,k)    e3v_3d(i,j,k)
+#     define  e3f_0(i,j,k)    e3f_3d(i,j,k)
+#endif
+!
+#if   defined key_qco   ||   defined key_linssh   ||   defined key_vco_1d   ||   defined key_vco_1d3d   ||   defined key_vco_3d
+# define  e3t(i,j,k,t)      (E3t_0(i,j,k) Tmsk(r3t,tmask,i,j,k,t))
+# define  e3u(i,j,k,t)      (E3u_0(i,j,k) Tmsk(r3u,umask,i,j,k,t))
+# define  e3v(i,j,k,t)      (E3v_0(i,j,k) Tmsk(r3v,vmask,i,j,k,t))
+# define  e3f(i,j,k)        (E3f_0(i,j,k) Tmskf(r3f,fe3mask,i,j,k,t))
+# define  e3f_vor(i,j,k)    (E3fv_0(i,j,k) Tmskf(r3f,fe3mask,i,j,k,t))
+# define  e3w(i,j,k,t)      (E3w_0(i,j,k) Time(r3t,i,j,t))
+# define  e3uw(i,j,k,t)     (E3uw_0(i,j,k) Time(r3u,i,j,t))
+# define  e3vw(i,j,k,t)     (E3vw_0(i,j,k) Time(r3v,i,j,t))
+# define  ht(i,j,t)         (ht_0(i,j) Time(r3t,i,j,t))
+# define  hu(i,j,t)         (hu_0(i,j) Time(r3u,i,j,t))
+# define  hv(i,j,t)         (hv_0(i,j) Time(r3v,i,j,t))
+# define  r1_hu(i,j,t)      (r1_hu_0(i,j) Divi(r3u,i,j,t))
+# define  r1_hv(i,j,t)      (r1_hv_0(i,j) Divi(r3v,i,j,t))
+# define  gdept(i,j,k,t)    ((DEPt_0(i,j,k) Tisf(r3t,risfdep,i,j,t))
+# define  gdepw(i,j,k,t)    ((DEPw_0(i,j,k) Tisf(r3t,risfdep,i,j,t))
+#endif
+#if defined key_linssh
+# define  gdept_z0(i,j,k,t) gdept(i,j,k,t)
+#else
+# define  gdept_z0(i,j,k,t) (gdept(i,j,k,t)-ssh(i,j,t))
+#endif
+#if defined show_comments
+!!!!----------------------------------------------------------------------
+!!!!----------------------------------------------------------------------
+!!!
+!!! zps + qco
+!!!
+!!e3t(ji,jj,jk,kt)      
+!!e3u(ji,jj,jk,kt)      
+!!e3v(ji,jj,jk,kt)      
+!!e3f(ji,jj,jk)        
+!!e3f_vor(ji,jj,jk)    
+!!e3w(ji,jj,jk,kt)      
+!!e3uw(ji,jj,jk,kt)     
+!!e3vw(ji,jj,jk,kt)     
+!!ht(ji,jj,kt)          
+!!hu(ji,jj,kt)         
+!!hv(ji,jj,kt)  
+!!r1_hu(ji,jj,kt)      
+!!r1_hv(ji,jj,kt)      
+!!gdept(ji,jj,jk,kt)    
+!!gdepw(ji,jj,jk,kt)    
+!!gdept_z0(ji,jj,jk,kt)
+!!!
+!!#undef Tmsk
+!!#undef Time
+!!#undef Divi
+!!#undef DEPT_z0
+!!#undef Tisf
+!!#undef E3w_0
+!!#undef E3uw_0
+!!#undef E3vw_0
+!!#undef E3t_0
+!!#undef E3u_0
+!!#undef E3v_0
+!!#undef E3f_0
+!!#undef DEPt_0
+!!#undef DEPw_0
+!!#undef E3fv_0
+!!!
+!!#undef key_zps
+!!#define key_zco
+!!!
+!!! zco + qco
+!!!
+!!# if defined   key_qco
+!!#      define  Tmsk(r3,msk,i,j,k,t)      *(1._wp+r3(i,j,t)*msk(i,j,k))
+!!#      define  Time(r3,i,j,t)            *(1._wp+r3(i,j,t))
+!!#      define  Divi(r3,i,j,t)          /(1._wp+r3(i,j,t))
+!!#      define  DEPT_z0(i,j,k,t)           gdept(i,j,k,t)-ssh(i,j,t)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)      -isf(i,j)) Time(r3,i,j,t)+isf(i,j)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      ) Time(r3,i,j,t)
+!!#  endif
+!!# elif defined key_linssh
+!!#      define  Tmsk(r3,msk,i,j,k,t)
+!!#      define  Time(r3,i,j,t)
+!!#      define  Divi(r3,i,j,t)        
+!!#      define  DEPT_z0(i,j,k,t)          gdept(i,j,k,Kmm)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      )
+!!#  endif
+!!# endif
+!!
+!!#if defined key_zco   ||   defined key_zps
+!!#     define  E3w_0(i,j,k)    e3w_1d(k)
+!!#     define  E3uw_0(i,j,k)   e3uw_1d(k)
+!!#     define  E3vw_0(i,j,k)   e3vw_1d(k)
+!!#     define  DEPt_0(i,j,k)   gdept_1d(k)
+!!#     define  DEPw_0(i,j,k)   gdepw_1d(k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!# if defined key_zco
+!!#     define  E3t_0(i,j,k)    e3t_1d(k)
+!!#     define  E3u_0(i,j,k)    e3t_1d(k)
+!!#     define  E3v_0(i,j,k)    e3t_1d(k)
+!!#     define  E3f_0(i,j,k)    e3t_1d(k)
+!!# elif defined key_zps
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!# endif
+!!#elif defined key_sco
+!!#     define  E3w_0(i,j,k)    e3w_0(i,j,k)
+!!#     define  E3uw_0(i,j,k)   e3uw_0(i,j,k)
+!!#     define  E3vw_0(i,j,k)   e3vw_0(i,j,k)
+!!#     define  DEPt_0(i,j,k)   gdept_0(i,j,k)
+!!#     define  DEPw_0(i,j,k)   gdepw_0(i,j,k)
+!!      !
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!#endif
+!!!
+!!e3t(ji,jj,jk,kt)      
+!!e3u(ji,jj,jk,kt)      
+!!e3v(ji,jj,jk,kt)      
+!!e3f(ji,jj,jk)        
+!!e3f_vor(ji,jj,jk)    
+!!e3w(ji,jj,jk,kt)      
+!!e3uw(ji,jj,jk,kt)     
+!!e3vw(ji,jj,jk,kt)     
+!!ht(ji,jj,kt)          
+!!hu(ji,jj,kt)         
+!!hv(ji,jj,kt)  
+!!r1_hu(ji,jj,kt)      
+!!r1_hv(ji,jj,kt)      
+!!gdept(ji,jj,jk,kt)    
+!!gdepw(ji,jj,jk,kt)    
+!!gdept_z0(ji,jj,jk,kt)
+!!!
+!!#undef Tmsk
+!!#undef Time
+!!#undef Divi
+!!#undef DEPT_z0
+!!#undef Tisf
+!!#undef E3w_0
+!!#undef E3uw_0
+!!#undef E3vw_0
+!!#undef E3t_0
+!!#undef E3u_0
+!!#undef E3v_0
+!!#undef E3f_0
+!!#undef DEPt_0
+!!#undef DEPw_0
+!!#undef E3fv_0
+!!!
+!!#undef key_zco
+!!#define key_sco
+!!!
+!!! sco + qco
+!!!
+!!# if defined   key_qco
+!!#      define  Tmsk(r3,msk,i,j,k,t)      *(1._wp+r3(i,j,t)*msk(i,j,k))
+!!#      define  Time(r3,i,j,t)            *(1._wp+r3(i,j,t))
+!!#      define  Divi(r3,i,j,t)          /(1._wp+r3(i,j,t))
+!!#      define  DEPT_z0(i,j,k,t)           gdept(i,j,k,t)-ssh(i,j,t)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)      -isf(i,j)) Time(r3,i,j,t)+isf(i,j)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      ) Time(r3,i,j,t)
+!!#  endif
+!!# elif defined key_linssh
+!!#      define  Tmsk(r3,msk,i,j,k,t)
+!!#      define  Time(r3,i,j,t)
+!!#      define  Divi(r3,i,j,t)        
+!!#      define  DEPT_z0(i,j,k,t)          gdept(i,j,k,Kmm)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      )
+!!#  endif
+!!# endif
+!!
+!!#if defined key_zco   ||   defined key_zps
+!!#     define  E3w_0(i,j,k)    e3w_1d(k)
+!!#     define  E3uw_0(i,j,k)   e3uw_1d(k)
+!!#     define  E3vw_0(i,j,k)   e3vw_1d(k)
+!!#     define  DEPt_0(i,j,k)   gdept_1d(k)
+!!#     define  DEPw_0(i,j,k)   gdepw_1d(k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!# if defined key_zco
+!!#     define  E3t_0(i,j,k)    e3t_1d(k)
+!!#     define  E3u_0(i,j,k)    e3t_1d(k)
+!!#     define  E3v_0(i,j,k)    e3t_1d(k)
+!!#     define  E3f_0(i,j,k)    e3t_1d(k)
+!!# elif defined key_zps
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!# endif
+!!#elif defined key_sco
+!!#     define  E3w_0(i,j,k)    e3w_0(i,j,k)
+!!#     define  E3uw_0(i,j,k)   e3uw_0(i,j,k)
+!!#     define  E3vw_0(i,j,k)   e3vw_0(i,j,k)
+!!#     define  DEPt_0(i,j,k)   gdept_0(i,j,k)
+!!#     define  DEPw_0(i,j,k)   gdepw_0(i,j,k)
+!!      !
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!#endif
+!!!
+!!e3t(ji,jj,jk,kt)      
+!!e3u(ji,jj,jk,kt)      
+!!e3v(ji,jj,jk,kt)      
+!!e3f(ji,jj,jk)        
+!!e3f_vor(ji,jj,jk)    
+!!e3w(ji,jj,jk,kt)      
+!!e3uw(ji,jj,jk,kt)     
+!!e3vw(ji,jj,jk,kt)     
+!!ht(ji,jj,kt)          
+!!hu(ji,jj,kt)         
+!!hv(ji,jj,kt)  
+!!r1_hu(ji,jj,kt)      
+!!r1_hv(ji,jj,kt)      
+!!gdept(ji,jj,jk,kt)    
+!!gdepw(ji,jj,jk,kt)    
+!!gdept_z0(ji,jj,jk,kt)
+!!!!----------------------------------------------------------------------
+!!#undef key_qco
+!!#define key_linssh
+!!!
+!!#undef Tmsk
+!!#undef Time
+!!#undef Divi
+!!#undef DEPT_z0
+!!#undef Tisf
+!!#undef E3w_0
+!!#undef E3uw_0
+!!#undef E3vw_0
+!!#undef E3t_0
+!!#undef E3u_0
+!!#undef E3v_0
+!!#undef E3f_0
+!!#undef DEPt_0
+!!#undef DEPw_0
+!!#undef E3fv_0
+!!!
+!!#undef key_sco
+!!#define key_zps
+!!!
+!!! zps + linssh
+!!!
+!!# if defined   key_qco
+!!#      define  Tmsk(r3,msk,i,j,k,t)      *(1._wp+r3(i,j,t)*msk(i,j,k))
+!!#      define  Time(r3,i,j,t)            *(1._wp+r3(i,j,t))
+!!#      define  Divi(r3,i,j,t)          /(1._wp+r3(i,j,t))
+!!#      define  DEPT_z0(i,j,k,t)           gdept(i,j,k,t)-ssh(i,j,t)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)      -isf(i,j)) Time(r3,i,j,t)+isf(i,j)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      ) Time(r3,i,j,t)
+!!#  endif
+!!# elif defined key_linssh
+!!#      define  Tmsk(r3,msk,i,j,k,t)
+!!#      define  Time(r3,i,j,t)
+!!#      define  Divi(r3,i,j,t)        
+!!#      define  DEPT_z0(i,j,k,t)          gdept(i,j,k,Kmm)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      )
+!!#  endif
+!!# endif
+!!
+!!#if defined key_zco   ||   defined key_zps
+!!#     define  E3w_0(i,j,k)    e3w_1d(k)
+!!#     define  E3uw_0(i,j,k)   e3uw_1d(k)
+!!#     define  E3vw_0(i,j,k)   e3vw_1d(k)
+!!#     define  DEPt_0(i,j,k)   gdept_1d(k)
+!!#     define  DEPw_0(i,j,k)   gdepw_1d(k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!# if defined key_zco
+!!#     define  E3t_0(i,j,k)    e3t_1d(k)
+!!#     define  E3u_0(i,j,k)    e3t_1d(k)
+!!#     define  E3v_0(i,j,k)    e3t_1d(k)
+!!#     define  E3f_0(i,j,k)    e3t_1d(k)
+!!# elif defined key_zps
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!# endif
+!!#elif defined key_sco
+!!#     define  E3w_0(i,j,k)    e3w_0(i,j,k)
+!!#     define  E3uw_0(i,j,k)   e3uw_0(i,j,k)
+!!#     define  E3vw_0(i,j,k)   e3vw_0(i,j,k)
+!!#     define  DEPt_0(i,j,k)   gdept_0(i,j,k)
+!!#     define  DEPw_0(i,j,k)   gdepw_0(i,j,k)
+!!      !
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!#endif
+!!!
+!!e3t(ji,jj,jk,kt)      
+!!e3u(ji,jj,jk,kt)      
+!!e3v(ji,jj,jk,kt)      
+!!e3f(ji,jj,jk)        
+!!e3f_vor(ji,jj,jk)    
+!!e3w(ji,jj,jk,kt)      
+!!e3uw(ji,jj,jk,kt)     
+!!e3vw(ji,jj,jk,kt)     
+!!ht(ji,jj,kt)          
+!!hu(ji,jj,kt)         
+!!hv(ji,jj,kt)  
+!!r1_hu(ji,jj,kt)      
+!!r1_hv(ji,jj,kt)      
+!!gdept(ji,jj,jk,kt)    
+!!gdepw(ji,jj,jk,kt)    
+!!gdept_z0(ji,jj,jk,kt)
+!!!
+!!#undef Tmsk
+!!#undef Time
+!!#undef Divi
+!!#undef DEPT_z0
+!!#undef Tisf
+!!#undef E3w_0
+!!#undef E3uw_0
+!!#undef E3vw_0
+!!#undef E3t_0
+!!#undef E3u_0
+!!#undef E3v_0
+!!#undef E3f_0
+!!#undef DEPt_0
+!!#undef DEPw_0
+!!#undef E3fv_0
+!!!
+!!#undef key_zps
+!!#define key_zco
+!!!
+!!! zco + linssh
+!!!
+!!# if defined   key_qco
+!!#      define  Tmsk(r3,msk,i,j,k,t)      *(1._wp+r3(i,j,t)*msk(i,j,k))
+!!#      define  Time(r3,i,j,t)            *(1._wp+r3(i,j,t))
+!!#      define  Divi(r3,i,j,t)          /(1._wp+r3(i,j,t))
+!!#      define  DEPT_z0(i,j,k,t)           gdept(i,j,k,t)-ssh(i,j,t)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)      -isf(i,j)) Time(r3,i,j,t)+isf(i,j)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      ) Time(r3,i,j,t)
+!!#  endif
+!!# elif defined key_linssh
+!!#      define  Tmsk(r3,msk,i,j,k,t)
+!!#      define  Time(r3,i,j,t)
+!!#      define  Divi(r3,i,j,t)        
+!!#      define  DEPT_z0(i,j,k,t)          gdept(i,j,k,Kmm)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      )
+!!#  endif
+!!# endif
+!!
+!!#if defined key_zco   ||   defined key_zps
+!!#     define  E3w_0(i,j,k)    e3w_1d(k)
+!!#     define  E3uw_0(i,j,k)   e3uw_1d(k)
+!!#     define  E3vw_0(i,j,k)   e3vw_1d(k)
+!!#     define  DEPt_0(i,j,k)   gdept_1d(k)
+!!#     define  DEPw_0(i,j,k)   gdepw_1d(k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!# if defined key_zco
+!!#     define  E3t_0(i,j,k)    e3t_1d(k)
+!!#     define  E3u_0(i,j,k)    e3t_1d(k)
+!!#     define  E3v_0(i,j,k)    e3t_1d(k)
+!!#     define  E3f_0(i,j,k)    e3t_1d(k)
+!!# elif defined key_zps
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!# endif
+!!#elif defined key_sco
+!!#     define  E3w_0(i,j,k)    e3w_0(i,j,k)
+!!#     define  E3uw_0(i,j,k)   e3uw_0(i,j,k)
+!!#     define  E3vw_0(i,j,k)   e3vw_0(i,j,k)
+!!#     define  DEPt_0(i,j,k)   gdept_0(i,j,k)
+!!#     define  DEPw_0(i,j,k)   gdepw_0(i,j,k)
+!!      !
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!#endif
+!!!
+!!e3t(ji,jj,jk,kt)      
+!!e3u(ji,jj,jk,kt)      
+!!e3v(ji,jj,jk,kt)      
+!!e3f(ji,jj,jk)        
+!!e3f_vor(ji,jj,jk)    
+!!e3w(ji,jj,jk,kt)      
+!!e3uw(ji,jj,jk,kt)     
+!!e3vw(ji,jj,jk,kt)     
+!!ht(ji,jj,kt)          
+!!hu(ji,jj,kt)         
+!!hv(ji,jj,kt)  
+!!r1_hu(ji,jj,kt)      
+!!r1_hv(ji,jj,kt)      
+!!gdept(ji,jj,jk,kt)    
+!!gdepw(ji,jj,jk,kt)    
+!!gdept_z0(ji,jj,jk,kt)
+!!!
+!!#undef Tmsk
+!!#undef Time
+!!#undef Divi
+!!#undef DEPT_z0
+!!#undef Tisf
+!!#undef E3w_0
+!!#undef E3uw_0
+!!#undef E3vw_0
+!!#undef E3t_0
+!!#undef E3u_0
+!!#undef E3v_0
+!!#undef E3f_0
+!!#undef DEPt_0
+!!#undef DEPw_0
+!!#undef E3fv_0
+!!!
+!!#undef key_zco
+!!#define key_sco
+!!!
+!!! sco + linssh
+!!!
+!!# if defined   key_qco
+!!#      define  Tmsk(r3,msk,i,j,k,t)      *(1._wp+r3(i,j,t)*msk(i,j,k))
+!!#      define  Time(r3,i,j,t)            *(1._wp+r3(i,j,t))
+!!#      define  Divi(r3,i,j,t)          /(1._wp+r3(i,j,t))
+!!#      define  DEPT_z0(i,j,k,t)           gdept(i,j,k,t)-ssh(i,j,t)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)      -isf(i,j)) Time(r3,i,j,t)+isf(i,j)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      ) Time(r3,i,j,t)
+!!#  endif
+!!# elif defined key_linssh
+!!#      define  Tmsk(r3,msk,i,j,k,t)
+!!#      define  Time(r3,i,j,t)
+!!#      define  Divi(r3,i,j,t)        
+!!#      define  DEPT_z0(i,j,k,t)          gdept(i,j,k,Kmm)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      )
+!!#  endif
+!!# endif
+!!
+!!#if defined key_zco   ||   defined key_zps
+!!#     define  E3w_0(i,j,k)    e3w_1d(k)
+!!#     define  E3uw_0(i,j,k)   e3uw_1d(k)
+!!#     define  E3vw_0(i,j,k)   e3vw_1d(k)
+!!#     define  DEPt_0(i,j,k)   gdept_1d(k)
+!!#     define  DEPw_0(i,j,k)   gdepw_1d(k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!# if defined key_zco
+!!#     define  E3t_0(i,j,k)    e3t_1d(k)
+!!#     define  E3u_0(i,j,k)    e3t_1d(k)
+!!#     define  E3v_0(i,j,k)    e3t_1d(k)
+!!#     define  E3f_0(i,j,k)    e3t_1d(k)
+!!# elif defined key_zps
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!# endif
+!!#elif defined key_sco
+!!#     define  E3w_0(i,j,k)    e3w_0(i,j,k)
+!!#     define  E3uw_0(i,j,k)   e3uw_0(i,j,k)
+!!#     define  E3vw_0(i,j,k)   e3vw_0(i,j,k)
+!!#     define  DEPt_0(i,j,k)   gdept_0(i,j,k)
+!!#     define  DEPw_0(i,j,k)   gdepw_0(i,j,k)
+!!      !
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!#endif
+!!!
+!!e3t(ji,jj,jk,kt)      
+!!e3u(ji,jj,jk,kt)      
+!!e3v(ji,jj,jk,kt)      
+!!e3f(ji,jj,jk)        
+!!e3f_vor(ji,jj,jk)    
+!!e3w(ji,jj,jk,kt)      
+!!e3uw(ji,jj,jk,kt)     
+!!e3vw(ji,jj,jk,kt)     
+!!ht(ji,jj,kt)          
+!!hu(ji,jj,kt)         
+!!hv(ji,jj,kt)  
+!!r1_hu(ji,jj,kt)      
+!!r1_hv(ji,jj,kt)      
+!!gdept(ji,jj,jk,kt)    
+!!gdepw(ji,jj,jk,kt)    
+!!gdept_z0(ji,jj,jk,kt)
+!!!
+!!#undef Tmsk
+!!#undef Time
+!!#undef Divi
+!!#undef DEPT_z0
+!!#undef Tisf
+!!#undef E3w_0
+!!#undef E3uw_0
+!!#undef E3vw_0
+!!#undef E3t_0
+!!#undef E3u_0
+!!#undef E3v_0
+!!#undef E3f_0
+!!#undef DEPt_0
+!!#undef DEPw_0
+!!#undef E3fv_0
+!!#undef e3w
+!!#undef e3uw
+!!#undef e3vw
+!!#undef e3t
+!!#undef e3u
+!!#undef e3v
+!!#undef e3f
+!!#undef e3f_vor
+!!#undef ht
+!!#undef hu
+!!#undef hv
+!!#undef r1_hu
+!!#undef r1_hv
+!!#undef gdept
+!!#undef gdepw
+!!!
+!!#undef key_sco
+!!#undef key_linssh
+!!!
+!!! default case
+!!!
+!!# if defined   key_qco
+!!#      define  Tmsk(r3,msk,i,j,k,t)      *(1._wp+r3(i,j,t)*msk(i,j,k))
+!!#      define  Time(r3,i,j,t)            *(1._wp+r3(i,j,t))
+!!#      define  Divi(r3,i,j,t)          /(1._wp+r3(i,j,t))
+!!#      define  DEPT_z0(i,j,k,t)           gdept(i,j,k,t)-ssh(i,j,t)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)      -isf(i,j)) Time(r3,i,j,t)+isf(i,j)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      ) Time(r3,i,j,t)
+!!#  endif
+!!# elif defined key_linssh
+!!#      define  Tmsk(r3,msk,i,j,k,t)
+!!#      define  Time(r3,i,j,t)
+!!#      define  Divi(r3,i,j,t)        
+!!#      define  DEPT_z0(i,j,k,t)          gdept(i,j,k,Kmm)
+!!#  if defined   key_isf
+!!#      define  Tisf(r3,isf,i,j,t)
+!!#  else
+!!#      define  Tisf(r3,isf,i,j,t)      )
+!!#  endif
+!!# endif
+!!
+!!#if defined key_zco   ||   defined key_zps
+!!#     define  E3w_0(i,j,k)    e3w_1d(k)
+!!#     define  E3uw_0(i,j,k)   e3uw_1d(k)
+!!#     define  E3vw_0(i,j,k)   e3vw_1d(k)
+!!#     define  DEPt_0(i,j,k)   gdept_1d(k)
+!!#     define  DEPw_0(i,j,k)   gdepw_1d(k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!# if defined key_zco
+!!#     define  E3t_0(i,j,k)    e3t_1d(k)
+!!#     define  E3u_0(i,j,k)    e3t_1d(k)
+!!#     define  E3v_0(i,j,k)    e3t_1d(k)
+!!#     define  E3f_0(i,j,k)    e3t_1d(k)
+!!# elif defined key_zps
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!# endif
+!!#elif defined key_sco
+!!#     define  E3w_0(i,j,k)    e3w_0(i,j,k)
+!!#     define  E3uw_0(i,j,k)   e3uw_0(i,j,k)
+!!#     define  E3vw_0(i,j,k)   e3vw_0(i,j,k)
+!!#     define  DEPt_0(i,j,k)   gdept_0(i,j,k)
+!!#     define  DEPw_0(i,j,k)   gdepw_0(i,j,k)
+!!      !
+!!#     define  E3t_0(i,j,k)    e3t_0(i,j,k)
+!!#     define  E3u_0(i,j,k)    e3u_0(i,j,k)
+!!#     define  E3v_0(i,j,k)    e3v_0(i,j,k)
+!!#     define  E3f_0(i,j,k)    e3f_0(i,j,k)
+!!#     define  E3fv_0(i,j,k)   e3fvor_0(i,j,k)
+!!#endif
+!!#if   defined key_qco   ||   defined key_linssh   ||   defined key_zco   ||   defined key_zps   ||   defined key_sco
+!!# define  e3t(i,j,k,t)      (E3t_0(i,j,k) Tmsk(r3t,tmask,i,j,k,t))
+!!# define  e3u(i,j,k,t)      (E3u_0(i,j,k) Tmsk(r3u,umask,i,j,k,t))
+!!# define  e3v(i,j,k,t)      (E3v_0(i,j,k) Tmsk(r3v,vmask,i,j,k,t))
+!!# define  e3f(i,j,k)        (E3f_0(i,j,k) Tmsk(r3f,fe3mask,i,j,k,t))
+!!# define  e3f_vor(i,j,k)    (E3fv_0(i,j,k) Tmsk(r3f,fe3mask,i,j,k,t))
+!!# define  e3w(i,j,k,t)      (E3w_0(i,j,k) Time(r3t,i,j,t))
+!!# define  e3uw(i,j,k,t)     (E3uw_0(i,j,k) Time(r3u,i,j,t))
+!!# define  e3vw(i,j,k,t)     (E3vw_0(i,j,k) Time(r3v,i,j,t))
+!!# define  ht(i,j,t)         (ht_0(i,j) Time(r3t,i,j,t))
+!!# define  hu(i,j,t)         (hu_0(i,j) Time(r3u,i,j,t))
+!!# define  hv(i,j,t)         (hv_0(i,j) Time(r3v,i,j,t))
+!!# define  r1_hu(i,j,t)      (r1_hu_0(i,j) Divi(r3u,i,j,t))
+!!# define  r1_hv(i,j,t)      (r1_hv_0(i,j) Divi(r3v,i,j,t))
+!!# define  gdept(i,j,k,t)    ((DEPt_0(i,j,k) Tisf(r3t,risfdep,i,j,t))
+!!# define  gdepw(i,j,k,t)    ((DEPw_0(i,j,k) Tisf(r3t,risfdep,i,j,t))
+!!#endif
+!!# define  gdept_z0(i,j,k,t) (gdept(i,j,k,t)-ssh(i,j,t))
+!!!
+!!e3t(ji,jj,jk,kt)      
+!!e3u(ji,jj,jk,kt)      
+!!e3v(ji,jj,jk,kt)      
+!!e3f(ji,jj,jk)        
+!!e3f_vor(ji,jj,jk)    
+!!e3w(ji,jj,jk,kt)      
+!!e3uw(ji,jj,jk,kt)     
+!!e3vw(ji,jj,jk,kt)     
+!!ht(ji,jj,kt)          
+!!hu(ji,jj,kt)         
+!!hv(ji,jj,kt)  
+!!r1_hu(ji,jj,kt)      
+!!r1_hv(ji,jj,kt)      
+!!gdept(ji,jj,jk,kt)    
+!!gdepw(ji,jj,jk,kt)    
+!!gdept_z0(ji,jj,jk,kt)
+
+
+
+
+#endif

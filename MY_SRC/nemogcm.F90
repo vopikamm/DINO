@@ -53,9 +53,7 @@ MODULE nemogcm
    USE icbini         ! handle bergs, initialisation
    USE icbstp  , ONLY : icb_end     ! handle bergs, close iceberg files
    USE cpl_oasis3     ! OASIS3 coupling
-   USE dyndmp         ! Momentum damping (C1D only)
    USE step_diu       ! diurnal bulk SST timestepping (called from here if run offline)
-   USE crsini         ! initialise grid coarsening utility
    USE dia25h  , ONLY : dia_25h_init   ! 25h mean output (initialisation)
    USE c1d            ! 1D configuration
 #if defined key_top
@@ -64,16 +62,16 @@ MODULE nemogcm
 #if defined key_nemocice_decomp
    USE ice_domain_size, only: nx_global, ny_global
 #endif
-#if defined key_qco   ||   defined key_linssh
+# if defined key_RK3
+   USE stprk3
+# else
    USE stpmlf         ! NEMO time-stepping               (stp_MLF   routine)
-#else
-   USE step           ! NEMO time-stepping                 (stp     routine)
-#endif
+# endif
    !
    USE lib_mpp        ! distributed memory computing
    USE mppini         ! shared/distributed memory setting (mpp_init routine)
    USE lib_fortran    ! Fortran utilities (allows no signed zero when 'key_nosignedzero' defined)
-   USE halo_mng       ! halo manager
+   USE timing         ! timing
 
    IMPLICIT NONE
    PRIVATE
@@ -84,14 +82,10 @@ MODULE nemogcm
 
    CHARACTER(lc) ::   cform_aaa="( /, 'AAAAAAAA', / ) "     ! flag for output listing
 
-#if ! defined key_mpi_off
-   ! need MPI_Wtime
-   INCLUDE 'mpif.h'
-#endif
-
+   !! * Substitutions
+#  include "read_nml_substitute.h90"
    !!----------------------------------------------------------------------
-   !! NEMO/OCE 4.0 , NEMO Consortium (2018)
-   !! $Id: nemogcm.F90 15267 2021-09-17 09:04:34Z smasson $
+   !! NEMO/OCE 5.0, NEMO Consortium (2024)
    !! Software governed by the CeCILL license (see ./LICENSE)
    !!----------------------------------------------------------------------
 CONTAINS
@@ -111,20 +105,29 @@ CONTAINS
       !!              Madec, 2008, internal report, IPSL.
       !!----------------------------------------------------------------------
       INTEGER ::   istp   ! time step index
-      REAL(wp)::   zstptiming   ! elapsed time for 1 time step
       !!----------------------------------------------------------------------
       !
+      CALL timing_start( 'full code' )     ! do it as soon as possible, no need to test ln_timing (that is not yet defined)
+      CALL timing_start( 'before step' )
+      !
 #if defined key_agrif
-      CALL Agrif_Init_Grids()      ! AGRIF: set the meshes
+#if defined key_agrif_psisters
+      Agrif_Parallel_sisters = .TRUE.  ! Activate parallel sisters
+#endif
+      CALL Agrif_Init_Grids()          ! AGRIF: set the meshes
 #endif
       !                            !-----------------------!
       CALL nemo_init               !==  Initialisations  ==!
       !                            !-----------------------!
 #if defined key_agrif
-      Kbb_a = Nbb; Kmm_a = Nnn; Krhs_a = Nrhs   ! agrif_oce module copies of time level indices
+# if defined key_RK3
+      Kbb_a = Nbb; Kmm_a = Nbb; Krhs_a = Nrhs   ! RK3: agrif_oce module copies of time level indices
+# else
+      Kbb_a = Nbb; Kmm_a = Nnn; Krhs_a = Nrhs   ! MLF: agrif_oce module copies of time level indices
+# endif
       CALL Agrif_Declare_Var       !  "      "   "   "      "  DYN/TRA
 # if defined key_top
-      CALL Agrif_Declare_Var_top   !  "      "   "   "      "  TOP
+      IF ( ln_top )   CALL Agrif_Declare_Var_top   !  "      "   "   "      "  TOP
 # endif
 #endif
       ! check that all process are still there... If some process have an error,
@@ -132,6 +135,7 @@ CONTAINS
       CALL mpp_max( 'nemogcm', nstop )
 
       IF(lwp) WRITE(numout,cform_aaa)   ! Flag AAAAAAA
+      CALL timing_stop( 'before step' )
 
       !                            !-----------------------!
       !                            !==   time stepping   ==!
@@ -146,17 +150,24 @@ CONTAINS
       CALL Agrif_Regrid()
       !
       ! Recursive update from highest nested level to lowest:
-      Kbb_a = Nbb; Kmm_a = Nnn; Krhs_a = Nrhs   ! agrif_oce module copies of time level indices
+# if defined key_RK3
+      Kbb_a = Nbb; Kmm_a = Nbb; Krhs_a = Nrhs   ! RK3: agrif_oce module copies of time level indices
+# else
+      Kbb_a = Nbb; Kmm_a = Nnn; Krhs_a = Nrhs   ! MLF: agrif_oce module copies of time level indices
+# endif
       CALL Agrif_step_child_adj(Agrif_Update_All)
       CALL Agrif_step_child_adj(Agrif_Check_parent_bat)
       !
       DO WHILE( istp <= nitend .AND. nstop == 0 )
          !
-#  if defined key_qco   ||   defined key_linssh
+         ncom_stp = istp
+         CALL timing_start( 'step', istp, nit000, nitend, nn_fsbc, 1000 )
+#   if defined key_RK3
+         CALL stp_RK3
+#   else
          CALL stp_MLF
-#  else
-         CALL stp
-#  endif
+#   endif
+         CALL timing_stop( 'step', istp )
          istp = istp + 1
       END DO
       !
@@ -167,27 +178,25 @@ CONTAINS
          DO WHILE( istp <= nitend .AND. nstop == 0 )
             !
             ncom_stp = istp
-            IF( ln_timing ) THEN
-               zstptiming = MPI_Wtime()
-               IF ( istp == ( nit000 + 1 ) ) elapsed_time = zstptiming
-               IF ( istp ==         nitend ) elapsed_time = zstptiming - elapsed_time
-            ENDIF
+            CALL timing_start( 'step', istp, nit000, nitend, nn_fsbc, 1000 )
             !
-#  if defined key_qco   ||   defined key_linssh
+#   if defined key_RK3
+            CALL stp_RK3( istp )
+#   else
             CALL stp_MLF( istp )
-#  else
-            CALL stp    ( istp )
-#  endif
+#   endif
+            CALL timing_stop( 'step', istp )
             istp = istp + 1
-            !
-            IF( lwp .AND. ln_timing )   WRITE(numtime,*) 'timing step ', istp-1, ' : ', MPI_Wtime() - zstptiming
             !
          END DO
          !
       ELSE                                            !==  diurnal SST time-steeping only  ==!
          !
          DO WHILE( istp <= nitend .AND. nstop == 0 )
+            ncom_stp = istp
+            CALL timing_start( 'stp_diurnal', istp, nit000, nitend, nn_fsbc, 1000 )
             CALL stp_diurnal( istp )   ! time step only the diurnal SST
+            CALL timing_stop( 'stp_diurnal', istp )
             istp = istp + 1
          END DO
          !
@@ -217,7 +226,9 @@ CONTAINS
          ENDIF
       ENDIF
       !
-      IF( ln_timing )   CALL timing_finalize
+      CALL nemo_dealloc()   ! free memory as soon as possible as the timing finalization can use large arrays if jpnij is big...
+      !
+      CALL timing_stop( 'full code', ld_finalize = .TRUE. )
       !
       CALL nemo_closefile
       !
@@ -249,7 +260,7 @@ CONTAINS
       !!
       NAMELIST/namctl/ sn_cfctl, ln_timing, ln_diacfl, nn_isplt, nn_jsplt , nn_ictls,   &
          &                                             nn_ictle, nn_jctls , nn_jctle
-      NAMELIST/namcfg/ ln_read_cfg, cn_domcfg, ln_closea, ln_write_cfg, cn_domcfg_out, ln_use_jattr
+      NAMELIST/namcfg/ ln_read_cfg, cn_domcfg, ln_closea, ln_write_cfg, cn_domcfg_out
       !!----------------------------------------------------------------------
       !
       cxios_context = 'nemo'
@@ -263,7 +274,11 @@ CONTAINS
       IF( Agrif_Root() ) THEN
          IF( lk_oasis ) THEN
             CALL cpl_init( "oceanx", ilocal_comm )                               ! nemo local communicator given by oasis
+# if defined key_xios3
+            CALL xios_initialize( "oceanx"         , local_comm =ilocal_comm )   ! send nemo communicator to xios
+# else
             CALL xios_initialize( "not used"       , local_comm =ilocal_comm )   ! send nemo communicator to xios
+# endif
          ELSE
             CALL xios_initialize( "for_xios_mpi_id", return_comm=ilocal_comm )   ! nemo local communicator given by xios
          ENDIF
@@ -295,7 +310,7 @@ CONTAINS
       IF( lwm )   CALL ctl_opn(     numond, 'output.namelist.dyn', 'REPLACE', 'FORMATTED', 'SEQUENTIAL', -1, -1, .FALSE. )
       ! open /dev/null file to be able to supress output write easily
       IF( Agrif_Root() ) THEN
-                  CALL ctl_opn(     numnul,           '/dev/null', 'REPLACE', 'FORMATTED', 'SEQUENTIAL', -1, -1, .FALSE. )
+                  CALL ctl_opn(     numnul,           '/dev/null', 'UNKNOWN', 'FORMATTED', 'SEQUENTIAL', -1, -1, .FALSE. )
 #ifdef key_agrif
       ELSE
                   numnul = Agrif_Parent(numnul)
@@ -305,10 +320,8 @@ CONTAINS
       !                             ! Open listing units !  -> need sn_cfctl from namctl to define lwp
       !                             !--------------------!
       !
-      READ  ( numnam_ref, namctl, IOSTAT = ios, ERR = 901 )
-901   IF( ios /= 0 )   CALL ctl_nam ( ios , 'namctl in reference namelist' )
-      READ  ( numnam_cfg, namctl, IOSTAT = ios, ERR = 902 )
-902   IF( ios >  0 )   CALL ctl_nam ( ios , 'namctl in configuration namelist' )
+      READ_NML_REF(numnam,namctl)
+      READ_NML_CFG(numnam,namctl)
       !
       ! finalize the definition of namctl variables
       IF( narea < sn_cfctl%procmin .OR. narea > sn_cfctl%procmax .OR. MOD( narea - sn_cfctl%procmin, sn_cfctl%procincr ) /= 0 )   &
@@ -325,7 +338,7 @@ CONTAINS
          WRITE(numout,*) '   CNRS - NERC - Met OFFICE - MERCATOR-ocean - CMCC'
          WRITE(numout,*) '                       NEMO team'
          WRITE(numout,*) '            Ocean General Circulation Model'
-         WRITE(numout,*) '                NEMO version 4.0  (2020) '
+         WRITE(numout,*) '                NEMO version 5.0  (2024) '
          WRITE(numout,*)
          WRITE(numout,*) "           ._      ._      ._      ._      ._    "
          WRITE(numout,*) "       _.-._)`\_.-._)`\_.-._)`\_.-._)`\_.-._)`\_ "
@@ -360,10 +373,8 @@ CONTAINS
       !                             !  Set global domain size parameters !
       !                             !------------------------------------!
       !
-      READ  ( numnam_ref, namcfg, IOSTAT = ios, ERR = 903 )
-903   IF( ios /= 0 )   CALL ctl_nam ( ios , 'namcfg in reference namelist' )
-      READ  ( numnam_cfg, namcfg, IOSTAT = ios, ERR = 904 )
-904   IF( ios >  0 )   CALL ctl_nam ( ios , 'namcfg in configuration namelist' )
+      READ_NML_REF(numnam,namcfg)
+      READ_NML_CFG(numnam,namcfg)
       !
       IF( ln_read_cfg ) THEN            ! Read sizes in domain configuration file
          CALL domain_cfg ( cn_cfg, nn_cfg, Ni0glo, Nj0glo, jpkglo, l_Iperio, l_Jperio, l_NFold, c_NFtype )
@@ -378,22 +389,18 @@ CONTAINS
       !                             ! mpp parameters and domain decomposition !
       !                             !-----------------------------------------!
       CALL mpp_init
-
-#if defined key_loop_fusion
-      IF( nn_hls == 1 ) THEN
-         CALL ctl_stop( 'STOP', 'nemogcm : Loop fusion can be used only with extra-halo' )
-      ENDIF
-      CALL ctl_warn( 'nemo_init', 'you use key_loop_fusion, this may significantly slow down NEMO performances' )
-#endif
-
-      CALL halo_mng_init()
+      !
       ! Now we know the dimensions of the grid and numout has been set: we can allocate arrays
       CALL nemo_alloc()
 
       ! Initialise time level indices
       Nbb = 1   ;   Nnn = 2   ;   Naa = 3   ;   Nrhs = Naa
 #if defined key_agrif
-      Kbb_a = Nbb   ;   Kmm_a = Nnn   ;   Krhs_a = Nrhs   ! agrif_oce module copies of time level indices
+# if defined key_RK3
+      Kbb_a = Nbb   ;   Kmm_a = Nbb   ;   Krhs_a = Nrhs   ! RK3: agrif_oce module copies of time level indices
+# else
+      Kbb_a = Nbb   ;   Kmm_a = Nnn   ;   Krhs_a = Nrhs   ! MLF: agrif_oce module copies of time level indices
+# endif
 #endif
       !                             !-------------------------------!
       !                             !  NEMO general initialization  !
@@ -402,8 +409,8 @@ CONTAINS
       CALL nemo_ctl                          ! Control prints of namctl and namcfg
       !
       !                                      ! General initialization
-      IF( ln_timing    )   CALL timing_init     ! timing
-      IF( ln_timing    )   CALL timing_start( 'nemo_init')
+                           CALL timing_open( lwp, mpi_comm_oce )   ! open timing report file
+      IF( ln_timing    )   CALL timing_start( 'nemo_init' )
       !
                            CALL     phy_cst         ! Physical constants
                            CALL     eos_init        ! Equation of state
@@ -413,7 +420,6 @@ CONTAINS
      CALL Agrif_Declare_Var_ini   !  "      "   "   "      "  DOM
 #endif
                            CALL     dom_init( Nbb, Nnn, Naa )   ! Domain
-      IF( ln_crs       )   CALL     crs_init(      Nnn      )   ! coarsened grid: domain initialization
       IF( sn_cfctl%l_prtctl )   &
          &                 CALL prt_ctl_init        ! Print control
 
@@ -444,10 +450,15 @@ CONTAINS
       !                                      ! Ocean physics
                            CALL zdf_phy_init( Nnn )    ! Vertical physics
 
-      !                                         ! Lateral physics
-                           CALL ldf_tra_init      ! Lateral ocean tracer physics
-                           CALL ldf_eiv_init      ! eddy induced velocity param. must be done after ldf_tra_init
-                           CALL ldf_dyn_init      ! Lateral ocean momentum physics
+      !                                      ! Lateral physics
+                           CALL ldf_tra_init             ! Lateral ocean tracer physics
+                           CALL ldf_eiv_init             ! eddy induced velocity param.
+#if defined key_RK3
+      IF( l_ldfeke     )   CALL ldf_eke_init( Nbb )      ! GEOMETRIC param. RK3
+#else
+      IF( l_ldfeke     )   CALL ldf_eke_init( Nbb, Nnn ) ! GEOMETRIC param. MLF
+#endif
+                           CALL ldf_dyn_init             ! Lateral ocean momentum physics
 
       !                                      ! Active tracers
       IF( ln_traqsr    )   CALL tra_qsr_init      ! penetrative solar radiation qsr
@@ -466,13 +477,13 @@ CONTAINS
                            CALL dyn_spg_init         ! surface pressure gradient
 
       !                                      ! Icebergs
-                           CALL icb_init( rn_Dt, nit000)   ! initialise icebergs instance
+                           CALL icb_init( rn_Dt, nit000, Nnn )   ! initialise icebergs instance
 
                                                 ! ice shelf
                            CALL isf_init( Nbb, Nnn, Naa )
 #if defined key_top
       !                                      ! Passive tracers
-                           CALL     trc_init( Nbb, Nnn, Naa )
+      IF ( ln_top      )   CALL trc_init( Nbb, Nnn, Naa )
 #endif
       IF( l_ldfslp     )   CALL ldf_slp_init    ! slope of lateral mixing
 
@@ -481,13 +492,11 @@ CONTAINS
       IF( ln_sto_eos   )   CALL sto_pts_init    ! RRandom T/S fluctuations
 
       !                                      ! Diagnostics
-                           CALL     flo_init( Nnn )    ! drifting Floats
       IF( ln_diacfl    )   CALL dia_cfl_init    ! Initialise CFL diagnostics
                            CALL dia_dct_init    ! Sections tranports
-                           CALL dia_hsb_init( Nnn )    ! heat content, salt content and volume budgets
                            CALL     trd_init( Nnn )    ! Mixed-layer/Vorticity/Integral constraints trends
                            CALL dia_obs_init( Nnn )    ! Initialize observational data
-                           CALL dia_25h_init( Nbb )    ! 25h mean  outputs
+      ! move to stprk3 !   CALL dia_25h_init( Nbb )    ! 25h mean  outputs
                            CALL dia_detide_init ! Weights computation for daily detiding of model diagnostics
       IF( ln_diaobs    )   CALL dia_obs( nit000-1, Nnn )   ! Observation operator for restart
                            CALL dia_mlr_init    ! Initialisation of IOM context management for multiple-linear-regression analysis
@@ -497,8 +506,15 @@ CONTAINS
       !
       IF(lwp) WRITE(numout,cform_aaa)           ! Flag AAAAAAA
       !
-      IF( ln_timing    )   CALL timing_stop( 'nemo_init')
+      IF( ln_timing    )   CALL timing_stop( 'nemo_init' )
       !
+
+# if defined key_agrif
+      IF( Agrif_Root() ) THEN
+          CALL Agrif_MPI_Init(mpi_comm_oce)
+      ENDIF
+# endif
+
    END SUBROUTINE nemo_init
 
 
@@ -518,6 +534,7 @@ CONTAINS
          WRITE(numout,*) '   Namelist namctl'
          WRITE(numout,*) '                              sn_cfctl%l_runstat = ', sn_cfctl%l_runstat
          WRITE(numout,*) '                              sn_cfctl%l_trcstat = ', sn_cfctl%l_trcstat
+         WRITE(numout,*) '                              sn_cfctl%l_obsstat = ', sn_cfctl%l_obsstat
          WRITE(numout,*) '                              sn_cfctl%l_oceout  = ', sn_cfctl%l_oceout
          WRITE(numout,*) '                              sn_cfctl%l_layout  = ', sn_cfctl%l_layout
          WRITE(numout,*) '                              sn_cfctl%l_prtctl  = ', sn_cfctl%l_prtctl
@@ -540,7 +557,6 @@ CONTAINS
          WRITE(numout,*) '         keep closed seas in the domain (if exist)     ln_closea     = ', ln_closea
          WRITE(numout,*) '      create a configuration definition file        ln_write_cfg     = ', ln_write_cfg
          WRITE(numout,*) '         filename to be written                        cn_domcfg_out = ', TRIM(cn_domcfg_out)
-         WRITE(numout,*) '      use file attribute if exists as i/p j-start   ln_use_jattr     = ', ln_use_jattr
       ENDIF
       !
       IF( 1._wp /= SIGN(1._wp,-0._wp)  )   CALL ctl_stop( 'nemo_ctl: The intrinsec SIGN function follows f2003 standard.',  &
@@ -548,7 +564,7 @@ CONTAINS
          &                                                '--> add -Dkey_nosignedzero to the definition of %CPP in your arch file' )
       !
 #if defined key_agrif
-      IF( ln_timing )   CALL ctl_stop( 'AGRIF not implemented with ln_timing = true')
+      IF( ln_timing )   CALL ctl_warn( 'AGRIF not yet implemented with ln_timing = true')
 #endif
       !
    END SUBROUTINE nemo_ctl
@@ -588,7 +604,6 @@ CONTAINS
       !!
       !! ** Method  :
       !!----------------------------------------------------------------------
-      USE diawri    , ONLY : dia_wri_alloc
       USE dom_oce   , ONLY : dom_oce_alloc
       USE trc_oce   , ONLY : trc_oce_alloc
       USE bdy_oce   , ONLY : bdy_oce_alloc
@@ -597,7 +612,6 @@ CONTAINS
       !!----------------------------------------------------------------------
       !
       ierr =        oce_alloc    ()    ! ocean
-      ierr = ierr + dia_wri_alloc()
       ierr = ierr + dom_oce_alloc()    ! ocean domain
       ierr = ierr + zdf_oce_alloc()    ! ocean vertical physics
       ierr = ierr + trc_oce_alloc()    ! shared TRC / TRA arrays
@@ -607,6 +621,34 @@ CONTAINS
       IF( ierr /= 0 )   CALL ctl_stop( 'STOP', 'nemo_alloc: unable to allocate standard ocean arrays' )
       !
    END SUBROUTINE nemo_alloc
+
+
+   SUBROUTINE nemo_dealloc()
+      !!----------------------------------------------------------------------
+      !!                     ***  ROUTINE nemo_alloc  ***
+      !!
+      !! ** Purpose :   Allocate all the dynamic arrays of the OCE modules
+      !!
+      !! ** Method  :
+      !!----------------------------------------------------------------------
+      USE dom_oce   , ONLY : dom_oce_dealloc
+      USE trc_oce   , ONLY : trc_oce_dealloc
+      USE bdy_oce   , ONLY : bdy_oce_dealloc
+      USE sbc_ice   , ONLY : sbc_ice_dealloc
+      !!----------------------------------------------------------------------
+      !
+      CALL     oce_dealloc()    ! ocean
+      CALL dom_oce_dealloc()    ! ocean domain
+      CALL zdf_oce_dealloc()    ! ocean vertical physics
+      CALL trc_oce_dealloc()    ! shared TRC / TRA arrays
+      CALL bdy_oce_dealloc()    ! bdy masks (incl. initialization)
+      CALL sbc_oce_dealloc()
+      CALL sbc_ice_dealloc()
+#if defined key_top
+      CALL top_dealloc()
+#endif
+      !
+   END SUBROUTINE nemo_dealloc
 
 
    SUBROUTINE nemo_set_cfctl(sn_cfctl, setto )
@@ -623,6 +665,7 @@ CONTAINS
       !!----------------------------------------------------------------------
       sn_cfctl%l_runstat = setto
       sn_cfctl%l_trcstat = setto
+      sn_cfctl%l_obsstat = setto
       sn_cfctl%l_oceout  = setto
       sn_cfctl%l_layout  = setto
       sn_cfctl%l_prtctl  = setto

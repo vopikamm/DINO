@@ -52,11 +52,11 @@ MODULE usrdef_zgr
 CONTAINS             
 
    SUBROUTINE usr_def_zgr( ld_zco  , ld_zps  , ld_sco  , ld_isfcav,    &   ! type of vertical coordinate
+      &                    k_top   , k_bot                        ,    &   ! top & bottom ocean level
       &                    pdept_1d, pdepw_1d, pe3t_1d , pe3w_1d  ,    &   ! 1D reference vertical coordinate
-      &                    pdept , pdepw ,                             &   ! 3D t & w-points depth
       &                    pe3t  , pe3u  , pe3v   , pe3f ,             &   ! vertical scale factors
-      &                    pe3w  , pe3uw , pe3vw         ,             &   !     -      -      -
-      &                    k_top , k_bot    )                              ! top & bottom ocean level
+      &                    pdept , pdepw ,                             &   ! 3D t & w-points depth
+      &                    pe3w  , pe3uw , pe3vw)                          ! vertical scale factors
       !!---------------------------------------------------------------------
       !!              ***  ROUTINE usr_def_zgr  ***
       !!
@@ -65,12 +65,12 @@ CONTAINS
       !!----------------------------------------------------------------------
       LOGICAL                   , INTENT(out) ::   ld_zco, ld_zps, ld_sco      ! vertical coordinate flags
       LOGICAL                   , INTENT(out) ::   ld_isfcav                   ! under iceshelf cavity flag
+      INTEGER , DIMENSION(:,:)  , INTENT(out) ::   k_top, k_bot                ! first & last ocean level
       REAL(wp), DIMENSION(:)    , INTENT(out) ::   pdept_1d, pdepw_1d          ! 1D grid-point depth     [m]
       REAL(wp), DIMENSION(:)    , INTENT(out) ::   pe3t_1d , pe3w_1d           ! 1D grid-point depth     [m]
-      REAL(wp), DIMENSION(:,:,:), INTENT(out) ::   pdept, pdepw                ! grid-point depth        [m]
-      REAL(wp), DIMENSION(:,:,:), INTENT(out) ::   pe3t , pe3u , pe3v , pe3f   ! vertical scale factors  [m]
-      REAL(wp), DIMENSION(:,:,:), INTENT(out) ::   pe3w , pe3uw, pe3vw         ! i-scale factors 
-      INTEGER , DIMENSION(:,:)  , INTENT(out) ::   k_top, k_bot                ! first & last ocean level
+      REAL(wp), DIMENSION(:,:,:), OPTIONAL, INTENT(out) ::   pdept, pdepw                ! grid-point depth        [m]
+      REAL(wp), DIMENSION(:,:,:), OPTIONAL, INTENT(out) ::   pe3t , pe3u , pe3v , pe3f   ! vertical scale factors  [m]
+      REAL(wp), DIMENSION(:,:,:), OPTIONAL, INTENT(out) ::   pe3w , pe3uw, pe3vw         ! i-scale factors 
       !
       INTEGER  ::   ji, jj                                     ! dummy loop index
       REAL(wp) ::   zdzmin, zkth, zhco, zacr                  ! Local scalars for the coordinate stretching
@@ -153,13 +153,13 @@ CONTAINS
          nn_cha_min  = nn_jeq_s - merc_proj(rn_cha_min, rn_e1_deg) + 1
          nn_cha_max  = nn_jeq_s - merc_proj(rn_cha_max, rn_e1_deg) + 1
          DO jj = 1, jpj
-            IF (mjg(jj) <= nn_cha_min) THEN
-               zbathy(  mi0(     1+nn_hls):mi1(     1+nn_hls),jj) = 0._wp   ! first column of inner global domain at 0
-               zbathy(  mi0(jpiglo-nn_hls):mi1(jpiglo-nn_hls),jj) = 0._wp   ! last  column of inner global domain at 0
+            IF (mjg(jj, nn_hls) <= nn_cha_min) THEN
+               zbathy(  mi0(     1+nn_hls, nn_hls):mi1(     1+nn_hls, nn_hls),jj) = 0._wp   ! first column of inner global domain at 0
+               zbathy(  mi0(jpiglo-nn_hls, nn_hls):mi1(jpiglo-nn_hls, nn_hls),jj) = 0._wp   ! last  column of inner global domain at 0
             ENDIF
-            IF (mjg(jj) >= nn_cha_max) THEN
-               zbathy(  mi0(     1+nn_hls):mi1(     1+nn_hls),jj) = 0._wp   ! first column of inner global domain at 0
-               zbathy(  mi0(jpiglo-nn_hls):mi1(jpiglo-nn_hls),jj) = 0._wp   ! last  column of inner global domain at 0
+            IF (mjg(jj, nn_hls) >= nn_cha_max) THEN
+               zbathy(  mi0(     1+nn_hls, nn_hls):mi1(     1+nn_hls, nn_hls),jj) = 0._wp   ! first column of inner global domain at 0
+               zbathy(  mi0(jpiglo-nn_hls, nn_hls):mi1(jpiglo-nn_hls, nn_hls),jj) = 0._wp   ! last  column of inner global domain at 0
             ENDIF
          END DO
       ENDIF
@@ -214,11 +214,11 @@ CONTAINS
       !
       ! dk: TODO: Is this mixed up? zlamt(jpi,:) = glamt(jpi-1,:) + rn_e1_deg etc...
       ! --> does it actually matter for the bathy?
-      IF( mig(jpi) == jpiglo ) THEN
+      IF( mig(jpi, nn_hls) == jpiglo ) THEN
          zlamt(jpi,:) = glamt(jpi-1,:) + 1./rad * ASIN ( TANH( rn_e1_deg * rad) )
       ENDIF
       !
-      IF( mjg(jpj) == jpjglo ) THEN
+      IF( mjg(jpj, nn_hls) == jpjglo ) THEN
          zphit(:,jpj) = gphit(:,jpj-1) + rn_e1_deg
       ENDIF
       !
