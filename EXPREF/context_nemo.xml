@@ -4,7 +4,6 @@
 ============================================================================================== 
 -->
 <context id="nemo">
-    <!-- $id$ -->
     <variable_definition>
        <!-- Year/Month/Day of time origin for NetCDF files; defaults to 1800-01-01 -->
        <variable id="ref_year"  type="int"> 1900 </variable>

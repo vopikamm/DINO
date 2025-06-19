@@ -93,7 +93,7 @@
    cn_exp      = 'DINO' !  experience name
    nn_it000    =       1      !  first time step
    !nn_itend    =       32     !  last time step (32 it => 1 day, 11520 => 1 year)
-   nn_itend    =       576000   !  last time step (32 it => 1 day, 11520 => 1 year)
+   nn_itend    =       1000   !  last time step (32 it => 1 day, 11520 => 1 year)
    nn_istate   =       0      !  output the initial state (1) or not (0)
    ! nn_stock    =      11520   !  frequency of creation of a restart file (modulo referenced to 1) 50 years
    ! nn_write    =      11520   !  frequency of write in the output file   (modulo referenced to nn_it000)
@@ -112,12 +112,13 @@
 !-----------------------------------------------------------------------
 &namdom        !   time and space domain
 !-----------------------------------------------------------------------
-   ln_linssh   = .false.    !  =T  linear free surface  ==>>  model level are fixed in time
    !
-   rn_Dt      = 2700. !  time step for the dynamics (2700. = 45 min, 1 degree)
+   !rn_Dt      = 2700. !  time step for the dynamics (2700. = 45 min, 1 degree)
+   rn_Dt      = 5400. !  time step for the dynamics (5400. = 90 min, 1 degree, RK3)
    !rn_Dt      = 720.  !  time step for the dynamics (900. = 15 min, 1/4 degree)
    !
    ln_meshmask = .true.   !  =T create a mesh file
+   ln_shuman   = .true.   !  =T  shuman averaging active  (RK3 only)
 /
 
 !-----------------------------------------------------------------------
@@ -135,9 +136,6 @@
       !                         !       then this logical does nothing.
    ln_write_cfg = .true.   !  (=T) create the domain configuration file
       cn_domcfg_out = "domain_cfg_out" ! newly created domain configuration filename
-      !
-   ln_use_jattr = .false.  !  use (T) the file attribute: open_ocean_jstart, if present
-   !                       !  in netcdf input files, as the start j-row for reading
 /
 !
 !-----------------------------------------------------------------------
@@ -330,7 +328,6 @@
    ln_dynvor_ene = .false. !  energy    conserving scheme
    ln_dynvor_ens = .false. !  enstrophy conserving scheme   !!rc could also be a choice
    ln_dynvor_mix = .false. !  mixed scheme
-   ln_dynvor_enT = .false. !  energy conserving scheme (T-point)
    ln_dynvor_eeT = .false. !  energy conserving scheme (een using e3t)
    ln_dynvor_een = .true. !  energy & enstrophy scheme
    !
@@ -356,8 +353,7 @@
    ln_dynspg_exp  = .false.   ! explicit free surface
    ln_dynspg_ts   = .true.    ! split-explicit free surface
       ln_bt_fw      = .false.   !!rc model crashes if T     ! Forward integration of barotropic Eqs.
-      ln_bt_av      = .true.     ! Time filtering of barotropic variables
-         nn_bt_flt     = 2       ! Time filter choice  = 0 None
+      nn_bt_flt     = 1       ! Time filter choice  = 0 None
          !                          !                     = 1 Boxcar over   nn_baro sub-steps
          !                          !                     = 2 Boxcar over 2*nn_baro  "    "
       ln_bt_auto    = .true.     ! Number of sub-step defined from:
