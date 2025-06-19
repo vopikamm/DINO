@@ -30,7 +30,7 @@
                                           ! 3: no forcing
                                           ! 4: close to Wolfe and Cessis (2014), JPO
                                           ! 5: inspired by Wolfe and Cessi (2014), JPO and Gyre
-      rn_ztau0          =    0.1          ! Magnitude of the wind forcing [Pa] 
+      rn_ztau0          =    0.2          ! Magnitude of the wind forcing [Pa] 
       ln_diu_cyc        = .false.         ! Use diurnal cycle or not for qsr  (if nn_forcingtype is compatible)
       ln_ann_cyc        = .true.          ! Use annual cycle or not (if nn_forcingtype is compatible)
       rn_emp_prop       =      0.         ! Proportionality factor to apply on EMP
@@ -98,13 +98,13 @@
    ! nn_stock    =      11520   !  frequency of creation of a restart file (modulo referenced to 1) 50 years
    ! nn_write    =      11520   !  frequency of write in the output file   (modulo referenced to nn_it000)
    nn_leapy    =   30         !  Months of 30 days (year of 360 days)
-   ln_rstart = .false.        !  start from rest (F) or from a restart file (T)
+   ln_rstart = .true.        !  start from rest (F) or from a restart file (T)
       !nn_euler    =    1      !  = 0 : start with forward time step if ln_rstart=T
       nn_rstctl   =    2 !  restart control ==> activated only if ln_rstart=T
       !!                          !    = 0 nn_date0 read in namelist ; nn_it000 : read in namelist
       !!                          !    = 1 nn_date0 read in namelist ; nn_it000 : check consistancy between namelist and restart
       !!                          !    = 2 nn_date0 read in restart  ; nn_it000 : check consistancy between namelist and restart
-      cn_ocerst_in = "DINO_00576000_restart" !  suffix of ocean restart name (input)
+      cn_ocerst_in = "DINO_35136000_restart" !  suffix of ocean restart name (input)
       cn_ocerst_indir = "."         !  directory from which to read input ocean restarts
       cn_ocerst_out   = "restart"   !  suffix of ocean restart name (output)
       cn_ocerst_outdir = "."         !  directory in which to write output ocean restarts
@@ -113,12 +113,12 @@
 &namdom        !   time and space domain
 !-----------------------------------------------------------------------
    !
-   !rn_Dt      = 2700. !  time step for the dynamics (2700. = 45 min, 1 degree)
-   rn_Dt      = 5400. !  time step for the dynamics (5400. = 90 min, 1 degree, RK3)
+   rn_Dt      = 2700. !  time step for the dynamics (2700. = 45 min, 1 degree)
+   !rn_Dt      = 5400. !  time step for the dynamics (5400. = 90 min, 1 degree, RK3)
    !rn_Dt      = 720.  !  time step for the dynamics (900. = 15 min, 1/4 degree)
    !
    ln_meshmask = .true.   !  =T create a mesh file
-   ln_shuman   = .true.   !  =T  shuman averaging active  (RK3 only)
+   !ln_shuman   = .true.   !  =T  shuman averaging active  (RK3 only)
 /
 
 !-----------------------------------------------------------------------
@@ -301,7 +301,6 @@
       rn_Ue        = 0.03           !  lateral diffusive velocity [m/s] (nn_aht_ijk_t= 0, 10, 20, 30)
       rn_Le        = 100.e+3        !  lateral diffusive length   [m]   (nn_aht_ijk_t= 0, 10)
       !
-      ln_ldfeiv_dia =.true.   ! diagnose eiv stream function and velocities
 /
       
 !!======================================================================
@@ -328,7 +327,7 @@
    ln_dynvor_ene = .false. !  energy    conserving scheme
    ln_dynvor_ens = .false. !  enstrophy conserving scheme   !!rc could also be a choice
    ln_dynvor_mix = .false. !  mixed scheme
-   ln_dynvor_eeT = .false. !  energy conserving scheme (een using e3t)
+   ln_dynvor_enT = .false. !  energy conserving scheme (een using e3t)
    ln_dynvor_een = .true. !  energy & enstrophy scheme
    !
    ln_dynvor_msk = .false. !  vorticity multiplied by fmask (=T)        ==>>> PLEASE DO NOT ACTIVATE
@@ -341,7 +340,6 @@
 &namdyn_hpg    !   Hydrostatic pressure gradient option                 (default: NO selection)
 !-----------------------------------------------------------------------
    ln_hpg_zco  = .false.   !  z-coordinate - full steps
-   ln_hpg_zps  = .false.   !  z-coordinate - partial steps (interpolation)
    ln_hpg_sco  = .true.    !  s-coordinate (standard jacobian formulation)
    ln_hpg_isf  = .false.   !  s-coordinate (sco ) adapted to isf
    ln_hpg_djc  = .false.   !  s-coordinate (Density Jacobian with Cubic polynomial)

@@ -36,7 +36,7 @@ $$
 where $j \in \left[ 1, J \right]$. \
 The prognostic variables are staggered on an Arakawa C-grid. $I$ and $J$ are chosen to span a domain of 50° from eastern to western boundary and approximately 70° (not exactly, due to the mercator projection in (2)) from equator to both northern and southern boundary. In the following we show an example of the resulting grid spacing along $y$ (e2t) and $x$ (e1t) in meters for $\Delta \lambda = 1.0$:
     
-![png](README_files/README_4_1.png)
+![png](assets/README_4_1.png)
     
 ### Vertical discretization
 Since this [commit](https://github.com/vopikamm/DINO/commit/084122893073255b154f7fba188f7683ea80331a) DINO has the option for a full step z* vertical coordinate. It follows exactly the same stretching function as the hybrid sigma-z coordinate, but assuming a flat bottom: \
@@ -94,14 +94,14 @@ $$
 The vertical index $k \in \left[ 1, K \right]$ with $K=36$.
 The resulting depth level over k are shown in the following:
     
-![png](README_files/README_9_1.png)
+![png](assets/README_9_1.png)
     
 
 ## Bathymetry
 The domain is closed everywhere except a periodic re-entrant channel between $45°S$ and $65°S$. Above $2000m$ depth the domain is bounded by vertical walls, below a tapered exponential defines the slopes. A semi-circular sill with a Gaussian shape introduces a pressure gradient in the channel, similar to the Neverworld2 configuration. The exact implementation is demonstrated in `DinoConfiguration.get_bathymetry()` and `DinoConfiguration.add_gaussian_ring()`. In the following we show the resulting bathymetry for the standard configuration:   
 
     
-![png](README_files/README_11_1.png)
+![png](assets/README_11_1.png)
     
 
 ## Equation of State (EOS)
@@ -174,7 +174,7 @@ $$
 
 where d is the day of the year controlling a seasonal cycle in the solar forcing.
     
-![png](README_files/README_20_0.png)
+![png](assets/README_20_0.png)
 
 
 
