@@ -32,19 +32,19 @@ where $j = 1, \ldots, J$.
 
 The prognostic variables are staggered on an Arakawa C-grid. $I$ and $J$ are chosen to span a domain of 50° from eastern to western boundary and approximately 70° (not exactly, due to the mercator projection in (2)) from equator to both northern and southern boundary (`rn_phi_min = = -70`, `rn_phi_max = = 70`, `rn_lam_min = = 0`, `rn_lam_max = = 50`). In the following we show an example of the resulting grid spacing along $y$ (`e2t`) and $x$ (`e1t`) in meters for $\Delta \lambda = 1.0$ (`rn_e1_deg = 1.0`):
     
-![png](assets/README_4_1.png)
+![png](docs/assets/README_4_1.png)
     
 ### Vertical discretization
 DINO has the option for a full step z or hybrid sigma-z vertical coordinate (`ln_zco_nam` or `ln_sco_nam`). The exact analytical formulation is described in Appendix C of [Kamm et al. (2025)](https://doi.org/10.5194/egusphere-2025-1100), but the default vertical levels at **T-points** for `nn_k = 36` are shown below.
 
-![png](assets/README_9_1.png)
+![png](docs/assets/README_9_1.png)
 
 
 ### Bathymetry
 The domain is closed everywhere except a periodic re-entrant channel between 45°S and 65°S. Above 2000m depth the domain is bounded by vertical walls, below a tapered exponential defines the slopes. A semi-circular sill with a Gaussian shape introduces a pressure gradient in the channel, similar to the Neverworld2 configuration. The exact implementation is demonstrated in `DinoConfiguration.get_bathymetry()` and `DinoConfiguration.add_gaussian_ring()` of `dino_configuration.py`. The resulting bathymetry for the standard configuration is shown here:   
 
 
-![png](assets/README_11_1.png)
+![png](docs/assets/README_11_1.png)
     
 
 ### Equation of State (EOS)
@@ -86,7 +86,7 @@ $$
 
 The surface boundary conditions are defined for all prognostic variables, namely U, $V$, $T$,  and $S$. Regarding momentum they are as in [Marques et al. (2020)](https://doi.org/10.5194/gmd-15-6567-2022) with a purely zonal wind stress profile constructed with a piecewise cubic interpolation between fixed values of latitude. Temperature $T$ and salinity $S$ are restored to profiles adapted from [Munday et al. (2012)](https://doi.org/10.1175/JPO-D-12-095.1). The salinity restoring stays constant throughout the simulation, while a seasonal cosine of magnitude $3.0°C$ and $0.5°C$ is applied to the northern and southern boundary values of the temperature restoring. The maximum/minimum restoring lags one month after the respective minimum/maximum in solar radiation. Shortwave solar radiation is adapted from [Caneill et al. (2022)](https://doi.org/10.1175/JPO-D-21-0295.1). The analytical expression of all profiles are provided in [Kamm et al. (2025)](https://doi.org/10.5194/egusphere-2025-1100) and visualized below.
 
-![png](assets/README_20_0.png)
+![png](docs/assets/README_20_0.png)
 
 ## 2. Getting started :rocket:
 First you need to install a working version of NEMO and XIOS on your machine. For a detailed guide we refer to the [NEMO installation guide](https://sites.nemo-ocean.io/user-guide/install.html#essential-components), but here are the essential steps.
@@ -161,7 +161,7 @@ mpirun -np 36 ./nemo : -np 1 <PATH_TO_YOUR>/xios_server.exe
 
 ## 3. Example for DINO at different horizontal resolutions
 
-![snapshot](assets/KE_snapshots.png)
+![snapshot](docs/assets/KE_snapshots.png)
 
 ## 4. References
 
