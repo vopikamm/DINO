@@ -93,13 +93,13 @@ The surface boundary conditions are defined for all prognostic variables, namely
  Temperature $T$ and salinity $S$ are restored towards meridional profiles, defined through
 
 $$
-    T^{*}(\phi) = T^{*}_{n/s} + \left( T^{*}_{eq} - T^{*}_{n/s} \right)  \sin(\pi  \frac{\phi + \phi_n}{\phi_n - \phi_s})
+    T^{\star}(\phi) = T^{\star}_{n/s} + \left( T^{\star}_{eq} - T^{\star}_{n/s} \right)  \sin(\pi  \frac{\phi + \phi_n}{\phi_n - \phi_s})
 $$
 
 and
 
 $$
-    S^{*}(\phi) = S^{*}_{n/s} + \left( S^{*}_{eq} - S^{*}_{n/s} \right)  \left(1 + \cos(\frac{2  \pi  \phi }{\phi_n - \phi_s})\right) / 2 - 1.25  e^{- \phi^{2} / 7.5^{2}}
+    S^{*}(\phi) = S^{\star}_{n/s} + \left( S^{\star}_{eq} - S^{\star}_{n/s} \right)  \left(1 + \cos(\frac{2  \pi  \phi }{\phi_n - \phi_s})\right) / 2 - 1.25  e^{- \phi^{2} / 7.5^{2}}
 $$
 
 where the subscript $(...)_{n/s}$ denotes the value at the northern or southern boundary, when $\phi < 0$ or $\phi > 0$.
@@ -107,9 +107,9 @@ The restoring values for southern, northern boundary and equator are
 
 $$
 \begin{align*}
-    &T^{*}_{s} = -0.5°C, &&T^{*}_{n} = -5.0°C, &&T^{*}_{eq} = 27.0°C \\
-    &S^{*}_{s} = 35.1 PSU, &&S^{*}_{n} = 35.0 PSU, &&S^{*}_{eq} = 37.25 PSU \\
-\end{align*}.
+    &T^{\star}_{s} = -0.5°C, &&T^{\star}_{n} = -5.0°C, &&T^{\star}_{eq} = 27.0°C \\
+    &S^{\star}_{s} = 35.1 PSU, &&S^{\star}_{n} = 35.0 PSU, &&S^{\star}_{eq} = 37.25 PSU \\
+\end{align*}
 $$
 
 The salinity restoring stays constant throughout the simulation, while a seasonal cosine of magnitude $3.0°C$ (at $T^{*}_{n}$) and $0.5°C$ (at $T^{*}_{s}$) is applied to the boundary values of the temperature restoring. The maximum/minimum restoring lags one month after the respective minimum/maximum in solar radiation. All meridional profiles of surface boundary conditions are visualized below. 
