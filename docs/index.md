@@ -15,14 +15,7 @@ Here we will give a short introduction into the configuration and a short tutori
 ### Grid
 
 ### Horizontal discretization
-We compute **longitude at T-points** as
-
-
-where $j \in \left[ 1, J \right]$. \
-The prognostic variables are staggered on an Arakawa C-grid. $I$ and $J$ are chosen to span a domain of 50째 from eastern to western boundary and approximately 70째 (not exactly, due to the mercator projection in (2)) from equator to both northern and southern boundary. In the following we show an example of the resulting grid spacing along $y$ (e2t) and $x$ (e1t) in meters for $\Delta \lambda = 1.0$:
-
-DINO is solved on a sphere and discretized by a horizontally isotropic mercator grid. Therefore, the grid-spacing in latitudinal direction decreases towards the poles.
-The **longitude and latitude** is computed at  **T-points** as
+DINO is solved on a sphere and discretized by a horizontally isotropic mercator grid. Therefore, the grid-spacing in latitudinal direction decreases towards the poles. The **longitude at T-points** is computed as
 
 $$
 \begin{equation*}
@@ -30,7 +23,7 @@ $$
 \end{equation*}
 $$
 
-where $i \in \left[ 1, I \right]$
+where $i = 1, \ldots, I$
 and **latitude at T-points** as
 
 $$
@@ -39,11 +32,9 @@ $$
 \end{equation*}
 $$
 
-<div align="center">
-  <img src="./assets/latex1.png" alt="Equation" width="600"/>
-</div>
+where $j = 1, \ldots, J$.
 
-The prognostic variables are staggered on an Arakawa C-grid. *I* and *J* are chosen to span a domain of 50째 from eastern to western boundary and approximately 70째 (not exactly, due to the mercator projection in (2)) from equator to both northern and southern boundary. Here is an example of the resulting grid spacing along *y* (`e2t`) and *x* (`e1t`) in meters for 1째 horizontal resolution at the equator:
+The prognostic variables are staggered on an Arakawa C-grid. $I$ and $J$ are chosen to span a domain of 50째 from eastern to western boundary and approximately 70째 (not exactly, due to the mercator projection in (2)) from equator to both northern and southern boundary. In the following we show an example of the resulting grid spacing along $y$ (`e2t`) and $x$ (`e1t`) in meters for $\Delta \lambda = 1.0$:
     
 ![png](assets/README_4_1.png)
     
@@ -63,9 +54,36 @@ The domain is closed everywhere except a periodic re-entrant channel between 45�
 ## Equation of State (EOS)
 We follow the simplified EOS from [Roquet et al. (2015)](https://doi.org/10.1175/JPO-D-15-0080.1)
 
-<div align="center">
-  <img src="./assets/latex2.png" alt="Equation" width="600"/>
-</div>
+$$
+\begin{equation*}
+    \rho(T,S,p) = \rho_{0} - \left( 
+        a_{0} + 
+        \frac{1}{2} C_{b} T_{a} +
+        T_{h} p 
+        \right) T_{a} + b_{0} S_{a}
+\end{equation*}
+$$
+
+where 
+
+$$
+\begin{align*}
+T_{a} &= T - 10째 \, C \\
+S_{a} &= S - 35 \, \text{g} \, \text{kg}^{-1}
+\end{align*}
+$$
+
+using the parameters:
+
+$$
+\begin{align*}
+    &\rho_{0} = 1028 &&: \text{reference density } [\text{kg} \, \text{m}^{-3}] \\
+    &a_{0} = 0.1655 &&: \text{thermal expansion } [\text{kg} \, \text{m}^{-3} \, \text{K}^{-1}] \\
+    &b_{0} = 0.7655 &&: \text{haline expansion  } [\text{kg}^{2} \, \text{m}^{-3} \, \text{g}^{-1}] \\
+    &C_{b} = 9.9 \times 10^{-3} &&: \text{thermal cabbeling } [\text{kg} \, \text{m}^{-3} \, \text{K}^{-2}] \\
+    &T_{h} = 2.4775 \times 10^{-5} &&: \text{thermobaricity } [\text{kg}^{-3} \, \text{dbar}^{-1} \, \text{K}^{-1}]
+\end{align*}
+$$
 
 
 ## Surface Boundary Conditions
