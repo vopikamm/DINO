@@ -23,18 +23,22 @@ The prognostic variables are staggered on an Arakawa C-grid. $I$ and $J$ are cho
 
 DINO is solved on a sphere and discretized by a horizontally isotropic mercator grid. Therefore, the grid-spacing in latitudinal direction decreases towards the poles.
 The **longitude and latitude** is computed at  **T-points** as
+
 $$
 \begin{equation*}
     \lambda(i) = \lambda\_{0} + \Delta \lambda \, i
 \end{equation*}
 $$
+
 where $i \in \left[ 1, I \right]$
 and **latitude at T-points** as
+
 $$
 \begin{equation*}
     \phi(j) = \frac{180}{\pi} * \arcsin ( \tanh( \Delta \lambda \frac{\pi}{180} \, j) )
 \end{equation*}
 $$
+
 <div align="center">
   <img src="./assets/latex1.png" alt="Equation" width="600"/>
 </div>
