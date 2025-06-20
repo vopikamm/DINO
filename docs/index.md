@@ -93,13 +93,14 @@ The surface boundary conditions are defined for all prognostic variables, namely
  Temperature $T$ and salinity $S$ are restored towards meridional profiles, defined through
 
 $$
-    T^{\star}(\phi) = T^{\star}_{n/s} + \left( T^{\star}_{eq} - T^{\star}_{n/s} \right)  \sin(\pi  \frac{\phi + \phi_n}{\phi_n - \phi_s})
+T^{\star}(\phi) = T^{\star}_{\mathrm{n/s}} + \left( T^{\star}_{eq} - T^{\star}_{\mathrm{n/s}} \right) \sin\left( \pi \cdot \frac{\phi + \phi_n}{\phi_n - \phi_s} \right)
 $$
+
 
 and
 
 $$
-    S^{*}(\phi) = S^{\star}_{n/s} + \left( S^{\star}_{eq} - S^{\star}_{n/s} \right)  \left(1 + \cos(\frac{2  \pi  \phi }{\phi_n - \phi_s})\right) / 2 - 1.25  e^{- \phi^{2} / 7.5^{2}}
+    S^{\star}(\phi) = S^{\star}_{n/s} + \left( S^{\star}_{eq} - S^{\star}_{n/s} \right)  \left(1 + \cos(\frac{2  \pi  \phi }{\phi_n - \phi_s})\right) / 2 - 1.25  e^{- \phi^{2} / 7.5^{2}}
 $$
 
 where the subscript $(...)_{n/s}$ denotes the value at the northern or southern boundary, when $\phi < 0$ or $\phi > 0$.
