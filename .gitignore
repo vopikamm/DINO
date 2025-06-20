@@ -1,3 +1,4 @@
 BLD/*
 WORK/*
 *.nc
+!EXPREF/DINO_35136000_restart.nc
