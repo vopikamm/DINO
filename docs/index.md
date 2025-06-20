@@ -93,8 +93,12 @@ The surface boundary conditions are defined for all prognostic variables, namely
  Temperature $T$ and salinity $S$ are restored towards meridional profiles, defined through $T^{\star}(n/s)$
 
 $$
-T^{\star}_{n/s}
+\begin{equation}
+T^{\star}(\phi) &= T^{\star}_{\text{n/s}} \quad + \left( T^{\star}_{\text{eq}} - T^{\star}_{\text{n/s}} \right)
+\sin\left( \pi \cdot \dfrac{\phi + \phi_n}{\phi_n - \phi_s} \right)
+\end{equation}
 $$
+
 
 bla
 
