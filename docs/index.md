@@ -99,7 +99,7 @@ $$
 bla
 
 $$
-    T^{\star}(n/s) = T^{\star}(n/s) + \left( T^{\star}(eq) - T^{\star}(n/s) \right) \, \sin(\pi \, \frac{\phi + \phi_n}{\phi_n - \phi_s})
+    T^{\star}_{n/s} = T^{\star}_{n/s} + \left( T^{\star}_{eq} - T^{\star}_{n/s} \right) \, \sin\left(\pi \, \frac{\phi + \phi_{n}}{\phi_{n} - \phi_{s}}\rigth)
 $$
 
 $$
