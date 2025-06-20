@@ -19,7 +19,7 @@ DINO is solved on a sphere and discretized by a horizontally isotropic mercator 
 
 $$
 \begin{equation*}
-    \lambda(i) = \lambda\_{0} + \Delta \lambda \, i
+    \lambda(i) = \lambda\_{0} + \Delta \lambda  i
 \end{equation*}
 $$
 
@@ -28,18 +28,18 @@ and **latitude at T-points** as
 
 $$
 \begin{equation*}
-    \phi(j) = \frac{180}{\pi} * \arcsin ( \tanh( \Delta \lambda \frac{\pi}{180} \, j) )
+    \phi(j) = \frac{180}{\pi}  \arcsin ( \tanh( \Delta \lambda \frac{\pi}{180}  j) )
 \end{equation*}
 $$
 
 where $j = 1, \ldots, J$.
 
-The prognostic variables are staggered on an Arakawa C-grid. $I$ and $J$ are chosen to span a domain of 50° from eastern to western boundary and approximately 70° (not exactly, due to the mercator projection in (2)) from equator to both northern and southern boundary. In the following we show an example of the resulting grid spacing along $y$ (`e2t`) and $x$ (`e1t`) in meters for $\Delta \lambda = 1.0$:
+The prognostic variables are staggered on an Arakawa C-grid. $I$ and $J$ are chosen to span a domain of 50° from eastern to western boundary and approximately 70° (not exactly, due to the mercator projection in (2)) from equator to both northern and southern boundary (`rn_phi_min = = -70`, `rn_phi_max = = 70`, `rn_lam_min = = 0`, `rn_lam_max = = 50`). In the following we show an example of the resulting grid spacing along $y$ (`e2t`) and $x$ (`e1t`) in meters for $\Delta \lambda = 1.0$ (`rn_e1_deg = 1.0`):
     
 ![png](assets/README_4_1.png)
     
 ### Vertical discretization
-DINO has the option for a full step z or hybrid sigma-z vertical coordinate (`ln_zco_nam` or `ln_sco_nam`). The exact analytical formulation is described in Appendix C of [Kamm et al. (2025)](https://doi.org/10.5194/egusphere-2025-1100), but the default vertical levels at **T-points** are shown below.
+DINO has the option for a full step z or hybrid sigma-z vertical coordinate (`ln_zco_nam` or `ln_sco_nam`). The exact analytical formulation is described in Appendix C of [Kamm et al. (2025)](https://doi.org/10.5194/egusphere-2025-1100), but the default vertical levels at **T-points** for `nn_k = 36` are shown below.
 
 ![png](assets/README_9_1.png)
 
@@ -68,20 +68,20 @@ where
 
 $$
 \begin{align*}
-T_{a} &= T - 10° \, C \\
-S_{a} &= S - 35 \, \text{g} \, \text{kg}^{-1}
+T_{a} &= T - 10°  C \\
+S_{a} &= S - 35  \text{g} \text{kg}^{-1}
 \end{align*}
 $$
 
-using the parameters:
+using the parameters (changeable in `&nameos`):
 
 $$
 \begin{align*}
-    &\rho_{0} = 1028 &&: \text{reference density } [\text{kg} \, \text{m}^{-3}] \\
-    &a_{0} = 0.1655 &&: \text{thermal expansion } [\text{kg} \, \text{m}^{-3} \, \text{K}^{-1}] \\
-    &b_{0} = 0.7655 &&: \text{haline expansion  } [\text{kg}^{2} \, \text{m}^{-3} \, \text{g}^{-1}] \\
-    &C_{b} = 9.9 \times 10^{-3} &&: \text{thermal cabbeling } [\text{kg} \, \text{m}^{-3} \, \text{K}^{-2}] \\
-    &T_{h} = 2.4775 \times 10^{-5} &&: \text{thermobaricity } [\text{kg}^{-3} \, \text{dbar}^{-1} \, \text{K}^{-1}]
+    &\rho_{0} = 1028 &&: \text{reference density } [\text{kg}  \text{m}^{-3}] \\
+    &a_{0} = 0.1655 &&: \text{thermal expansion } [\text{kg}  \text{m}^{-3}  \text{K}^{-1}] \\
+    &b_{0} = 0.7655 &&: \text{haline expansion  } [\text{kg}^{2} \text{m}^{-3}  \text{g}^{-1}] \\
+    &C_{b} = 9.9 \times 10^{-3} &&: \text{thermal cabbeling } [\text{kg} \text{m}^{-3}  \text{K}^{-2}] \\
+    &T_{h} = 2.4775 \times 10^{-5} &&: \text{thermobaricity } [\text{kg}^{-3}  \text{dbar}^{-1}  \text{K}^{-1}]
 \end{align*}
 $$
 
@@ -93,13 +93,13 @@ The surface boundary conditions are defined for all prognostic variables, namely
  Temperature $T$ and salinity $S$ are restored towards meridional profiles, defined through
 
 $$
-    T^{*}(\phi) = T^{*}_{n/s} + \left( T^{*}_{eq} - T^{*}_{n/s} \right) \, \sin(\pi \, \frac{\phi + \phi_n}{\phi_n - \phi_s})
+    T^{*}(\phi) = T^{*}_{n/s} + \left( T^{*}_{eq} - T^{*}_{n/s} \right)  \sin(\pi  \frac{\phi + \phi_n}{\phi_n - \phi_s})
 $$
 
 and
 
 $$
-    S^{*}(\phi) = S^{*}_{n/s} + \left( S^{*}_{eq} - S^{*}_{n/s} \right) \, \left(1 + \cos(\frac{2 \, \pi \, \phi }{\phi_n - \phi_s})\right) / 2 - 1.25 \, e^{- \phi^{2} / 7.5^{2}}
+    S^{*}(\phi) = S^{*}_{n/s} + \left( S^{*}_{eq} - S^{*}_{n/s} \right)  \left(1 + \cos(\frac{2  \pi  \phi }{\phi_n - \phi_s})\right) / 2 - 1.25  e^{- \phi^{2} / 7.5^{2}}
 $$
 
 where the subscript $(...)_{n/s}$ denotes the value at the northern or southern boundary, when $\phi < 0$ or $\phi > 0$.
@@ -117,15 +117,12 @@ The salinity restoring stays constant throughout the simulation, while a seasona
 Shortwave solar radiation is adapted from [Caneill et al. 2022](https://doi.org/10.1175/JPO-D-21-0295.1) and given by
 
 $$
-Q_{solar}(\phi) = 230. \, \cos\left( \frac{\pi}{180} \, \left[ \phi - 23.5 \, \cos(\pi \,\frac{d+189}{180})\right]\right)
+Q_{solar}(\phi) = 230.  \cos\left( \frac{\pi}{180}  \left[ \phi - 23.5  \cos(\pi \frac{d+189}{180})\right]\right)
 $$
 
 where d is the day of the year controlling a seasonal cycle in the solar forcing.
     
 ![png](assets/README_20_0.png)
-
-
-
 
 ## 1. Installation
 Please follow the [NEMO installation guide](https://sites.nemo-ocean.io/user-guide/install.html#essential-components) and install XIOS and NEMO [version 5.0.1](https://forge.nemo-ocean.eu/nemo/nemo/-/releases/4.2.1) (!) as described. If you are new to NEMO I suggest following the guide until you manage to run your own [test configuration](https://sites.nemo-ocean.io/user-guide/install.html#running-the-model) before continuing with DINO.
