@@ -90,7 +90,7 @@ $$
 
 The surface boundary conditions are defined for all prognostic variables, namely U, $V$, $T$,  and $S$. Regarding momentum we follow [Marques et al 2020](https://doi.org/10.5194/gmd-15-6567-2022) with a purely zonal wind stress profile constructed with a piecewise cubic interpolation between fixed values of latitude.
 
- Temperature $T$ and salinity $S$ are restored towards meridional profiles, defined through
+ Temperature $T$ and salinity $S$ are restored towards meridional profiles, defined through $T^{\star}(n/s)$
 
 $$
 T^{\star}(\phi) = T^{\star}_{n\!/\!s} + \left( T^{\star}_{eq} - T^{\star}_{n\!/\!s} \right) \sin\left( \pi \cdot \frac{\phi + \phi_n}{\phi_n - \phi_s} \right)
