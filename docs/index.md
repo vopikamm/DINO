@@ -8,7 +8,7 @@ This demonstrator was developed during the NEMO Zoo hackathon hosted by the 2025
 
 ### Motivation
 The configuration is an idealized Atlantic sector model, designed as a testbed for mesoscale eddy parameterizations. It captures key features of our climate system, like the Antarctic Circumpolar Current (ACC), Meridional Overturning Circulation (MOC) and their associated transports, while being cheap enough to be run across a hierarchy of horizontal resolutions from 1° to 1/16°. The basin domain is broadly based on Neverworld2 by [Marques et al. (2022)](https://doi.org/10.5194/gmd-15-6567-2022), but the model accounts for diabatic processes such as convection, diapycnal mixing, and dense water formation.
-Here we will give a short introduction into the configuration and a short tutorial on how to get it started. All components of the configuration are also implemented as a Python class showcased in this Jupyter notebook (TODO link). 
+Here we will give a short introduction into the configuration and a short tutorial on how to get it started. All components of the configuration are also implemented as a Python class showcased in the matching Jupyter notebook. 
 
 ### Horizontal discretization
 DINO is solved on a sphere and discretized by a horizontally isotropic mercator grid. Therefore, the grid-spacing in latitudinal direction decreases towards the poles. The **longitude at T-points** is computed as
@@ -159,8 +159,9 @@ As for the [NEMO installation guide](https://sites.nemo-ocean.io/user-guide/inst
 mpirun -np 36 ./nemo : -np 1 <PATH_TO_YOUR>/xios_server.exe
 ```
 
-## 3. Look at your output
+## 3. Example for DINO at different horizontal resolutions
 
+![snapshot](assets/KE_snapshots.png)
 
 ## 4. References
 
