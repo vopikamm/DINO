@@ -88,58 +88,8 @@ $$
 
 ## Surface Boundary Conditions
 
-The surface boundary conditions are defined for all prognostic variables, namely U, $V$, $T$,  and $S$. Regarding momentum we follow [Marques et al 2020](https://doi.org/10.5194/gmd-15-6567-2022) with a purely zonal wind stress profile constructed with a piecewise cubic interpolation between fixed values of latitude.
+The surface boundary conditions are defined for all prognostic variables, namely U, $V$, $T$,  and $S$. Regarding momentum they are as in [Marques et al. (2020)](https://doi.org/10.5194/gmd-15-6567-2022) with a purely zonal wind stress profile constructed with a piecewise cubic interpolation between fixed values of latitude. Temperature $T$ and salinity $S$ are restored to profiles adapted from [Munday et al. (2012)](https://doi.org/10.1175/JPO-D-12-095.1). The salinity restoring stays constant throughout the simulation, while a seasonal cosine of magnitude $3.0°C$ and $0.5°C$ is applied to the northern and southern boundary values of the temperature restoring. The maximum/minimum restoring lags one month after the respective minimum/maximum in solar radiation. Shortwave solar radiation is adapted from [Caneill et al. (2022)](https://doi.org/10.1175/JPO-D-21-0295.1). The analytical expression of all profiles are provided in [Kamm et al. (2025)](https://doi.org/10.5194/egusphere-2025-1100) and visualized below.
 
- Temperature $T$ and salinity $S$ are restored towards meridional profiles, defined through $T^{\star}(n/s)$
-
-$$
-\begin{aligned}
-T^{\star}(\phi) &= T^{\star}_{\text{n/s}} \\
-&\quad + \left( T^{\star}_{\text{eq}} - T^{\star}_{\text{n/s}} \right)
-\sin\left( \pi \cdot \dfrac{\phi + \phi_n}{\phi_n - \phi_s} \right)
-\end{aligned}
-$$
-
-
-
-bla
-
-$$
-    T^{\star}_{n/s} = T^{\star}_{n/s} + \left( T^{\star}_{eq} - T^{\star}_{n/s} \right) \, \sin\left(\pi \, \frac{\phi + \phi_{n}}{\phi_{n} - \phi_{s}}\rigth)
-$$
-
-$$
-\sin\left( \pi \cdot \frac{\phi + \phi_n}{\phi_n - \phi_s} \right)
-$$
-
-
-
-and
-
-$$
-    S^{\star}(\phi) = S^{\star}_{n/s} + \left( S^{\star}_{eq} - S^{\star}_{n/s} \right)  \left(1 + \cos(\frac{2  \pi  \phi }{\phi_n - \phi_s})\right) / 2 - 1.25  e^{- \phi^{2} / 7.5^{2}}
-$$
-
-where the subscript $(...)_{n/s}$ denotes the value at the northern or southern boundary, when $\phi < 0$ or $\phi > 0$.
-The restoring values for southern, northern boundary and equator are 
-
-$$
-\begin{align*}
-    &T^{\star}_{s} = -0.5°C, &&T^{\star}_{n} = -5.0°C, &&T^{\star}_{eq} = 27.0°C \\
-    &S^{\star}_{s} = 35.1 PSU, &&S^{\star}_{n} = 35.0 PSU, &&S^{\star}_{eq} = 37.25 PSU \\
-\end{align*}
-$$
-
-The salinity restoring stays constant throughout the simulation, while a seasonal cosine of magnitude $3.0°C$ (at $T^{*}_{n}$) and $0.5°C$ (at $T^{*}_{s}$) is applied to the boundary values of the temperature restoring. The maximum/minimum restoring lags one month after the respective minimum/maximum in solar radiation. All meridional profiles of surface boundary conditions are visualized below. 
-
-Shortwave solar radiation is adapted from [Caneill et al. 2022](https://doi.org/10.1175/JPO-D-21-0295.1) and given by
-
-$$
-Q_{solar}(\phi) = 230.  \cos\left( \frac{\pi}{180}  \left[ \phi - 23.5  \cos(\pi \frac{d+189}{180})\right]\right)
-$$
-
-where d is the day of the year controlling a seasonal cycle in the solar forcing.
-    
 ![png](assets/README_20_0.png)
 
 ## 1. Installation
