@@ -30,7 +30,7 @@
                                           ! 3: no forcing
                                           ! 4: close to Wolfe and Cessis (2014), JPO
                                           ! 5: inspired by Wolfe and Cessi (2014), JPO and Gyre
-      rn_ztau0          =    0.1          ! Magnitude of the wind forcing [Pa] 
+      rn_ztau0          =    0.2          ! Magnitude of the wind forcing [Pa] 
       ln_diu_cyc        = .false.         ! Use diurnal cycle or not for qsr  (if nn_forcingtype is compatible)
       ln_ann_cyc        = .true.          ! Use annual cycle or not (if nn_forcingtype is compatible)
       rn_emp_prop       =      0.         ! Proportionality factor to apply on EMP

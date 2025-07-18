@@ -160,7 +160,7 @@ CONTAINS
          ! First and last values ensure that rn_phi_min / rn_phi_max stay within bounds.
          ! For values outside of rn_phi_min / rn_phi_max there are no winds
          znds_wnd_phi    = (/rn_phi_min - 1._wp, rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max, rn_phi_max + 1._wp /)
-         znds_wnd_val    = (/0._wp, 0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp, 0._wp /)
+         znds_wnd_val    = (/0._wp, 0._wp, rn_ztau0, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp, 0._wp /)
          !         
          !
          IF( kt == nit000 ) THEN
@@ -322,7 +322,7 @@ CONTAINS
          ! Wind stress
          !ztau0         =   0.1_wp    ! [Pa]
          znds_wnd_phi    = (/rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max /)
-         znds_wnd_val    = (/0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp /)
+         znds_wnd_val    = (/0._wp, rn_ztau0, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp /)
          ! zatau         =   0.8_wp    ! [no unit]
          ! zdeltatau     =   5.77_wp   ! [deg North]
          ! T star and qns
