@@ -2,11 +2,12 @@ MODULE usrdef_nam
    !!======================================================================
    !!                       ***  MODULE  usrdef_nam  ***
    !!
-   !!                      ===  BASIN configuration  ===
+   !!                      ===  DINO configuration  ===
    !!
    !! User defined : set the domain characteristics of a user configuration
    !!======================================================================
    !! History :  NEMO ! 2017-10  (J. Chanut)  Original code
+   !!                 ! 2025-25  (D. Kamm) Adaptation for DINO
    !!----------------------------------------------------------------------
 
    !!----------------------------------------------------------------------
@@ -14,7 +15,6 @@ MODULE usrdef_nam
    !!   usr_def_hgr   : initialize the horizontal mesh 
    !!----------------------------------------------------------------------
    USE dom_oce, ONLY: nimpp , njmpp            ! i- & j-indices of the local domain
-   USE par_oce, ONLY:        ! ocean space and time domain
    USE phycst         ! physical constants
    !
    USE in_out_manager ! I/O manager
@@ -24,7 +24,7 @@ MODULE usrdef_nam
    IMPLICIT NONE
    PRIVATE
 
-   PUBLIC   usr_def_nam, merc_proj   ! called by nemogcm.F90
+   PUBLIC   usr_def_nam, merc_proj, usr_def_nam_cfg   ! called by nemogcm.F90
 
    !                              !!* namusr_def namelist *!!
    REAL(wp), PUBLIC ::   rn_e1_deg      =     1     ! Resolution in degrees of longitude (Mercator grid)
@@ -41,6 +41,7 @@ MODULE usrdef_nam
    LOGICAL , PUBLIC ::   ln_diu_cyc     =  .TRUE.   ! Use diurnal cycle for qsr or not
    LOGICAL , PUBLIC ::   ln_ann_cyc     =  .TRUE.   ! Use an annual cycle or not
    LOGICAL , PUBLIC ::   ln_emp_field   =  .FALSE.  ! EmP is read from file and replaces saltflx from S-restoring
+   LOGICAL , PUBLIC ::   ln_qns_field   =  .FALSE.  ! Qtot is read from file and replaces heatflx from T-restoring
    REAL(wp), PUBLIC ::   rn_emp_prop    =     1.    ! Proportionality factor to apply on the EMP
    REAL(wp), PUBLIC ::   rn_trp         =   -40.    ! Retroaction term on T*, must be negative  [W/m2/K]
    REAL(wp), PUBLIC ::   rn_srp         =     0.0   ! Restoring term on S*, must be negative    [kg/m2/s]
@@ -115,7 +116,8 @@ CONTAINS
          &                 , ln_zco_nam, ln_zps_nam, ln_sco_nam                  &
          &                 , nn_ztype, rn_H, rn_hborder, rn_distLam              &
          &                 , ln_mid_ridge, ln_drake_sill, ln_ann_cyc             &
-         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc, ln_emp_field    &
+         &                 , ln_qns_field, ln_emp_field                          &
+         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc                  &
          &                 , rn_sstar_s, rn_sstar_n, rn_sstar_eq                 &
          &                 , rn_tstar_s, rn_tstar_n, rn_tstar_eq                 &
          &                 , rn_dzmin, rn_kth, rn_hco, rn_acr,  nn_mr_edge       &
@@ -130,89 +132,106 @@ CONTAINS
 902   IF( ios /= 0 )   CALL ctl_nam ( ios , 'namusr_def in configuration namelist' )
       !
       !
-      WRITE( numond, namusr_def )
+      IF(lwp) WRITE( numond, namusr_def )
       !
-      cd_cfg = 'BASIN'             ! name & resolution (not used)
+      cd_cfg = 'DINO'             ! name & resolution (not used)
       kk_cfg = rn_e1_deg
       !
-      ! Number of gridpoints in j-direction
-      ! zarg_min = rpi / 4. - rpi / 180. * rn_phi_max / 2.
-      ! zarg_max = rpi / 4. - rpi / 180. * rn_phi_min / 2.
-
-      ! zjeq_min = ABS( 180./rpi * LOG( COS( zarg_min ) / SIN( zarg_min ) ) / rn_e1_deg )
-      ! zjeq_max = ABS( 180./rpi * LOG( COS( zarg_max ) / SIN( zarg_max ) ) / rn_e1_deg )
-
-      ! IF(  rn_phi_min > 0 )  zjeq_min = -zjeq_min
-      ! IF(  rn_phi_max > 0 )  zjeq_max = -zjeq_max
-
-      ! zjeq_min =  zjeq_min + 1._wp
-      ! zjeq_max =  zjeq_max + 1._wp ! We add the +1 because the j indexes start from 1: if the equator is on the first row, its index must be 1
-      
-      ! nn_jeq_min  = FLOOR( zjeq_min )
-      ! ijeq_max    = FLOOR( zjeq_max )
-
-      ! IF( ABS( REAL( nn_jeq_min, wp ) - zjeq_min ) > 0.5 )   nn_jeq_min = nn_jeq_min + 1
-      ! IF( ABS( REAL( ijeq_max, wp ) - zjeq_max ) > 0.5 )   ijeq_max = ijeq_max + 1
-      ! !
-      ! IF(lwp) WRITE(numout,*) '          Index of the equator      (real)       on the MERCATOR grid:', zjeq_min
-      ! IF(lwp) WRITE(numout,*) '          Index of the equator (nearest integer) on the MERCATOR grid:', nn_jeq_min
-      ! IF(lwp) WRITE(numout,*) '          Index of the equator (from northern boundary) on the MERCATOR grid:', ijeq_max
-
       nn_jeq_n = merc_proj(rn_phi_max, rn_e1_deg)
       nn_jeq_s = merc_proj(rn_phi_min, rn_e1_deg)
-
       IF(lwp) WRITE(numout,*) '          Index of the equator (north from merc_proj) on the MERCATOR grid:', nn_jeq_n
       IF(lwp) WRITE(numout,*) '          Index of the equator (south from merc_proj) on the MERCATOR grid:', nn_jeq_s
-
       nn_jglo = (nn_jeq_s - nn_jeq_n) + 1
-
       ! Number of gridpoints in i-direction
       ziglo = (rn_lam_max - rn_lam_min) / rn_e1_deg
       nn_iglo = FLOOR(ziglo)
       IF( ABS( REAL( nn_iglo, wp ) - ziglo ) > 0.5 )   nn_iglo = nn_iglo + 1
-
       ! To conserve volume across resolutions in i-direction
       nn_iglo = nn_iglo + 2
-
       ! Global domain size
       kpi = nn_iglo
       kpj = nn_jglo
       kpk = nn_k
       !
-      ldIperio = ln_Iperio   ;   ldJperio = .FALSE.   ! NEVERWORLD configuration : with periodic channel 
+      ldIperio = ln_Iperio   ;   ldJperio = .FALSE.   ! DINO configuration : with periodic channel 
       ldNFold  = .FALSE.     ;   cdNFtype = '-'
+      
       !
       !kperio = nn_perio   ! 0: closed basin, 8: south symmetrical
       !IF( kperio == 8 )   rn_phi0 = -rn_e1_deg   ! manually set the longitude of the global first (southern) T point
-      !                             ! control print
-      WRITE(numout,*) '   '                                                                                                  ;   ii = ii + 1
-      WRITE(numout,*) 'usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg'                           ;   ii = ii + 1
-      WRITE(numout,*) '~~~~~~~~~~~ '                                                                                         ;   ii = ii + 1
-      WRITE(numout,*) '   Namelist namusr_def : BASIN test case'                                                             ;   ii = ii + 1
-      WRITE(numout,*) '   Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = ', rn_e1_deg, 'degrees'   ;   ii = ii + 1
-      WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = ', rn_phi_min, 'degrees'  ;   ii = ii + 1
-      WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_phi_max     = ', rn_phi_max, 'degrees'  ;   ii = ii + 1
-      WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_lam_min     = ', rn_lam_min, 'degrees'  ;   ii = ii + 1
-      WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_lam_max     = ', rn_lam_max, 'degrees'  ;   ii = ii + 1
-      WRITE(numout,*) '   Number of grid points along i direction                 nn_piglo       = ', kpi                    ;   ii = ii + 1
-      WRITE(numout,*) '   Number of grid points along j direction                 nn_pjglo       = ', kpj                    ;   ii = ii + 1
-      WRITE(numout,*) '   Number of grid points along k direction                 nn_k           = ', kpk                    ;   ii = ii + 1
-      WRITE(numout,*) '   Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = ', nn_forcingtype         ;   ii = ii + 1
-      WRITE(numout,*) '   Magnitude of wind forcing                               rn_ztau0       = ', rn_ztau0               ;   ii = ii + 1
-      WRITE(numout,*) '   Use annual cycle or not                                 ln_ann_cyc     = ', ln_ann_cyc             ;   ii = ii + 1
-      WRITE(numout,*) '   Proportionality factor applied on EMP                   rn_emp_prop    = ', rn_emp_prop            ;   ii = ii + 1
-      WRITE(numout,*) '   Bottom definition                                       nn_botcase     = ', nn_botcase             ;   ii = ii + 1
-      WRITE(numout,*) '      (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)'                                                    ;   ii = ii + 1
-      WRITE(numout,*) '   Maximum / asymptotical depth of the basin               rn_H           = ', rn_H, 'm'              ;   ii = ii + 1
-      WRITE(numout,*) '   Depth of the bathymetry at the coast                    rn_hborder     = ', rn_hborder, 'm'        ;   ii = ii + 1
-      WRITE(numout,*) '   Typical length scale of the slope in longitude          rn_distLam     = ', rn_distLam, 'degrees'
-      WRITE(numout,*) '   Initial condition case                                  nn_initcase    = ', nn_initcase            ;   ii = ii + 1
-      WRITE(numout,*) '      (0:rest and constant T and S, '                                                                 ;   ii = ii + 1
-      WRITE(numout,*) '       1: rest and stratification)'                                                                   ;   ii = ii + 1
-      WRITE(numout,*) '      (0:closed, 8:south symmetrical)'                                                                ;   ii = ii + 1
-      WRITE(numout,*) '   Include mid-atlantic ridge                              ln_mid_ridge   = ', ln_mid_ridge           ;   ii = ii + 1
-      WRITE(numout,*) '   Include circular drake sill                             ln_drake_sill  = ', ln_drake_sill          ;   ii = ii + 1
+      !                            ! control print
+      IF(lwp) THEN
+         WRITE(numout,*) '   '                                                                                                  ;   ii = ii + 1
+         WRITE(numout,*) 'usr_def_nam  : read the user defined namelist (namusr_def) in namelist_cfg'                           ;   ii = ii + 1
+         WRITE(numout,*) '~~~~~~~~~~~ '                                                                                         ;   ii = ii + 1
+         WRITE(numout,*) '   Namelist namusr_def : DINO test case'                                                             ;   ii = ii + 1
+         WRITE(numout,*) '   Resolution in degrees of longitude (Mercator grid)      rn_e1_deg      = ', rn_e1_deg, 'degrees'   ;   ii = ii + 1
+         WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_phi0_min    = ', rn_phi_min, 'degrees'  ;   ii = ii + 1
+         WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_phi_max     = ', rn_phi_max, 'degrees'  ;   ii = ii + 1
+         WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_lam_min     = ', rn_lam_min, 'degrees'  ;   ii = ii + 1
+         WRITE(numout,*) '   Latitude of the south frontier (T point) [degrees]      rn_lam_max     = ', rn_lam_max, 'degrees'  ;   ii = ii + 1
+         WRITE(numout,*) '   Number of grid points along i direction                 nn_piglo       = ', kpi                    ;   ii = ii + 1
+         WRITE(numout,*) '   Number of grid points along j direction                 nn_pjglo       = ', kpj                    ;   ii = ii + 1
+         WRITE(numout,*) '   Number of grid points along k direction                 nn_k           = ', kpk                    ;   ii = ii + 1
+         WRITE(numout,*) '   Use surface forcing like Gyre (1) or remade one (0)     nn_forcingtype = ', nn_forcingtype         ;   ii = ii + 1
+         WRITE(numout,*) '   Magnitude of wind forcing                               rn_ztau0       = ', rn_ztau0               ;   ii = ii + 1
+         WRITE(numout,*) '   Use annual cycle or not                                 ln_ann_cyc     = ', ln_ann_cyc             ;   ii = ii + 1
+         WRITE(numout,*) '   Proportionality factor applied on EMP                   rn_emp_prop    = ', rn_emp_prop            ;   ii = ii + 1
+         WRITE(numout,*) '   Bottom definition                                       nn_botcase     = ', nn_botcase             ;   ii = ii + 1
+         WRITE(numout,*) '      (0:flat, 1:bowl in cosh, 2: bowl in 1-x**4)'                                                    ;   ii = ii + 1
+         WRITE(numout,*) '   Maximum / asymptotical depth of the basin               rn_H           = ', rn_H, 'm'              ;   ii = ii + 1
+         WRITE(numout,*) '   Depth of the bathymetry at the coast                    rn_hborder     = ', rn_hborder, 'm'        ;   ii = ii + 1
+         WRITE(numout,*) '   Typical length scale of the slope in longitude          rn_distLam     = ', rn_distLam, 'degrees'
+         WRITE(numout,*) '   Initial condition case                                  nn_initcase    = ', nn_initcase            ;   ii = ii + 1
+         WRITE(numout,*) '      (0:rest and constant T and S, '                                                                 ;   ii = ii + 1
+         WRITE(numout,*) '       1: rest and stratification)'                                                                   ;   ii = ii + 1
+         WRITE(numout,*) '      (0:closed, 8:south symmetrical)'                                                                ;   ii = ii + 1
+         WRITE(numout,*) '   Include mid-atlantic ridge                              ln_mid_ridge   = ', ln_mid_ridge           ;   ii = ii + 1
+         WRITE(numout,*) '   Include circular drake sill                             ln_drake_sill  = ', ln_drake_sill          ;   ii = ii + 1
+      END IF
    END SUBROUTINE usr_def_nam
+
+
+   SUBROUTINE usr_def_nam_cfg( )
+      !!----------------------------------------------------------------------
+      !!                     ***  ROUTINE dom_nam  ***
+      !!                    
+      !! ** Purpose :   read user defined namelist when reading from domain configuration file (ln_read_cfg=T)
+      !!
+      !! ** Method  :   read in namusr_def containing all the user specific namelist parameter
+      !!
+      !!                Here DINO configuration
+      !!
+      !! ** input   : - namusr_def namelist found in namelist_cfg
+      !!----------------------------------------------------------------------
+      !
+      INTEGER ::   ios, ii               ! Local integer
+      !!
+      NAMELIST/namusr_def/ rn_e1_deg, rn_phi_min, rn_phi_max, rn_lam_min         &
+         &                 , rn_lam_max, nn_k, rn_emp_prop, rn_ztau0             &
+         &                 , nn_botcase, nn_initcase, nn_forcingtype             &
+         &                 , ln_Iperio, rn_cha_min, rn_cha_max, rn_slp_cha       &
+         &                 , ln_zco_nam, ln_zps_nam, ln_sco_nam                  &
+         &                 , nn_ztype, rn_H, rn_hborder, rn_distLam              &
+         &                 , ln_mid_ridge, ln_drake_sill, ln_ann_cyc             &
+         &                 , ln_qns_field, ln_emp_field                          &
+         &                 , rn_trp, rn_srp, ln_qsr, ln_diu_cyc                  &
+         &                 , rn_sstar_s, rn_sstar_n, rn_sstar_eq                 &
+         &                 , rn_tstar_s, rn_tstar_n, rn_tstar_eq                 &
+         &                 , rn_dzmin, rn_kth, rn_hco, rn_acr,  nn_mr_edge       &
+         &                 , rn_mr_depth, rn_mr_width, rn_mr_lat_s               &
+         &                 , rn_mr_lat_n, rn_ds_depth, rn_ds_width
+      !!----------------------------------------------------------------------
+      !
+      ii = 1
+
+      !REWIND( numnam_cfg )          ! Namelist namusr_def (exist in namelist_cfg only)
+      READ  ( numnam_cfg, namusr_def, IOSTAT = ios, ERR = 902 )
+902   IF( ios /= 0 )   CALL ctl_nam ( ios , 'namusr_def in configuration namelist' )
+      !
+      IF(lwp) WRITE( numond, namusr_def )
+      !
+   END SUBROUTINE usr_def_nam_cfg
 
 
    FUNCTION merc_proj( pphi, pres ) RESULT( kphi )

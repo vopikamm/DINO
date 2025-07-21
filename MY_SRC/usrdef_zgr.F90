@@ -2,12 +2,13 @@ MODULE usrdef_zgr
    !!======================================================================
    !!                       ***  MODULE  usrdef_zgr  ***
    !!
-   !!                      ===  BASIN configuration  ===
+   !!                      ===  DINO configuration  ===
    !!
    !! User defined : vertical coordinate system of a user configuration
    !!======================================================================
    !! History :  4.0  ! 2017-11  (J. Chanut)  Original code
    !!                 ! 2019-05  (R.Caneill and G.Madec) Adaptation
+   !!                 ! 2025-03  (D. Kamm) Adaptation for DINO
    !!----------------------------------------------------------------------
 
    !!----------------------------------------------------------------------
@@ -72,10 +73,10 @@ CONTAINS
       INTEGER , DIMENSION(:,:)  , INTENT(out) ::   k_top, k_bot                ! first & last ocean level
       !
       INTEGER  ::   ji, jj                                     ! dummy loop index
-      REAL(wp) ::   zdzmin, zkth, zh_co, zacr                  ! Local scalars for the coordinate stretching
+      REAL(wp) ::   zdzmin, zkth, zhco, zacr                  ! Local scalars for the coordinate stretching
       REAL(wp) ::   zHmax
 
-      REAL(wp), DIMENSION(jpi,jpj)           ::   zbathy, z2d   ! bathymetry, 2D variable
+      REAL(wp), DIMENSION(jpi,jpj)           ::   zbathy, z2dm, zflat    ! bathymetry, 2D variable, flat bottom bathymetry
       REAL(wp) ::   zmidPhi            ! latitude of the central channel
       INTEGER  ::   nn_cha_min         ! index of the southern edge of the channel
       INTEGER  ::   nn_cha_max         ! index of the northern edge of the channel
@@ -91,9 +92,12 @@ CONTAINS
       ld_sco      = ln_sco_nam
       ld_isfcav   = .FALSE.   ! no ice-shelves
       !
-      zHmax = rn_H   ! Maximum depth of the basin
-
-      !nn_cha_loc = NINT( ABS( rn_phi_min - rn_cha_loc )/ rn_e1_deg )
+      ! z-coordinate parameters from namelist
+      zHmax       =   rn_H              ! Maximum depth of the basin (approximative, is recomputed after the bathymetry calculation)
+      zdzmin      =   rn_dzmin          ! minimum value of e3 at the surface   [m]
+      zkth        =   rn_kth            ! position of the inflexion point
+      zhco        =   rn_hco            ! layer thickness with z-coordinate [m]
+      zacr        =   rn_acr            ! slope of the tanh
 
       CALL zgr_bat( zHmax, zbathy )   ! User creation of bathymetry
       !
@@ -103,93 +107,32 @@ CONTAINS
       !   === z-coordinate   ===   !
       IF( ld_zco ) THEN
          !
-         CALL zgr_z1D( zHmax, nn_ztype, pdept_1d, pdepw_1d )   ! Reference z-coordinate system
-         !
-         !                                                       ! z-coordinate (3D arrays) from the 1D z-coord.
-         CALL zgr_zco( pdept_1d, pdepw_1d,                   &   ! <==>  1D reference vertical coordinate
-            &          pe3t_1d , pe3w_1d ,                   &   ! ==>>  1D t & w-points vertical scale factors  
-            &          pdept   , pdepw   ,                   &   !       3D t & w-points depth
-            &          pe3t    , pe3u    , pe3v    , pe3f,   &   !       vertical scale factors
-            &          pe3w    , pe3uw   , pe3vw           )     !           -      -      -
+         ! Same as for s-coordinates at bathy = Hmax
+         zflat(:,:) = zHmax
+         CALL zgr_sco_mi96( pdept_1d, pdepw_1d,                   &   ! ==>>  1D reference vertical coordinate
+            &               zflat  , zHmax   ,                    &   ! <<==  bathymetry
+            &               zdzmin  , zkth    , zhco , zacr,      &   ! <<==  parameters for the tanh stretching
+            &               pe3t_1d , pe3w_1d ,                   &   ! ==>>  1D t & w-points vertical scale factors  
+            &               pdept   , pdepw   ,                   &   !       3D t & w-points depth
+            &               pe3t    , pe3u    , pe3v    , pe3f,   &   !       vertical scale factors
+            &               pe3w    , pe3uw   , pe3vw           )     !           -      -      -
          !
          CALL zgr_msk_top_bot( pdept_1d, zbathy, k_top, k_bot )                 ! masked top and bottom ocean t-level indices
          !
       ENDIF
       !
-      !   === z-coordinate with partial steps   ==   !
-      !IF ( ld_zps ) THEN      !==  zps-coordinate  ==!   (partial bottom-steps)
-      !   !
-      !   CALL zgr_z1D( zHmax, nn_ztype, pdept_1d, pdepw_1d )   ! Reference z-coordinate system
-      !   !
-      !   ze3min = 0.1_wp * rn_dz
-      !   IF(lwp) WRITE(numout,*) '   minimum thickness of the partial cells = 10 % of e3 = ', ze3min
-      !   !
-      !   !
-      !   !                                !* bottom ocean compute from the depth of grid-points
-      !   k_bot(:,:) = jpkm1
-      !   DO jk = jpkm1, 1, -1
-      !      WHERE( zht(:,:) < pdepw_1d(jk) + ze3min )   k_bot(:,:) = jk-1
-      !   END DO
-      !   !
-      !   !                                !* vertical coordinate system
-      !   DO jk = 1, jpk                      ! initialization to the reference z-coordinate
-      !      pdept(:,:,jk) = pdept_1d(jk)
-      !      pdepw(:,:,jk) = pdepw_1d(jk)
-      !      pe3t (:,:,jk) = pe3t_1d (jk)
-      !      pe3u (:,:,jk) = pe3t_1d (jk)
-      !      pe3v (:,:,jk) = pe3t_1d (jk)
-      !      pe3f (:,:,jk) = pe3t_1d (jk)
-      !      pe3w (:,:,jk) = pe3w_1d (jk)
-      !      pe3uw(:,:,jk) = pe3w_1d (jk)
-      !      pe3vw(:,:,jk) = pe3w_1d (jk)
-      !   END DO
-      !   DO jj = 1, jpj                      ! bottom scale factors and depth at T- and W-points
-      !      DO ji = 1, jpi
-      !         ik = k_bot(ji,jj)
-      !            pdepw(ji,jj,ik+1) = MIN( zht(ji,jj) , pdepw_1d(ik+1) )
-      !            pe3t (ji,jj,ik  ) = pdepw(ji,jj,ik+1) - pdepw(ji,jj,ik)
-      !            pe3t (ji,jj,ik+1) = pe3t (ji,jj,ik  ) 
-      !            !
-      !            pdept(ji,jj,ik  ) = pdepw(ji,jj,ik  ) + pe3t (ji,jj,ik  ) * 0.5_wp
-      !            pdept(ji,jj,ik+1) = pdepw(ji,jj,ik+1) + pe3t (ji,jj,ik+1) * 0.5_wp
-      !            pe3w (ji,jj,ik+1) = pdept(ji,jj,ik+1) - pdept(ji,jj,ik)              ! = pe3t (ji,jj,ik  )
-      !      END DO
-      !   END DO         
-      !   !                                   ! bottom scale factors and depth at  U-, V-, UW and VW-points
-      !   !                                   ! usually Computed as the minimum of neighbooring scale factors
-      !   !pe3u (:,:,:) = pe3t(:,:,:)          ! HERE OVERFLOW configuration : 
-      !   !pe3v (:,:,:) = pe3t(:,:,:)          !    e3 increases with i-index and identical with j-index
-      !   !pe3f (:,:,:) = pe3t(:,:,:)          !    so e3 minimum of (i,i+1) points is (i) point
-      !   !pe3uw(:,:,:) = pe3w(:,:,:)          !    in j-direction e3v=e3t and e3f=e3v
-      !   !pe3vw(:,:,:) = pe3w(:,:,:)          !    ==>>  no need of lbc_lnk calls
-      !   
-      !   DO jk = 1,jpk                         ! Computed as the minimum of neighbooring scale factors
-      !      DO jj = 1, jpj - 1
-      !         DO ji = 1, jpi - 1   ! vector opt.
-      !            pe3u (ji,jj,jk) = MIN( pe3t(ji,jj,jk), pe3t(ji+1,jj,jk) )
-      !            pe3v (ji,jj,jk) = MIN( pe3t(ji,jj,jk), pe3t(ji,jj+1,jk) )
-      !            pe3f (ji,jj,jk) = MIN( pe3t(ji,jj,jk), pe3t(ji+1,jj,jk), pe3t(ji,jj+1,jk), pe3t(ji+1,jj+1,jk) )
-      !            pe3uw(ji,jj,jk) = MIN( pe3w(ji,jj,jk), pe3w(ji+1,jj,jk) )
-      !            pe3vw(ji,jj,jk) = MIN( pe3w(ji,jj,jk), pe3w(ji,jj+1,jk) )
-      !         END DO
-      !      END DO
-      !   END DO
-      !   !
-      !   CALL zgr_msk_top_bot( pdept_1d, zbathy, k_top, k_bot )
-      !   !
-      !ENDIF               ! masked top and bottom ocean t-level indices
-   !
-!   ===   s-coordinate   ===   !
+      !
+      !   ===   s-coordinate   ===   !
       IF( ld_sco ) THEN
          !
          zdzmin  = rn_dzmin
          zkth    = rn_kth
-         zh_co   = rn_hco
+         zhco   = rn_hco
          zacr    = rn_acr
          !
          CALL zgr_sco_mi96( pdept_1d, pdepw_1d,                   &   ! ==>>  1D reference vertical coordinate
             &               zbathy  , zHmax   ,                   &   ! <<==  bathymetry
-            &               zdzmin  , zkth    , zh_co , zacr,     &   ! <<==  parameters for the tanh stretching
+            &               zdzmin  , zkth    , zhco , zacr,     &   ! <<==  parameters for the tanh stretching
             &               pe3t_1d , pe3w_1d ,                   &   ! ==>>  1D t & w-points vertical scale factors  
             &               pdept   , pdepw   ,                   &   !       3D t & w-points depth
             &               pe3t    , pe3u    , pe3v    , pe3f,   &   !       vertical scale factors
@@ -261,7 +204,7 @@ CONTAINS
          WRITE(numout,*)
          WRITE(numout,*)    '    zgr_bat : defines the bathymetry at T points.'
          WRITE(numout,*)    '    ~~~~~~~'
-         WRITE(numout,*)    '       BASIN case : flat bottom or bowl shape'
+         WRITE(numout,*)    '       DINO case : flat bottom or bowl shape'
          WRITE(numout,*)    '       nn_botcase = ', nn_botcase
       ENDIF
       !!----------------------------------------------------------------------
@@ -269,6 +212,8 @@ CONTAINS
       zlamt(:,:) = glamt(:,:)
       zphit(:,:) = gphit(:,:)
       !
+      ! dk: TODO: Is this mixed up? zlamt(jpi,:) = glamt(jpi-1,:) + rn_e1_deg etc...
+      ! --> does it actually matter for the bathy?
       IF( mig(jpi) == jpiglo ) THEN
          zlamt(jpi,:) = glamt(jpi-1,:) + 1./rad * ASIN ( TANH( rn_e1_deg * rad) )
       ENDIF
@@ -424,7 +369,7 @@ CONTAINS
          zrad    = (rn_cha_max - rn_cha_min) / 2
          DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
             zds_taper  = smooth_step(zlamt(ji, jj), zminlam, zminlam + zds_width)
-            zds        = gauss_ring( zds_width, zminlam, zmidphi, zrad, zlamt(ji, ji), zphit(ji, jj), zds_depth, pbathy(ji, jj) )
+            zds        = gauss_ring( zds_width, zminlam, zmidphi, zrad, zlamt(ji, jj), zphit(ji, jj), zds_depth, pbathy(ji, jj) )
             pbathy(ji, jj) = zds_taper * zds + (1._wp - zds_taper) * pbathy(ji, jj)
          END_2D
       ENDIF
@@ -491,116 +436,6 @@ CONTAINS
       IF( lwp ) WRITE(numout,*) '         pmaxphi = ', pmaxphi
    END SUBROUTINE zgr_get_boundaries
 
-       
-   SUBROUTINE zgr_z1D( pHmax, pztype, pdept_1d, pdepw_1d )   ! 1D reference vertical coordinate
-      !!----------------------------------------------------------------------
-      !!                   ***  ROUTINE zgr_z  ***
-      !!
-      !! ** Purpose :   set the 1D depth of model levels and the resulting 
-      !!              vertical scale factors.
-      !!
-      !! ** Method  :   1D z-coordinate system (use in all type of coordinate)
-      !!       The depth of model levels is set from dep(k), an analytical function:
-      !!                   w-level: depw_1d  = dep(k)
-      !!                   t-level: dept_1d  = dep(k+0.5)
-      !!       The scale factors are the discrete derivative of the depth:
-      !!                   e3w_1d(jk) = dk[ dept_1d ] 
-      !!                   e3t_1d(jk) = dk[ depw_1d ]
-      !!           with at top and bottom :
-      !!                   e3w_1d( 1 ) = 2 * ( dept_1d( 1 ) - depw_1d( 1 ) )
-      !!                   e3t_1d(jpk) = 2 * ( dept_1d(jpk) - depw_1d(jpk) )
-      !!       The depth are then re-computed from the sum of e3. This ensures 
-      !!    that depths are identical when reading domain configuration file. 
-      !!    Indeed, only e3. are saved in this file, depth are compute by a call
-      !!    to the e3_to_depth subroutine.
-      !!
-      !!       Here the Madec & Imbard (1996) function is used.
-      !!
-      !! ** Action  : - pdept_1d, pdepw_1d : depth of T- and W-point (m)
-      !!              - pe3t_1d , pe3w_1d  : scale factors at T- and W-levels (m)
-      !!
-      !! Reference : Marti, Madec & Delecluse, 1992, JGR, 97, No8, 12,763-12,766.
-      !!             Madec and Imbard, 1996, Clim. Dyn.
-      !!----------------------------------------------------------------------
-      REAL(wp)               , INTENT(in   ) ::   pHmax                ! ocean depth maximum   [m]
-      INTEGER                , INTENT(in   ) ::   pztype               ! type of z grid (0: constant)
-      REAL(wp), DIMENSION(:) , INTENT(  out) ::   pdept_1d, pdepw_1d   ! 1D grid-point depth   [m]
-      !
-      INTEGER  ::   jk       ! dummy loop indices
-      REAL(wp) ::   zd       ! local scalar
-      REAL(wp) ::   zt, zw   ! local scalars
-      REAL(wp) ::   zsur, za0, za1, zkth, zacr   ! Values for the Madec & Imbard (1996) function  
-      !!----------------------------------------------------------------------
-      !
-      zd = pHmax / REAL(jpkm1,wp)
-      !
-      IF(lwp) THEN            ! Parameter print
-         WRITE(numout,*)
-         WRITE(numout,*) '    zgr_z   : Reference vertical z-coordinates '
-         WRITE(numout,*) '    ~~~~~~~'
-      ENDIF
-      !
-      ! 1D Reference z-coordinate    (using Madec & Imbard 1996 function)   !!rc TODO set non uniform spacing cf ORCA
-      ! -------------------------
-      !
-      SELECT CASE( pztype )
-      CASE( 0 )   ! Uniform vertical grid
-         IF(lwp) THEN
-            WRITE(numout,*) '       BASIN case : uniform vertical grid :'
-            WRITE(numout,*) '                     with thickness = ', zd
-         ENDIF
-         pdepw_1d(1) = 0._wp
-         pdept_1d(1) = 0.5_wp * zd
-         ! 
-         DO jk = 2, jpk          ! depth at T and W-points
-            pdepw_1d(jk) = pdepw_1d(jk-1) + zd 
-            pdept_1d(jk) = pdept_1d(jk-1) + zd 
-         END DO
-      CASE( 1 )   ! Non uniform spacing
-         IF(lwp)   WRITE(numout,*) '       BASIN case : non uniform vertical grid'
-         !CALL ctl_stop( 'zgr_z1D: The chosen case (pztype = 1) has not been implemeted yet' )
-         ! taken from GYRE
-         !!----------------------------------------------------------------------
-         !
-         ! Set parameters of z(k) function
-         ! -------------------------------
-         zsur = -2033.194295283385_wp       
-         za0  =   155.8325369664153_wp 
-         za1  =   146.3615918601890_wp
-         zkth =    17.28520372419791_wp   
-         zacr =     5.0_wp       
-         !
-         IF(lwp) THEN            ! Parameter print
-            WRITE(numout,*)
-            WRITE(numout,*) '    zgr_z   : Reference vertical z-coordinates '
-            WRITE(numout,*) '    ~~~~~~~'
-            WRITE(numout,*) '       GYRE case : MI96 function with the following coefficients :'
-            WRITE(numout,*) '                 zsur = ', zsur
-            WRITE(numout,*) '                 za0  = ', za0
-            WRITE(numout,*) '                 za1  = ', za1
-            WRITE(numout,*) '                 zkth = ', zkth
-            WRITE(numout,*) '                 zacr = ', zacr
-         ENDIF
-   
-         !
-         ! 1D Reference z-coordinate    (using Madec & Imbard 1996 function)
-         ! -------------------------
-         !
-         DO jk = 1, jpk          ! depth at T and W-points
-            zw = REAL( jk , wp )
-            zt = REAL( jk , wp ) + 0.5_wp
-            pdepw_1d(jk) = ( zsur + za0 * zw + za1 * zacr *  LOG( COSH( (zw-zkth) / zacr ) )  )
-            pdept_1d(jk) = ( zsur + za0 * zt + za1 * zacr *  LOG( COSH( (zt-zkth) / zacr ) )  )
-         END DO
-         !
-   
-      CASE DEFAULT
-         CALL ctl_stop( 'zgr_z1D: The chosen case for the vertical 1D grid does not exist' )
-      END SELECT
-      !
-   END SUBROUTINE zgr_z1D
-
-
    SUBROUTINE zgr_msk_top_bot( pdept_1d , pbathy, k_top , k_bot )
       !!----------------------------------------------------------------------
       !!                    ***  ROUTINE zgr_msk_top_bot  ***
@@ -622,12 +457,14 @@ CONTAINS
       INTEGER :: jk   ! dummy loop indices
       !!----------------------------------------------------------------------
       !
-      IF(lwp) WRITE(numout,*)
-      IF(lwp) WRITE(numout,*) '    zgr_top_bot : defines the top and bottom wet ocean levels for z-coordinates.'
-      IF(lwp) WRITE(numout,*) '    ~~~~~~~~~~~'
-      IF(lwp) WRITE(numout,*) '       BASIN case : = closed or south symmetrical box ocean without ocean cavities'
-      IF(lwp) WRITE(numout,*) '          k_top = 1                                       except along boundaries according to jperio'
-      IF(lwp) WRITE(numout,*) '          k_bot = {first point under the ocean bottom}    except along boundaries according to jperio'
+      IF(lwp) THEN
+         WRITE(numout,*)
+         WRITE(numout,*) '    zgr_top_bot : defines the top and bottom wet ocean levels for z-coordinates.'
+         WRITE(numout,*) '    ~~~~~~~~~~~'
+         WRITE(numout,*) '       BASIN case : = closed or south symmetrical box ocean without ocean cavities'
+         WRITE(numout,*) '          k_top = 1                                       except along boundaries according to jperio'
+         WRITE(numout,*) '          k_bot = {first point under the ocean bottom}    except along boundaries according to jperio'
+      END IF
       !
       !
       ! bottom ocean mask computed from the depth of grid-points
@@ -641,17 +478,17 @@ CONTAINS
       k_bot(:,:) = INT( z2d(:,:) )
       k_top(:,:) = MIN( 1 , k_bot(:,:) )     ! = 1 over the ocean point, =0 elsewhere
       
-      WRITE(numout,*) '    |     ', k_bot(5,2), '    |     ' , k_bot(5,3), '    |     ', k_bot(5,4), '    |     ' , k_bot(5,5), '    |     '
-      WRITE(numout,*) '    |     ', k_bot(4,2), '    |     ' , k_bot(4,3), '    |     ', k_bot(4,4), '    |     ' , k_bot(4,5), '    |     '
-      WRITE(numout,*) '    |     ', k_bot(3,2), '    |     ' , k_bot(3,3), '    |     ', k_bot(3,4), '    |     ' , k_bot(3,5), '    |     '
-      WRITE(numout,*) '    |     ', k_bot(2,2), '    |     ' , k_bot(2,3), '    |     ', k_bot(2,4), '    |     ' , k_bot(2,5), '    |     '
+      IF(lwp)  THEN
+         WRITE(numout,*) '    |     ', k_bot(5,2), '    |     ' , k_bot(5,3), '    |     ', k_bot(5,4), '    |     ' , k_bot(5,5), '    |     '
+         WRITE(numout,*) '    |     ', k_bot(4,2), '    |     ' , k_bot(4,3), '    |     ', k_bot(4,4), '    |     ' , k_bot(4,5), '    |     '
+         WRITE(numout,*) '    |     ', k_bot(3,2), '    |     ' , k_bot(3,3), '    |     ', k_bot(3,4), '    |     ' , k_bot(3,5), '    |     '
+         WRITE(numout,*) '    |     ', k_bot(2,2), '    |     ' , k_bot(2,3), '    |     ', k_bot(2,4), '    |     ' , k_bot(2,5), '    |     '
+      END IF
       !
    END SUBROUTINE zgr_msk_top_bot
 
 
    SUBROUTINE zgr_test_slopes( pbathy, pdept, pe3u, pe3v )
-!!rc TODO implement multi processors
-!!rc TODO remove masked U and V points
       !!----------------------------------------------------------------------
       !!                    ***  ROUTINE zgr_test_slopes  ***
       !!
@@ -688,13 +525,9 @@ CONTAINS
          zsi1d_dia(jk) = MINVAL( pe3u(2:jpi - 1 , 2:jpj - 1 , jk) * r1_e1u(2:jpi - 1 , 2:jpj - 1) )
          zsj1d_dia(jk) = MINVAL( pe3v(2:jpi - 1 , 2:jpj - 1 , jk) * r1_e2v(2:jpi - 1 , 2:jpj - 1) )
          ! global ratio of slope (must be <= 1)
-         !!rc WRITE(numout,*) 'usrdef_zgr DEBUG   jpi, jpj', jpi, jpj
-         
          zglo_ri(:,:,jk) = ABS( (pdept( 3:jpi   , 2:jpj - 1 , jk) - pdept( 2:jpi - 1 , 2:jpj - 1 , jk)) * r1_e1u(2:jpi - 1 , 2:jpj - 1) ) * ( e1u(2:jpi - 1 , 2:jpj - 1) / pe3u(2:jpi - 1 , 2:jpj - 1 , jk))
          zglo_rj(:,:,jk) = ABS( (pdept( 2:jpi - 1 , 3:jpj   , jk) - pdept( 2:jpi - 1 , 2:jpj - 1 , jk)) * r1_e2v(2:jpi - 1 , 2:jpj - 1) ) * ( e2v(2:jpi - 1 , 2:jpj - 1) / pe3v(2:jpi - 1 , 2:jpj - 1 , jk))
          !
-         !!rc zglo_ri(:,:,jk) = ABS( (pdept( 2:jpi   , 1:jpj - 1 , jk) - pdept( 1:jpi - 1 , 1:jpj - 1 , jk)) * r1_e1u(1:jpi - 1 , 1:jpj - 1) ) * ( e1u(1:jpi - 1 , 1:jpj - 1) / pe3u(1:jpi - 1 , 1:jpj - 1 , jk))
-         !!rc zglo_rj(:,:,jk) = ABS( (pdept( 1:jpi - 1 , 2:jpj   , jk) - pdept( 1:jpi - 1 , 1:jpj - 1 , jk)) * r1_e2v(1:jpi - 1 , 1:jpj - 1) ) * ( e2v(1:jpi - 1 , 1:jpj - 1) / pe3v(1:jpi - 1 , 1:jpj - 1 , jk))
       END DO
       !
       zsmax_bat = MAX(          zsi_bat ,          zsj_bat  )

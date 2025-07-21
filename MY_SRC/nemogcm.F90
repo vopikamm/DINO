@@ -74,7 +74,6 @@ MODULE nemogcm
    USE mppini         ! shared/distributed memory setting (mpp_init routine)
    USE lib_fortran    ! Fortran utilities (allows no signed zero when 'key_nosignedzero' defined)
    USE halo_mng       ! halo manager
-   USE zanna_bolton   ! Zanna & Bolton (2020) parameterization
 
    IMPLICIT NONE
    PRIVATE
@@ -368,6 +367,7 @@ CONTAINS
       !
       IF( ln_read_cfg ) THEN            ! Read sizes in domain configuration file
          CALL domain_cfg ( cn_cfg, nn_cfg, Ni0glo, Nj0glo, jpkglo, l_Iperio, l_Jperio, l_NFold, c_NFtype )
+         CALL usr_def_nam_cfg()
       ELSE                              ! user-defined namelist
          CALL usr_def_nam( cn_cfg, nn_cfg, Ni0glo, Nj0glo, jpkglo, l_Iperio, l_Jperio, l_NFold, c_NFtype )
       ENDIF
@@ -383,6 +383,7 @@ CONTAINS
       IF( nn_hls == 1 ) THEN
          CALL ctl_stop( 'STOP', 'nemogcm : Loop fusion can be used only with extra-halo' )
       ENDIF
+      CALL ctl_warn( 'nemo_init', 'you use key_loop_fusion, this may significantly slow down NEMO performances' )
 #endif
 
       CALL halo_mng_init()
@@ -463,7 +464,6 @@ CONTAINS
                            CALL dyn_ldf_init         ! lateral mixing
                            CALL dyn_hpg_init( Nnn )  ! horizontal gradient of Hydrostatic pressure
                            CALL dyn_spg_init         ! surface pressure gradient
-                           CALL ZB_2020_init         ! init Zanna Bolton parameterization
 
       !                                      ! Icebergs
                            CALL icb_init( rn_Dt, nit000)   ! initialise icebergs instance

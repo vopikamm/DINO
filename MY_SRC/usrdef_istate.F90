@@ -2,11 +2,12 @@ MODULE usrdef_istate
    !!======================================================================
    !!                     ***  MODULE usrdef_istate   ***
    !!
-   !!                      ===  CANAL configuration  ===
+   !!                      ===  DINO configuration  ===
    !!
    !! User defined : set the initial state of a user configuration
    !!======================================================================
    !! History :  NEMO ! 2017-11  (J. Chanut) Original code
+   !!                 ! 2025-03  (D. Kamm) Add linear decrease to poles
    !!----------------------------------------------------------------------
 
    !!----------------------------------------------------------------------
@@ -148,11 +149,12 @@ CONTAINS
          !
          ! Create horizontal gradient of T (going linearly from equatorial profile to uniform T=4 degC profile)
          zphiMAX = MAXVAL( gphit(:,:) )
-         
-         zTbot = MINVAL( pts(3:jpi - 2 , 3:jpj - 2 , 1:jpkm1 , jp_tem) )   ! Must be a positive temperature
-         zSbot = MINVAL( pts(3:jpi - 2 , 3:jpj - 2 , 1:jpkm1 , jp_sal) )   !
          !
-         WRITE(numout,*) 'Sbot before = ', zSbot
+         ! Minimal value ignoring the mask --> might have small contribution from mask??
+         zTbot = MINVAL( pts(:,:,:,jp_tem)  + 100 * ( 1._wp - ptmask(:,:,:)))   ! Must be a positive temperature
+         zSbot = MINVAL( pts(:,:,:,jp_sal)  + 100 * ( 1._wp - ptmask(:,:,:)))
+         !
+         IF(lwp) WRITE(numout,*) 'Sbot before = ', zSbot
          !
          IF( lk_mpp )   THEN
             zmpparr(1) = zphiMAX
@@ -164,7 +166,7 @@ CONTAINS
             zSbot = - zmpparr(3)
          ENDIF
          !
-         WRITE(numout,*) 'Sbot after = ', zSbot
+         IF(lwp) WRITE(numout,*) 'Sbot after = ', zSbot
          !
          z1_phiMAX = 1._wp / zphiMAX
          DO jk = 1, jpkm1

@@ -2,11 +2,12 @@ MODULE usrdef_sbc
    !!======================================================================
    !!                       ***  MODULE  usrdef_sbc  ***
    !! 
-   !!                      ===  BASIN configuration  ===
+   !!                      ===  DINO configuration  ===
    !!
    !! User defined :   surface forcing of a user configuration
    !!======================================================================
    !! History :  4.0   ! 2017-11  (J.Chanut)  user defined interface
+   !!                  ! 2025-03  (D. Kamm)   Analytical SBC for DINO
    !!----------------------------------------------------------------------
 
    !!----------------------------------------------------------------------
@@ -21,7 +22,7 @@ MODULE usrdef_sbc
    USE usrdef_nam, ONLY : nn_forcingtype, rn_ztau0, rn_emp_prop, ln_ann_cyc, ln_diu_cyc,  &
                &          rn_trp, rn_srp, ln_qsr, rn_phi_max, rn_phi_min, rn_sstar_s,     &
                &          rn_sstar_n, rn_sstar_eq, rn_tstar_s, rn_tstar_n, rn_tstar_eq,   &
-               &          ln_emp_field
+               &          ln_emp_field, ln_qns_field
    !
    USE in_out_manager  ! I/O manager
    USE fldread         ! read input fields
@@ -37,10 +38,12 @@ MODULE usrdef_sbc
    PUBLIC   usrdef_sbc_ice_tau  ! routine called by icestp.F90 for ice dynamics
    PUBLIC   usrdef_sbc_ice_flx  ! routine called by icestp.F90 for ice thermo
 
-   INTEGER , PARAMETER ::   jp_emp  = 1            ! index of evaporation-precipation file
-   INTEGER , PARAMETER ::   jpfld   = 1            ! maximum number of files to read
+   INTEGER ::   jp_emp  = 1            ! index of evaporation-precipation file
+   INTEGER ::   jp_qtot = 2            ! index of Qtot file
+   INTEGER ::   jpfld   = 2            ! maximum number of files to read
    TYPE(FLD), ALLOCATABLE, DIMENSION(:) ::   sf    ! structure of input fields (file informations, fields read)
-   REAL(wp), DIMENSION(:,:), ALLOCATABLE ::   ztstar, zqsr_dayMean, zsstar   !: ztstar used in the heat forcing, zqsr_dayMean is the dayly averaged solar heat flux, zsstar for sfx
+   REAL(wp), DIMENSION(:,:), ALLOCATABLE ::   ztstar, zqsr_dayMean, zsstar    !: ztstar used in the heat forcing, zqsr_dayMean is the dayly averaged solar heat flux, zsstar for sfx
+   REAL(wp), DIMENSION(:,:), ALLOCATABLE ::   qtot                            !: total heat flux                     [W/m2]
 
    !! * Substitutions
 #  include "do_loop_substitute.h90"
@@ -154,28 +157,16 @@ CONTAINS
          CALL compute_day_of_year( kt, zcos_sais1, zcos_sais2, ln_ann_cyc)
          !
          ! Zonal wind profile as is Marques et al. (2022)
-         znds_wnd_phi    = (/rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max /)
-         znds_wnd_val    = (/0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp /)
-         !
-         ! Temperature restoring profile
-         ! Chosen with the southern boundary always colder than the northern boundary
-         ! Seasonnal cycle on T* coming from zcos_sais2 with extrema in July/January
-         ! zts_eq         =  27._wp       ! [deg C] Temperature at the equator
-         ! zdts_n         =  8._wp        ! [deg C] seasonal temperature difference in the north
-         ! zdts_s         =   1._wp       ! [deg C] seasonal temperature difference in the south
-         ! znds_tmp_phi    = (/rn_phi_min, 10. * zcos_sais2, rn_phi_max /)
-         ! znds_tmp_val    = (/-0.5 * zdts_s * (1 + zcos_sais2) , zts_eq, 0.5 * zdts_n * (1 + zcos_sais2)/)
-         !
-         ! Evaporation - Precipitation
-         ! znds_emp_phi    = (/rn_phi_min, -50._wp, -20._wp, 0._wp, 20._wp, 50._wp, rn_phi_max /)
-         ! znds_emp_val    = (/-0.00001_wp, -0.00002_wp, 0.000035_wp, -0.000025_wp, 0.000035_wp, -0.00002_wp, -0.00001_wp /)
-         !
-         ! znds_slt_phi    = (/rn_phi_min, -40._wp, 0._wp, 40._wp, rn_phi_max /)
-         ! znds_slt_val    = (/35.401_wp, 34.505_wp, 36.09_wp, 34.931_wp, 35.401_wp /)         
+         ! First and last values ensure that rn_phi_min / rn_phi_max stay within bounds.
+         ! For values outside of rn_phi_min / rn_phi_max there are no winds
+         znds_wnd_phi    = (/rn_phi_min - 1._wp, rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max, rn_phi_max + 1._wp /)
+         znds_wnd_val    = (/0._wp, 0._wp, rn_ztau0, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp, 0._wp /)
+         !         
          !
          IF( kt == nit000 ) THEN
-            ALLOCATE( ztstar(jpi,jpj) )   ! Allocation of ztstar
+            ALLOCATE( ztstar(jpi,jpj) )         ! Allocation of ztstar
             ALLOCATE( zqsr_dayMean(jpi,jpj) )   ! Allocation of zqsr_dayMean
+            ALLOCATE( qtot(jpi,jpj))         ! Allocation of qtot
             IF( rn_srp /= 0._wp )   THEN
                ALLOCATE( zsstar(jpi,jpj) )   ! Allocation of zsstar
                DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
@@ -189,11 +180,20 @@ CONTAINS
                         & + (rn_sstar_eq - rn_sstar_n) * (1 + COS( 2 * rpi * gphit(ji,jj) / ( rn_phi_max - rn_phi_min) )) / 2 &
                         & - 1.25_wp * EXP( - gphit(ji,jj) ** 2 / 7.5_wp ** 2 )
                   ENDIF
-                  ! Caneill
-                  !zsstar(ji,jj) = 37.12_wp * EXP( - gphit(ji,jj)**2 / 260._wp**2 ) - 1.1_wp * EXP( - gphit(ji,jj)**2 / 7.5_wp**2 )
-                  ! S-curve interpolation
-                  !zsstar(ji,jj)  = znl_cbc(znds_slt_phi, znds_slt_val, gphit(ji,jj))
                END_2D
+            ENDIF
+            
+            ! Change fld_read parameters depending on ln_emp_field and/or ln_qns_field
+            IF( ln_emp_field .AND. ln_qns_field) THEN
+               jp_emp  = 1
+               jp_qtot = 2
+               jpfld   = 2
+            ELSE IF( ln_emp_field ) THEN
+               jpfld   = 1
+               jp_emp  = 1
+            ELSE IF( ln_qns_field ) THEN
+               jpfld   = 1
+               jp_qtot = 1
             ENDIF
          ENDIF
          !
@@ -229,19 +229,34 @@ CONTAINS
             ! ztstar(ji,jj)  = znl_cbc(znds_tmp_phi, znds_tmp_val, gphit(ji,jj))
             !
             ! T* inspired from Munday et al. (2012)
-            IF ( gphit(ji, jj) <= 0 ) THEN
-               ztstar(ji,jj) = ztstar_s                                                                                    &
-                  & + (rn_tstar_eq - ztstar_s) * SIN( rpi * ( gphit(ji,jj) + rn_phi_max ) /  ( rn_phi_max - rn_phi_min) )
-            ELSE
-               ztstar(ji,jj) = ztstar_n                                                                                    &
-                  & + (rn_tstar_eq - ztstar_n) * SIN( rpi * ( gphit(ji,jj) + rn_phi_max ) /  ( rn_phi_max - rn_phi_min) )
+            IF( .NOT. ln_qns_field) THEN
+               IF ( gphit(ji, jj) <= 0 ) THEN
+                  ztstar(ji,jj) = ztstar_s                                                                                    &
+                     & + (rn_tstar_eq - ztstar_s) * SIN( rpi * ( gphit(ji,jj) + rn_phi_max ) /  ( rn_phi_max - rn_phi_min) )
+               ELSE
+                  ztstar(ji,jj) = ztstar_n                                                                                    &
+                     & + (rn_tstar_eq - ztstar_n) * SIN( rpi * ( gphit(ji,jj) + rn_phi_max ) /  ( rn_phi_max - rn_phi_min) )
+               ENDIF
             ENDIF
          END_2D
          !
-         IF( ln_emp_field ) THEN
-            Call emp_flx( kt )
+         IF( ln_emp_field .AND. ln_qns_field) THEN
+            Call read_flx( kt )
+         ELSE IF( ln_emp_field ) THEN
+            CALL read_flx( kt )
+            DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
+               qtot(ji,jj) = rn_trp * ( ts(ji,jj,1,jp_tem, Kbb) - ztstar(ji,jj) )        &
+                    &      - emp(ji,jj) * ts(ji,jj,1,jp_tem, Kbb) * rcp * tmask(ji,jj,1)
+            END_2D          
+         ELSE IF( ln_qns_field ) THEN
+            CALL read_flx( kt )
+            emp(:,:)    = 0._wp
          ELSE
-            emp(:,:) = 0._wp
+            emp(:,:)    = 0._wp
+            DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
+               qtot(ji,jj) = rn_trp * ( ts(ji,jj,1,jp_tem, Kbb) - ztstar(ji,jj) )        &
+                    &      - emp(ji,jj) * ts(ji,jj,1,jp_tem, Kbb) * rcp * tmask(ji,jj,1)
+            END_2D
          ENDIF
          !
          ! CALL remove_emp_mean()
@@ -261,10 +276,9 @@ CONTAINS
          ! QNS
          ! take (SST - T*) into account, heat content of emp, remove qsr
          DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-            qns(ji,jj) = (  rn_trp * ( ts(ji,jj,1,jp_tem, Kbb) - ztstar(ji,jj) ) &
-                 &      - emp(ji,jj) * ts(ji,jj,1,jp_tem, Kbb) * rcp           &
-                 &      - zqsr_dayMean(ji,jj)                         ) * tmask(ji,jj,1)
+            qns(ji,jj) = ( qtot(ji,jj) - zqsr_dayMean(ji,jj) ) * tmask(ji,jj,1)
          END_2D
+         !
       CASE(5)
          ! Forcing inspired from Wolfe and Cessi 2014, JPO
          IF( kt == nit000 .AND. lwp ) THEN
@@ -308,7 +322,7 @@ CONTAINS
          ! Wind stress
          !ztau0         =   0.1_wp    ! [Pa]
          znds_wnd_phi    = (/rn_phi_min, -45._wp, -15._wp, 0._wp, 15._wp, 45._wp, rn_phi_max /)
-         znds_wnd_val    = (/0._wp, 0.2_wp, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp /)
+         znds_wnd_val    = (/0._wp, rn_ztau0, -0.1_wp, -0.02_wp, -0.1_wp, 0.1_wp, 0._wp /)
          ! zatau         =   0.8_wp    ! [no unit]
          ! zdeltatau     =   5.77_wp   ! [deg North]
          ! T star and qns
@@ -408,6 +422,7 @@ CONTAINS
                  &      - emp(ji,jj) * ts(ji,jj,1,jp_tem, Kbb) * rcp           &
                  &      - zqsr_dayMean(ji,jj)                         ) * tmask(ji,jj,1)
          END_2D
+         !
       END SELECT
      ! We call lbc_lnk to take the boundaries into account (especially the equator symmetrical condition)
      CALL lbc_lnk( 'usrdef_sbc', taum, 'T',  1. )
@@ -605,7 +620,7 @@ CONTAINS
 
    END FUNCTION znl_cbc
 
-   SUBROUTINE emp_flx( kt )
+   SUBROUTINE read_flx( kt )
       !!---------------------------------------------------------------------
       !!                    ***  ROUTINE sbc_flx  ***
       !!
@@ -627,8 +642,8 @@ CONTAINS
       !
       CHARACTER(len=100) ::  cn_dir                ! Root directory for location of flx files
       TYPE(FLD_N), DIMENSION(jpfld) ::   slf_i     ! array of namelist information structures
-      TYPE(FLD_N) ::                     sn_emp    ! informations about the fields to be read
-      NAMELIST/namsbc_flx/ cn_dir, sn_emp
+      TYPE(FLD_N) ::                     sn_emp, sn_qtot    ! informations about the fields to be read
+      NAMELIST/namsbc_flx/ cn_dir, sn_emp, sn_qtot
       !!---------------------------------------------------------------------
       !
       IF( kt == nit000 ) THEN                ! First call kt=nit000
@@ -639,8 +654,14 @@ CONTAINS
          READ  ( numnam_cfg, namsbc_flx, IOSTAT = ios, ERR = 902 )
 902      IF( ios >  0 )   CALL ctl_nam ( ios , 'namsbc_flx in configuration namelist' )
          IF(lwm) WRITE ( numond, namsbc_flx )
-         !                                         
-         slf_i(jp_emp ) = sn_emp                   ! store namelist information in an array
+         !
+         ! store namelist information in an array
+         IF( ln_emp_field ) THEN
+            slf_i(jp_emp ) = sn_emp
+         ENDIF
+         IF( ln_qns_field ) THEN
+            slf_i(jp_qtot) = sn_qtot
+         ENDIF
          !
          ALLOCATE( sf(jpfld), STAT=ierror )        ! set sf structure
          IF( ierror > 0 ) THEN
@@ -651,7 +672,7 @@ CONTAINS
             IF( slf_i(ji)%ln_tint ) ALLOCATE( sf(ji)%fdta(jpi,jpj,1,2) )
          END DO
          !                                         ! fill sf with slf_i and control print
-         CALL fld_fill( sf, slf_i, cn_dir, 'emp_flx', 'flux formulation for ocean surface boundary condition', 'namsbc_flx' )
+         CALL fld_fill( sf, slf_i, cn_dir, 'read_flx', 'flux formulation for ocean surface boundary condition', 'namsbc_flx' )
          !
       ENDIF
 
@@ -660,12 +681,17 @@ CONTAINS
       IF( MOD( kt-1, nn_fsbc ) == 0 ) THEN                        ! update ocean fluxes at each SBC frequency
       !
          DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )                  ! set the ocean fluxes from read fields
-            emp (ji,jj) =   sf(jp_emp )%fnow(ji,jj,1) * tmask(ji,jj,1)
+            IF( ln_emp_field ) THEN
+               emp (ji,jj)    =   sf(jp_emp )%fnow(ji,jj,1) * tmask(ji,jj,1)
+            ENDIF
+            IF( ln_qns_field ) THEN
+               qtot(ji, jj)   =   sf(jp_qtot)%fnow(ji,jj,1) * tmask(ji,jj,1)
+            ENDIF
          END_2D
          !
       ENDIF
       !
-   END SUBROUTINE emp_flx
+   END SUBROUTINE read_flx
 
    SUBROUTINE test_compute_day_of_year()
 		!!---------------------------------------------------------------------
