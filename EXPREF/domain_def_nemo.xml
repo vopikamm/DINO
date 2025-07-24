@@ -1,9 +1,10 @@
 
 <domain_definition>
 
-  <!--   T grid   -->
+  <!--   T grid      , note: grid_T_inner and grid_T_halo1 are automatically defined based on grid_T   -->
   <domain id="grid_T" long_name="grid T"/>
-  <domain id="grid_T_inner" long_name="grid T inner"/>
+  <!--   T Eq section, note: EqT_inner and EqT_halo1 are automatically defined based on EqT   -->
+  <domain id="EqT" domain_ref="grid_T" > <zoom_domain id="EqT"/> </domain>
 
   <!--   My zoom: example of hand defined zoom   -->
   <domain id="myzoomT" domain_ref="grid_T" >
@@ -15,9 +16,40 @@
   </domain>
 
 
-  <!--   Eq section -->
-  <domain id="EqT" domain_ref="grid_T" > <zoom_domain id="EqT"/> </domain>
-  <!--   TAO : see example above   -->
+  <!--   U grid, note: grid_U_inner and grid_U_halo1 are automatically defined based on grid_U   -->
+  <domain id="grid_U" long_name="grid U"/>
+  <!--   U Eq section, note: EqU_inner and EqU_halo1 are automatically defined based on EqU   -->
+  <domain id="EqU" domain_ref="grid_U" > <zoom_domain id="EqU"/> </domain>
+
+
+  <!--   V grid, note: grid_V_inner and grid_V_halo1 are automatically defined based on grid_V   -->
+  <domain id="grid_V" long_name="grid V"/>
+  <!--   V Eq section: no V point on the Equator...   -->
+
+
+  <!--   W grid, note: grid_W_inner and grid_W_halo1 are automatically defined based on grid_W   -->
+  <domain id="grid_W" long_name="grid W"/>
+  <!--   W Eq section, note: EqW_inner and EqW_halo1 are automatically defined based on EqW   -->
+  <domain id="EqW" domain_ref="grid_W" > <zoom_domain id="EqW"/> </domain>
+
+  
+  <!--   F grid, note: grid_F_inner and grid_F_halo1 are automatically defined based on grid_F   -->
+  <domain id="grid_F" long_name="grid F"/>
+  <!--   F Eq section: no F point on the Equator...   -->
+
+
+  <!--   zonal mean grid   -->
+  <domain id="gznl" />
+  <domain id="ptr" domain_ref="gznl" > <zoom_domain id="ptr"/> </domain>
+
+  <!--   other grids   -->
+  <domain id="scalarpoint" long_name="scalar"/>
+
+
+  <!--   TAO, RAMA and PIRATA moorings,
+         note: 'U', 'V', 'W' grids are automatically defined based on the following T moorings
+         note: 'T', 'U', 'V', 'W' _inner and _halo1 grids are automatically defined based on the following T moorings   -->
+  <!--   TAO   -->
   <!--   137e   -->
   <domain id="2n137eT" domain_ref="grid_T" > <zoom_domain id="2n137eT"/> </domain>
   <domain id="5n137eT" domain_ref="grid_T" > <zoom_domain id="5n137eT"/> </domain>
@@ -164,41 +196,5 @@
   <!-- <\!--   0e   -\-> -->
   <domain id="0n0eT"   domain_ref="grid_T" > <zoom_domain id="0n0eT"  /> </domain>
 
-
-  <!--   U grid   -->
-  <domain id="grid_U" long_name="grid U"/>
-  <domain id="grid_U_inner" long_name="grid U inner"/>
-  <!--   Eq section   -->
-  <domain id="EqU" domain_ref="grid_U" > <zoom_domain id="EqU"/> </domain>
-
-
-  <!--   V grid   -->
-  <domain id="grid_V" long_name="grid V"/>
-  <domain id="grid_V_inner" long_name="grid V inner"/>
-  <!--   Eq section : no V point on the Equator...   -->
-
-
-  <!--   W grid   -->
-  <domain id="grid_W" long_name="grid W"/>
-  <domain id="grid_W_inner" long_name="grid W inner"/>
-  <!--   Eq section   -->
-  <domain id="EqW" domain_ref="grid_W" > <zoom_domain id="EqW"/> </domain>
-
-  <!--   F grid   -->
-  <domain id="grid_F" long_name="grid F"/>
-  <domain id="grid_F_inner" long_name="grid F inner"/>
-
-  <!--   zonal mean grid   -->
-  <domain_group id="gznl">
-    <domain id="gznl" long_name="gznl"/>
-    <domain id="ptr" domain_ref="gznl" >
-      <zoom_domain id="ptr" ibegin="0000" jbegin="0" ni="1" nj="0000" />
-    </domain>
-  </domain_group>
-
-
-  <!--   other grids   -->
-  <domain id="scalarpoint" long_name="scalar"/>
-
-
+  
 </domain_definition>

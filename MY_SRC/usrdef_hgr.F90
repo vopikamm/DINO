@@ -15,7 +15,7 @@ MODULE usrdef_hgr
    !!----------------------------------------------------------------------
    !!   usr_def_hgr    : initialize the horizontal mesh for CANAL configuration
    !!----------------------------------------------------------------------
-   USE dom_oce, ONLY: mig0, mjg0        ! ocean space and time domain
+   USE dom_oce, ONLY: mig, mjg        ! ocean space and time domain
    USE par_oce ! , ONLY:                ! ocean space and time domain
    USE phycst          ! physical constants
    !
@@ -93,10 +93,10 @@ CONTAINS
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
       !
       DO_2D( nn_hls, nn_hls, nn_hls, nn_hls )
-            zti = REAL( mig0(ji) - 1, wp )             ;     ztj = REAL( mjg0(jj) - nn_jeq_s, wp )
-            zui = REAL( mig0(ji) - 1, wp ) + 0.5       ;     zuj = REAL( mjg0(jj) - nn_jeq_s, wp )
-            zvi = REAL( mig0(ji) - 1, wp )             ;     zvj = REAL( mjg0(jj) - nn_jeq_s, wp ) + 0.5
-            zfi = REAL( mig0(ji) - 1, wp ) + 0.5       ;     zfj = REAL( mjg0(jj) - nn_jeq_s, wp ) + 0.5
+            zti = REAL( mig(ji,0) - 1, wp )             ;     ztj = REAL( mjg(jj,0) - nn_jeq_s, wp )
+            zui = REAL( mig(ji,0) - 1, wp ) + 0.5       ;     zuj = REAL( mjg(jj,0) - nn_jeq_s, wp )
+            zvi = REAL( mig(ji,0) - 1, wp )             ;     zvj = REAL( mjg(jj,0) - nn_jeq_s, wp ) + 0.5
+            zfi = REAL( mig(ji,0) - 1, wp ) + 0.5       ;     zfj = REAL( mjg(jj,0) - nn_jeq_s, wp ) + 0.5
          ! Longitude
             plamt(ji,jj) = zlam0 + rn_e1_deg * zti
             plamu(ji,jj) = zlam0 + rn_e1_deg * zui

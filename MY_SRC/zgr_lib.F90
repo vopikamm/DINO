@@ -240,7 +240,7 @@ CONTAINS
       !
       !*  Apply lateral boundary condition   (use of optional argument cd_mpp)
       ! 
-      IF( mig(1) == 1 ) THEN   ! first column of the local domain is the global domain one (which is closed here)
+      IF( mig(1, nn_hls) == 1 ) THEN   ! first column of the local domain is the global domain one (which is closed here)
          !                     ! set first inner v-, vw-, t-point to corresponding u-, uw-, f-point  
          pe3v (1+nn_hls,:,:)       = pe3f (1+nn_hls,:,:)
          pe3vw(1+nn_hls,:,:)       = ze3fw(1+nn_hls,:,:)
@@ -249,7 +249,7 @@ CONTAINS
          !
       ENDIF
       !
-      IF( mjg(1) == 1 ) THEN   ! last row of the local domain is the global domain one (which is closed here)
+      IF( mjg(1, nn_hls) == 1 ) THEN   ! last row of the local domain is the global domain one (which is closed here)
          !                            ! Extend inner domain value on the last row
          pe3u (:,1+nn_hls,:) = pe3f (:,1+nn_hls,:)
          pe3uw(:,1+nn_hls,:) = ze3fw(:,1+nn_hls,:)

@@ -471,7 +471,7 @@ CONTAINS
         ! Computing the surface of the cells
       zSurf( :     , :     ) = 0._wp                                         ! masking the halo + boundary points
       zSurf(2:jpi - 1,2:jpj - 1) = e1t(2:jpi - 1,2:jpj - 1) * e2t(2:jpi - 1,2:jpj - 1)   ! surface of the cells
-      zemp_mean = glob_sum( 'usrdef_sbc', emp(:,:) * zSurf(:,:) ) / glob_sum( 'usrdef_sbc', zSurf(:,:) )
+      zemp_mean = glob_2Dsum( 'usrdef_sbc', emp(:,:) * zSurf(:,:) ) / glob_2Dsum( 'usrdef_sbc', zSurf(:,:) )
      !
       emp(:,:) = emp(:,:) - zemp_mean                     ! freshwater flux (=0 in domain average)
    END SUBROUTINE remove_emp_mean
