@@ -1,3 +1,7 @@
+<!-- QUALITY_BADGE_START -->
+[![Software quality](https://img.shields.io/badge/FAIRness-50%25-orange "score: 50% | passed: 20 | failed: 20 | errors: 2")](RSFC_REPORT.md)
+<!-- QUALITY_BADGE_END -->
+
 
 **DINO Demonstrator for NEMO 5.0.1**
 This demonstrator was developed during the NEMO Zoo hackathon hosted by the 2025 NEMO Party in Exeter. It describes the general motivation behind the DINO configuration and gives instructions on how to install, compile and run it with [**NEMO v5.0.1**](https://forge.nemo-ocean.eu/nemo/nemo/-/releases/5.0.1). 
