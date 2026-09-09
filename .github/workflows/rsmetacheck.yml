@@ -1,0 +1,19 @@
+name: RSMetaCheck Action
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  rsmetacheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run RSMetaCheck
+        uses: SoftwareUnderstanding/rs-metacheck-action@0.3.5
+        with:
+          verbose: "true"
