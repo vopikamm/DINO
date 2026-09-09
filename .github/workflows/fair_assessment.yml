@@ -1,0 +1,98 @@
+name: "Run RSFC"
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-rsfc:
+    name: "RSFC analysis"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install rsfc
+
+      - name: Configure SOMEF
+        run: somef configure -a
+
+      - name: Download NLTK data
+        run: |
+          python -m nltk.downloader wordnet
+          python -m nltk.downloader omw-1.4
+
+      - name: Create output directory
+        run: mkdir -p rsfc_output
+
+      - name: Run RSFC
+        env:
+          REPO_URL: https://github.com/${{ github.repository }}
+        run: |
+          if [ -z "${{ secrets.RSFC_TOKEN }}" ]; then
+            echo "Running RSFC on public repo"
+            rsfc --repo "$REPO_URL" > rsfc_output/rsfc_assessment.json
+          else
+            echo "Running RSFC on repo using token"
+            rsfc --repo "$REPO_URL" -t "${{ secrets.RSFC_TOKEN }}" > rsfc_output/rsfc_assessment.json
+          fi
+
+      - name: Checkout fairification-framework
+        uses: actions/checkout@v4
+        with:
+          repository: FAIR2Adapt/fairification-framework
+          path: fairification-framework
+
+      - name: Generate Markdown report in repository root
+        run: |
+          python fairification-framework/fairification-scripts/generate_markdown.py \
+            rsfc_output/rsfc_assessment.json \
+            RSFC_REPORT.md
+
+      - name: Update README badge
+        run: |
+          python fairification-framework/fairification-scripts/update_badge.py \
+            rsfc_output/rsfc_assessment.json \
+            README.md
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rsfc-report
+          path: |
+            rsfc_output/rsfc_assessment.json
+            RSFC_REPORT.md
+
+      - name: Commit generated report
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add RSFC_REPORT.md README.md
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Update RSFC report and badge"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: Show workflow run URL
+        run: |
+          echo "RSFC assessment completed."
+          echo "Run details:"
+          echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
